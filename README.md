@@ -1,8 +1,8 @@
 # Curiosities (趣味物品)
 
-一个为Minecraft 1.20.1添加多种有趣功能和物品的Forge模组。
+一个为Minecraft 1.20.1添加多种有趣功能和物品的Forge模组。内容均为AI制作
 
-A Forge mod for Minecraft 1.20.1 that adds various fun features and items.
+A Forge mod for Minecraft 1.20.1 that adds various fun features and items. All content is made by AI.
 
 ## 主要功能 (Main Features)
 

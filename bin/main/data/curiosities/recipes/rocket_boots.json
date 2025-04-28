@@ -1,0 +1,32 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " L ",
+        "FFF",
+        "P P"
+    ],
+    "key": {
+        "L": {
+            "item": "minecraft:leather_boots"
+        },
+        "F": {
+            "item": "minecraft:firework_rocket"
+        },
+        "P": {
+            "item": "minecraft:feather"
+        }
+    },
+    "result": {
+        "item": "curiosities:rocket_boots"
+    },
+    "conditions": [
+        {
+            "type": "forge:and",
+            "values": [
+                {
+                    "type": "curiosities:rocket_boots_enabled"
+                }
+            ]
+        }
+    ]
+} 

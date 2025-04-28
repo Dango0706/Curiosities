@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.tuanzi.curiosities.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "curiosities.refmap.json",
+  "mixins": [
+    "VillagerTradeMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

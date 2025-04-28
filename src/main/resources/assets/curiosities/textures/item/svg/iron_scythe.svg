@@ -1,0 +1,18 @@
+<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="16" height="16" fill="none" />
+  
+  <!-- 木质手柄 -->
+  <rect x="7" y="6" width="2" height="8" fill="#9b7653" />
+  
+  <!-- 铁质镰刀刀刃 -->
+  <path d="M7,6 C5,6 3,5 2,3 L4,2 C6,3 8,4 9,6 Z" fill="#a8a8a8" />
+  <path d="M7,5 C5,5 3,4 2,2 L3,1 C5,2 7,3 8,5 Z" fill="#c6c6c6" />
+  
+  <!-- 握柄装饰 -->
+  <rect x="7" y="14" width="2" height="1" fill="#876543" />
+  <rect x="7" y="11" width="2" height="1" fill="#876543" />
+  
+  <!-- 铁质镰刀头部连接件 -->
+  <rect x="6" y="5" width="4" height="1" fill="#8c8c8c" />
+</svg> 

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "G G",
+    "GSG",
+    " B "
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "S": {
+      "item": "minecraft:soul_sand"
+    },
+    "B": {
+      "type": "curiosities:enchanted_book_ingredient",
+      "enchantment": "minecraft:sharpness",
+      "level": 5
+    }
+  },
+  "result": {
+    "item": "minecraft:enchanted_book",
+    "nbt": "{StoredEnchantments:[{id:\"curiosities:moral_balance\",lvl:1s}]}"
+  },
+  "conditions": [
+    {
+      "type": "curiosities:moral_balance_enabled"
+    }
+  ]
+} 

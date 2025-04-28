@@ -1,0 +1,28 @@
+<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="16" height="16" fill="none" />
+  
+  <!-- 狼头轮廓 -->
+  <path d="M4,3 L12,3 L13,4 L14,6 L14,10 L13,12 L12,13 L4,13 L3,12 L2,10 L2,6 L3,4 Z" fill="#a06540" />
+  
+  <!-- 狼头内部 -->
+  <path d="M5,4 L11,4 L12,5 L13,7 L13,9 L12,11 L11,12 L5,12 L4,11 L3,9 L3,7 L4,5 Z" fill="#d0967c" />
+  
+  <!-- 耳朵 -->
+  <polygon points="5,4 4,2 6,3" fill="#a06540" />
+  <polygon points="11,4 12,2 10,3" fill="#a06540" />
+  
+  <!-- 眼睛 -->
+  <circle cx="6" cy="7" r="1" fill="#302010" />
+  <circle cx="10" cy="7" r="1" fill="#302010" />
+  
+  <!-- 鼻子 -->
+  <circle cx="8" cy="9" r="1" fill="#302010" />
+  
+  <!-- 嘴 -->
+  <path d="M7,10 L9,10 L8.5,11 L7.5,11 Z" fill="#302010" />
+  
+  <!-- 狼群光环效果 -->
+  <circle cx="8" cy="8" r="7" stroke="#e0b080" stroke-width="0.5" fill="none" stroke-opacity="0.5" />
+  <circle cx="8" cy="8" r="6" stroke="#e0b080" stroke-width="0.5" fill="none" stroke-opacity="0.4" />
+</svg> 

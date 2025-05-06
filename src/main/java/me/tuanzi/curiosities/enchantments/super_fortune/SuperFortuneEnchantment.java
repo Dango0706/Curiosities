@@ -1,5 +1,8 @@
 package me.tuanzi.curiosities.enchantments.super_fortune;
 
+import com.mojang.logging.LogUtils;
+import me.tuanzi.curiosities.Curiosities;
+import me.tuanzi.curiosities.config.ModConfigManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -11,7 +14,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import me.tuanzi.curiosities.Curiosities;
+import org.slf4j.Logger;
 
 import java.util.List;
 
@@ -22,6 +25,8 @@ import java.util.List;
  */
 public class SuperFortuneEnchantment extends Enchantment {
 
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     /**
      * 构造函数
      */
@@ -30,7 +35,22 @@ public class SuperFortuneEnchantment extends Enchantment {
     }
 
     /**
+     * 检查超级时运在当前物品上是否可用
+     */
+    public static boolean isSuperFortuneUsable(ItemStack stack) {
+        // 检查配置是否启用
+        if (!ModConfigManager.SUPER_FORTUNE_ENABLED.get()) {
+            return false;
+        }
+
+        // 检查物品是否有超级时运附魔
+        int level = EnchantmentHelper.getItemEnchantmentLevel(me.tuanzi.curiosities.enchantments.ModEnchantments.SUPER_FORTUNE.get(), stack);
+        return level > 0;
+    }
+
+    /**
      * 获取附魔最大等级
+     *
      * @return 最大等级(3)
      */
     @Override
@@ -40,6 +60,7 @@ public class SuperFortuneEnchantment extends Enchantment {
 
     /**
      * 获取附魔最小等级
+     *
      * @return 最小等级(1)
      */
     @Override
@@ -49,6 +70,7 @@ public class SuperFortuneEnchantment extends Enchantment {
 
     /**
      * 获取附魔最小消耗
+     *
      * @param level 附魔等级
      * @return 最小消耗
      */
@@ -59,6 +81,7 @@ public class SuperFortuneEnchantment extends Enchantment {
 
     /**
      * 获取附魔最大消耗
+     *
      * @param level 附魔等级
      * @return 最大消耗
      */
@@ -70,6 +93,7 @@ public class SuperFortuneEnchantment extends Enchantment {
     /**
      * 检查与其他附魔的兼容性
      * 不与原版时运兼容，但可与精准采集兼容
+     *
      * @param other 其他附魔
      * @return 是否兼容
      */
@@ -82,65 +106,55 @@ public class SuperFortuneEnchantment extends Enchantment {
         // 可以与精准采集兼容
         return super.checkCompatibility(other);
     }
-    
+
     /**
      * 判断是否可以在附魔台上应用此附魔
+     *
      * @param stack 物品堆
      * @return 是否可以应用
      */
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack) {
         // 根据配置决定是否可以在附魔台应用此附魔
-        if (!SuperFortuneConfig.isSuperFortuneEnabled()) {
+        if (!ModConfigManager.SUPER_FORTUNE_ENABLED.get()) {
             return false;
         }
         return super.canApplyAtEnchantingTable(stack);
     }
-    
+
     /**
      * 是否为宝藏附魔
+     *
      * @return 是否为宝藏附魔
      */
     @Override
     public boolean isTreasureOnly() {
         // 当禁用时，将其设为"宝藏附魔"，使其不出现在附魔台
-        return !SuperFortuneConfig.isSuperFortuneEnabled();
+        return !ModConfigManager.SUPER_FORTUNE_ENABLED.get();
     }
-    
+
     /**
      * 是否可被发现
+     *
      * @return 是否可被发现
      */
     @Override
     public boolean isDiscoverable() {
         // 当禁用时，将其设为不可发现，使其不出现在附魔台和战利品表中
-        return SuperFortuneConfig.isSuperFortuneEnabled();
+        return ModConfigManager.SUPER_FORTUNE_ENABLED.get();
     }
-    
+
     /**
      * 是否可被交易
+     *
      * @return 是否可被交易
      */
     @Override
     public boolean isTradeable() {
         // 当禁用时，村民不会提供这个附魔
-        return SuperFortuneConfig.isSuperFortuneEnabled();
+        return ModConfigManager.SUPER_FORTUNE_ENABLED.get();
     }
-    
-    /**
-     * 检查超级时运在当前物品上是否可用
-     */
-    public static boolean isSuperFortuneUsable(ItemStack stack) {
-        // 检查配置是否启用
-        if (!SuperFortuneConfig.isSuperFortuneEnabled()) {
-            return false;
-        }
-        
-        // 检查物品是否有超级时运附魔
-        int level = EnchantmentHelper.getItemEnchantmentLevel(me.tuanzi.curiosities.enchantments.ModEnchantments.SUPER_FORTUNE.get(), stack);
-        return level > 0;
-    }
-    
+
     /**
      * 工具提示处理器
      * 为禁用的超级时运附魔添加红色警告文字
@@ -149,24 +163,24 @@ public class SuperFortuneEnchantment extends Enchantment {
     public static class TooltipHandler {
         /**
          * 物品提示事件处理
-         * 
+         *
          * @param event 物品提示事件
          */
         @SubscribeEvent
         public static void onItemTooltip(ItemTooltipEvent event) {
             ItemStack stack = event.getItemStack();
-            
+
             // 检查物品是否有超级时运附魔且当前是否禁用
             int level = EnchantmentHelper.getItemEnchantmentLevel(me.tuanzi.curiosities.enchantments.ModEnchantments.SUPER_FORTUNE.get(), stack);
-            if (level > 0 && !SuperFortuneConfig.isSuperFortuneEnabled()) {
+            if (level > 0 && !ModConfigManager.SUPER_FORTUNE_ENABLED.get()) {
                 // 添加红色文字提示
                 List<Component> tooltip = event.getToolTip();
-                
+
                 // 寻找超级时运附魔文本的位置
                 for (int i = 1; i < tooltip.size(); i++) {
                     Component line = tooltip.get(i);
                     String plainText = line.getString();
-                    
+
                     // 如果找到超级时运附魔的描述行
                     if (plainText.contains(Component.translatable("enchantment.curiosities.super_fortune").getString())) {
                         // 在该行后添加红色警告文字

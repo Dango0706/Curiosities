@@ -1,24 +1,24 @@
 <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 -->
-  <rect width="16" height="16" fill="none" />
-  
-  <!-- 土豆主体 -->
-  <path d="M4,4 L12,4 L13,5 L13,11 L12,12 L4,12 L3,11 L3,5 Z" fill="#b37b49" />
-  
-  <!-- 土豆表面 -->
-  <path d="M5,5 L11,5 L12,6 L12,10 L11,11 L5,11 L4,10 L4,6 Z" fill="#daa06d" />
-  
-  <!-- 狼牙装饰 - 左 -->
-  <polygon points="3,7 2,8 3,9" fill="#e8e8e8" />
-  
-  <!-- 狼牙装饰 - 右 -->
-  <polygon points="13,7 14,8 13,9" fill="#e8e8e8" />
-  
-  <!-- 狼牙装饰 - 中央 -->
-  <polygon points="7,3 8,2 9,3" fill="#e8e8e8" />
-  <polygon points="7,13 8,14 9,13" fill="#e8e8e8" />
-  
-  <!-- 红色装饰 - 表示魔法效果 -->
-  <circle cx="8" cy="8" r="1.5" fill="#aa3322" />
-  <circle cx="8" cy="8" r="1" fill="#cc4433" />
+    <!-- 背景 -->
+    <rect width="16" height="16" fill="none"/>
+
+    <!-- 土豆主体 -->
+    <path d="M4,4 L12,4 L13,5 L13,11 L12,12 L4,12 L3,11 L3,5 Z" fill="#b37b49"/>
+
+    <!-- 土豆表面 -->
+    <path d="M5,5 L11,5 L12,6 L12,10 L11,11 L5,11 L4,10 L4,6 Z" fill="#daa06d"/>
+
+    <!-- 狼牙装饰 - 左 -->
+    <polygon points="3,7 2,8 3,9" fill="#e8e8e8"/>
+
+    <!-- 狼牙装饰 - 右 -->
+    <polygon points="13,7 14,8 13,9" fill="#e8e8e8"/>
+
+    <!-- 狼牙装饰 - 中央 -->
+    <polygon points="7,3 8,2 9,3" fill="#e8e8e8"/>
+    <polygon points="7,13 8,14 9,13" fill="#e8e8e8"/>
+
+    <!-- 红色装饰 - 表示魔法效果 -->
+    <circle cx="8" cy="8" r="1.5" fill="#aa3322"/>
+    <circle cx="8" cy="8" r="1" fill="#cc4433"/>
 </svg> 

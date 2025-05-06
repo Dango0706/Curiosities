@@ -1,26 +1,26 @@
 <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
-  <!-- 背景 -->
-  <rect width="16" height="16" fill="none" />
-  
-  <!-- 下界合金手柄 -->
-  <rect x="7" y="6" width="2" height="8" fill="#5c5c5c" />
-  
-  <!-- 下界合金镰刀刀刃 -->
-  <path d="M7,6 C5,6 3,5 2,3 L4,2 C6,3 8,4 9,6 Z" fill="#4d4d4d" />
-  <path d="M7,5 C5,5 3,4 2,2 L3,1 C5,2 7,3 8,5 Z" fill="#636363" />
-  
-  <!-- 握柄装饰 -->
-  <rect x="7" y="14" width="2" height="1" fill="#3d3d3d" />
-  <rect x="7" y="11" width="2" height="1" fill="#3d3d3d" />
-  
-  <!-- 下界合金镰刀头部连接件 -->
-  <rect x="6" y="5" width="4" height="1" fill="#383838" />
-  
-  <!-- 下界合金纹路 -->
-  <path d="M3,3 L4,2.5 L3.5,4" fill="#6a5751" opacity="0.4" />
-  <path d="M4,3 L5,3.5 L6,3" fill="#6a5751" opacity="0.4" />
-  
-  <!-- 下界合金红色点缀 - 熔岩痕迹 -->
-  <circle cx="4" cy="3" r="0.2" fill="#ff4500" opacity="0.7" />
-  <circle cx="6" cy="4" r="0.1" fill="#ff4500" opacity="0.7" />
+    <!-- 背景 -->
+    <rect width="16" height="16" fill="none"/>
+
+    <!-- 下界合金手柄 -->
+    <rect x="7" y="6" width="2" height="8" fill="#5c5c5c"/>
+
+    <!-- 下界合金镰刀刀刃 -->
+    <path d="M7,6 C5,6 3,5 2,3 L4,2 C6,3 8,4 9,6 Z" fill="#4d4d4d"/>
+    <path d="M7,5 C5,5 3,4 2,2 L3,1 C5,2 7,3 8,5 Z" fill="#636363"/>
+
+    <!-- 握柄装饰 -->
+    <rect x="7" y="14" width="2" height="1" fill="#3d3d3d"/>
+    <rect x="7" y="11" width="2" height="1" fill="#3d3d3d"/>
+
+    <!-- 下界合金镰刀头部连接件 -->
+    <rect x="6" y="5" width="4" height="1" fill="#383838"/>
+
+    <!-- 下界合金纹路 -->
+    <path d="M3,3 L4,2.5 L3.5,4" fill="#6a5751" opacity="0.4"/>
+    <path d="M4,3 L5,3.5 L6,3" fill="#6a5751" opacity="0.4"/>
+
+    <!-- 下界合金红色点缀 - 熔岩痕迹 -->
+    <circle cx="4" cy="3" r="0.2" fill="#ff4500" opacity="0.7"/>
+    <circle cx="6" cy="4" r="0.1" fill="#ff4500" opacity="0.7"/>
 </svg> 

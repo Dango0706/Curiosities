@@ -5,8 +5,9 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Panda;
 import net.minecraft.world.entity.animal.Wolf;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public class WolfPackLeaderEffect extends MobEffect {
         // 使用中性效果类别和棕色
         super(MobEffectCategory.NEUTRAL, 0xA06540);
     }
-    
+
     /**
      * 效果应用时的刻度处理
      */
@@ -34,13 +35,13 @@ public class WolfPackLeaderEffect extends MobEffect {
         if (entity.level().isClientSide()) {
             return; // 客户端不处理
         }
-        
+
         Level level = entity.level();
-        
+
         // 获取实体周围30格内的所有狼
         AABB boundingBox = entity.getBoundingBox().inflate(EFFECT_RADIUS);
         List<Wolf> wolves = level.getEntitiesOfClass(Wolf.class, boundingBox);
-        
+
         // 如果实体有目标，让附近所有狼也攻击该目标
         LivingEntity target = entity.getLastHurtMob();
         if (target != null && !target.isDeadOrDying()) {
@@ -56,7 +57,7 @@ public class WolfPackLeaderEffect extends MobEffect {
                 }
             }
         }
-        
+
         // 获取附近的熊猫并让它们敌视玩家
         List<Panda> pandas = level.getEntitiesOfClass(Panda.class, boundingBox);
         for (Panda panda : pandas) {
@@ -69,7 +70,7 @@ public class WolfPackLeaderEffect extends MobEffect {
             }
         }
     }
-    
+
     /**
      * 检查效果是否需要每刻都应用
      */

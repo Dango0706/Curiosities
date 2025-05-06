@@ -1,21 +1,16 @@
 package me.tuanzi.curiosities;
 
 import com.mojang.logging.LogUtils;
+import me.tuanzi.curiosities.blocks.ModBlocks;
+import me.tuanzi.curiosities.config.ModConfigManager;
 import me.tuanzi.curiosities.config.SimpleConfigScreen;
-import me.tuanzi.curiosities.crafting.RocketBootsEnabledCondition;
-import me.tuanzi.curiosities.crafting.ScytheEnabledCondition;
-import me.tuanzi.curiosities.crafting.WolfFangPotatoEnabledCondition;
+import me.tuanzi.curiosities.crafting.EnchantedBookIngredient;
 import me.tuanzi.curiosities.effect.ModEffects;
 import me.tuanzi.curiosities.enchantments.ModEnchantments;
-import me.tuanzi.curiosities.enchantments.chain_mining.ChainMiningConfig;
 import me.tuanzi.curiosities.enchantments.chain_mining.ChainMiningEventHandler;
 import me.tuanzi.curiosities.enchantments.chain_mining.ChainMiningState;
-import me.tuanzi.curiosities.enchantments.super_fortune.SuperFortuneConfig;
-import me.tuanzi.curiosities.enchantments.moral_balance.MoralBalanceConfig;
+import me.tuanzi.curiosities.entities.ModEntities;
 import me.tuanzi.curiosities.items.ModItems;
-import me.tuanzi.curiosities.items.WolfFangPotatoConfig;
-import me.tuanzi.curiosities.items.rocket_boots.RocketBootsConfig;
-import me.tuanzi.curiosities.items.scythe.ScytheConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.Registries;
@@ -33,7 +28,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -42,8 +36,6 @@ import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
 import java.util.function.BiFunction;
-
-import me.tuanzi.curiosities.crafting.EnchantedBookIngredient;
 
 /**
  * 趣味物品模组主类
@@ -68,55 +60,80 @@ public class Curiosities {
                     .icon(() -> new ItemStack(ModItems.WOLF_FANG_POTATO.get()))
                     .withTabsBefore(CreativeModeTabs.COMBAT)
                     .displayItems((parameters, output) -> {
-                        // 添加1-4级连锁挖矿附魔书
+                        // 添加超级时运附魔书
+
+                        // 添加所有等级的超级时运附魔书（1-3级）
+                        for (int level = 1; level <= 3; level++) {
+                            ItemStack enchantedBook = new ItemStack(Items.ENCHANTED_BOOK);
+                            EnchantedBookItem.addEnchantment(
+                                    enchantedBook,
+                                    new EnchantmentInstance(ModEnchantments.SUPER_FORTUNE.get(), level)
+                            );
+                            output.accept(enchantedBook);
+                        }
+
+
+                        // 添加连锁挖矿附魔书
+                        // 添加所有等级的连锁挖矿附魔书（1-4级）
                         for (int level = 1; level <= 4; level++) {
                             ItemStack enchantedBook = new ItemStack(Items.ENCHANTED_BOOK);
-                            net.minecraft.world.item.EnchantedBookItem.addEnchantment(
+                            EnchantedBookItem.addEnchantment(
                                     enchantedBook,
                                     new EnchantmentInstance(ModEnchantments.CHAIN_MINING.get(), level)
                             );
                             output.accept(enchantedBook);
                         }
 
-                        // 添加1-3级超级时运附魔书
-                        for (int level = 1; level <= 3; level++) {
-                            ItemStack enchantedBook = new ItemStack(Items.ENCHANTED_BOOK);
-                            net.minecraft.world.item.EnchantedBookItem.addEnchantment(
-                                    enchantedBook,
-                                    new EnchantmentInstance(ModEnchantments.SUPER_FORTUNE.get(), level)
-                            );
-                            output.accept(enchantedBook);
-                        }
-                        
-                        // 添加道德天平附魔书（仅当启用时）
-                        if (me.tuanzi.curiosities.enchantments.moral_balance.MoralBalanceConfig.isMoralBalanceEnabled()) {
-                            ItemStack enchantedBook = new ItemStack(Items.ENCHANTED_BOOK);
-                            net.minecraft.world.item.EnchantedBookItem.addEnchantment(
-                                    enchantedBook,
-                                    new EnchantmentInstance(ModEnchantments.MORAL_BALANCE.get(), 1)
-                            );
-                            output.accept(enchantedBook);
-                        }
 
-                        // 添加狼牙土豆（仅当启用时）
-                        if (WolfFangPotatoConfig.isWolfFangPotatoEnabled()) {
-                            output.accept(ModItems.WOLF_FANG_POTATO.get());
-                        }
+                        // 添加道德天平附魔书
 
-                        // 添加火箭靴（仅当启用时）
-                        if (RocketBootsConfig.isRocketBootsEnabled()) {
-                            output.accept(ModItems.ROCKET_BOOTS.get());
-                        }
+                        ItemStack enchantedBook = new ItemStack(Items.ENCHANTED_BOOK);
+                        net.minecraft.world.item.EnchantedBookItem.addEnchantment(
+                                enchantedBook,
+                                new EnchantmentInstance(ModEnchantments.MORAL_BALANCE.get(), 1)
+                        );
+                        output.accept(enchantedBook);
 
-                        // 添加镰刀物品（仅当启用时）
-                        if (ScytheConfig.isScytheEnabled()) {
-                            output.accept(ModItems.WOODEN_SCYTHE.get());
-                            output.accept(ModItems.STONE_SCYTHE.get());
-                            output.accept(ModItems.IRON_SCYTHE.get());
-                            output.accept(ModItems.GOLDEN_SCYTHE.get());
-                            output.accept(ModItems.DIAMOND_SCYTHE.get());
-                            output.accept(ModItems.NETHERITE_SCYTHE.get());
-                        }
+
+                        // 添加狼牙土豆
+
+                        output.accept(ModItems.WOLF_FANG_POTATO.get());
+
+
+                        // 添加火箭靴
+                        output.accept(ModItems.ROCKET_BOOTS.get());
+
+
+                        // 添加镰刀物品
+
+                        output.accept(ModItems.WOODEN_SCYTHE.get());
+                        output.accept(ModItems.STONE_SCYTHE.get());
+                        output.accept(ModItems.IRON_SCYTHE.get());
+                        output.accept(ModItems.GOLDEN_SCYTHE.get());
+                        output.accept(ModItems.DIAMOND_SCYTHE.get());
+                        output.accept(ModItems.NETHERITE_SCYTHE.get());
+
+
+                        // 添加假TNT方块
+
+                        output.accept(ModBlocks.FAKE_TNT_ITEM.get());
+
+
+                        // 添加幸运剑
+                        output.accept(ModItems.LUCKY_SWORD.get());
+
+
+                        // 添加蝙蝠翅膀
+                        output.accept(ModItems.BAT_WING.get());
+
+
+                        // 添加尖叫派
+                        output.accept(ModItems.SCREAMING_PIE.get());
+
+
+                        // 添加蜜蜂手雷
+                        output.accept(ModItems.BEE_GRENADE.get());
+
                     })
                     .build()
     );
@@ -130,7 +147,7 @@ public class Curiosities {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         // 注册配置
-        registerConfig();
+        ModConfigManager.registerConfigs();
 
         // 等待配置加载完成
         modEventBus.addListener(this::onConfigLoad);
@@ -145,6 +162,13 @@ public class Curiosities {
         ITEMS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
 
+        // 注册方块和方块物品
+        ModBlocks.BLOCKS.register(modEventBus);
+        ModBlocks.BLOCK_ITEMS.register(modEventBus);
+
+        // 注册实体类型
+        ModEntities.ENTITIES.register(modEventBus);
+
         // 注册附魔
         ModEnchantments.ENCHANTMENTS.register(modEventBus);
 
@@ -158,40 +182,24 @@ public class Curiosities {
     }
 
     /**
-     * 注册配置和配置界面
-     */
-    private void registerConfig() {
-        ModLoadingContext context = ModLoadingContext.get();
-        // 注册通用配置
-        context.registerConfig(ModConfig.Type.COMMON, ChainMiningConfig.COMMON_SPEC, "curiosities-common.toml");
-        // 注册超级时运配置
-        context.registerConfig(ModConfig.Type.COMMON, SuperFortuneConfig.COMMON_SPEC, "curiosities-super-fortune.toml");
-        // 注册狼牙土豆配置
-        context.registerConfig(ModConfig.Type.COMMON, WolfFangPotatoConfig.COMMON_SPEC, "curiosities-wolf-fang-potato.toml");
-        // 注册镰刀配置
-        context.registerConfig(ModConfig.Type.COMMON, ScytheConfig.COMMON_SPEC, "curiosities-scythe.toml");
-        // 注册火箭靴配置
-        context.registerConfig(ModConfig.Type.COMMON, RocketBootsConfig.COMMON_SPEC, "curiosities-rocket-boots.toml");
-        // 注册道德天平配置
-        context.registerConfig(ModConfig.Type.COMMON, MoralBalanceConfig.COMMON_SPEC, "curiosities-moral-balance.toml");
-
-        // 注册配置界面
-        BiFunction<Minecraft, Screen, Screen> screenFactory = SimpleConfigScreen::create;
-        context.registerExtensionPoint(
-                ConfigScreenHandler.ConfigScreenFactory.class,
-                () -> new ConfigScreenHandler.ConfigScreenFactory(screenFactory)
-        );
-        LOGGER.info("配置和配置界面已注册");
-    }
-
-    /**
      * 配置加载完成事件
      */
     private void onConfigLoad(FMLCommonSetupEvent event) {
         // 确保配置已经加载
         LOGGER.info("配置加载完成，攻击速度: {}, 伤害加成: {}",
-                ScytheConfig.getAttackSpeed(),
-                ScytheConfig.getDamageBonus());
+                ModConfigManager.SCYTHE_ATTACK_SPEED.get(),
+                ModConfigManager.SCYTHE_DAMAGE_BONUS.get());
+
+        // 标记配置已加载
+        ModConfigManager.setConfigLoaded(true);
+
+        // 配置加载完成后注册配置界面
+        BiFunction<Minecraft, Screen, Screen> screenFactory = SimpleConfigScreen::create;
+        ModLoadingContext.get().registerExtensionPoint(
+                ConfigScreenHandler.ConfigScreenFactory.class,
+                () -> new ConfigScreenHandler.ConfigScreenFactory(screenFactory)
+        );
+        LOGGER.info("配置界面已注册");
     }
 
     /**
@@ -203,7 +211,7 @@ public class Curiosities {
 
         // 注册连锁挖掘事件处理器
         MinecraftForge.EVENT_BUS.register(ChainMiningEventHandler.class);
-        
+
         // 注册道德天平事件处理器
         MinecraftForge.EVENT_BUS.register(me.tuanzi.curiosities.enchantments.moral_balance.MoralBalanceEventHandler.class);
     }
@@ -226,30 +234,17 @@ public class Curiosities {
     }
 
     /**
-     * 注册合成配方条件
+     * 注册配方条件
      */
     private void registerRecipeConditions() {
-        // 注册狼牙土豆合成条件
-        CraftingHelper.register(
-                new WolfFangPotatoEnabledCondition.Serializer()
-        );
-        
-        // 注册镰刀合成条件
-        CraftingHelper.register(
-                new ScytheEnabledCondition.Serializer()
-        );
-        
-        // 注册火箭靴合成条件
-        CraftingHelper.register(
-                new RocketBootsEnabledCondition.Serializer()
-        );
-        
-        // 注册道德天平合成条件
-        CraftingHelper.register(
-                new me.tuanzi.curiosities.crafting.MoralBalanceEnabledCondition.Serializer()
-        );
-        
-        LOGGER.info("配方条件已注册");
+        CraftingHelper.register(new me.tuanzi.curiosities.crafting.WolfFangPotatoEnabledCondition.Serializer());
+        CraftingHelper.register(new me.tuanzi.curiosities.crafting.RocketBootsEnabledCondition.Serializer());
+        CraftingHelper.register(new me.tuanzi.curiosities.crafting.MoralBalanceEnabledCondition.Serializer());
+        CraftingHelper.register(new me.tuanzi.curiosities.crafting.ScytheEnabledCondition.Serializer());
+        CraftingHelper.register(new me.tuanzi.curiosities.crafting.FakeTntEnabledCondition.Serializer());
+        CraftingHelper.register(new me.tuanzi.curiosities.crafting.LuckySwordEnabledCondition.Serializer());
+        CraftingHelper.register(new me.tuanzi.curiosities.crafting.ScreamingPieEnabledCondition.Serializer());
+        LOGGER.info("注册配方条件完成");
     }
 
     /**
@@ -261,7 +256,7 @@ public class Curiosities {
                 EnchantedBookIngredient.TYPE,
                 EnchantedBookIngredient.Serializer.INSTANCE
         );
-        
+
         LOGGER.info("附魔书材料类型已注册");
     }
 

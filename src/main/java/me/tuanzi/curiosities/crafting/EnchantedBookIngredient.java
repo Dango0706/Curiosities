@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import me.tuanzi.curiosities.Curiosities;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -17,14 +16,10 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraftforge.common.crafting.AbstractIngredient;
-import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
-import java.util.stream.Stream;
 
 /**
  * 自定义魔法书配料类
@@ -33,7 +28,7 @@ import java.util.stream.Stream;
 public class EnchantedBookIngredient extends AbstractIngredient {
     // 类型ID
     public static final ResourceLocation TYPE = new ResourceLocation(Curiosities.MODID, "enchanted_book_ingredient");
-    
+
     // 所需的附魔
     private final Enchantment enchantment;
     // 所需的附魔等级
@@ -43,9 +38,9 @@ public class EnchantedBookIngredient extends AbstractIngredient {
 
     /**
      * 构造函数
-     * 
+     *
      * @param enchantment 所需的附魔
-     * @param level 所需的附魔等级
+     * @param level       所需的附魔等级
      */
     public EnchantedBookIngredient(Enchantment enchantment, int level) {
         this.enchantment = enchantment;
@@ -120,12 +115,12 @@ public class EnchantedBookIngredient extends AbstractIngredient {
         public EnchantedBookIngredient parse(JsonObject json) {
             String enchantmentStr = GsonHelper.getAsString(json, "enchantment");
             ResourceLocation enchantmentId = new ResourceLocation(enchantmentStr);
-            
+
             Enchantment enchantment = BuiltInRegistries.ENCHANTMENT.get(enchantmentId);
             if (enchantment == null) {
                 throw new JsonSyntaxException("无效的附魔: " + enchantmentId);
             }
-            
+
             int level = GsonHelper.getAsInt(json, "level", 1);
             return new EnchantedBookIngredient(enchantment, level);
         }

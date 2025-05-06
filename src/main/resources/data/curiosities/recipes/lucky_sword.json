@@ -1,0 +1,39 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "E  ",
+    "R  ",
+    "N# "
+  ],
+  "key": {
+    "E": {
+      "item": "minecraft:emerald"
+    },
+    "R": {
+      "item": "minecraft:rabbit_foot"
+    },
+    "N": {
+      "item": "minecraft:gold_nugget"
+    },
+    "#": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "item": "curiosities:lucky_sword"
+  },
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:mod_loaded",
+        "modid": "curios_api"
+      }
+    },
+    {
+      "type": "curiosities:config_enabled",
+      "config": "lucky_sword"
+    }
+  ]
+} 

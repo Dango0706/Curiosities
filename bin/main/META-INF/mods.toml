@@ -25,7 +25,7 @@ displayName = "${mod_name}" #mandatory
 # A URL for the "homepage" for this mod, displayed in the mod UI
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
-logoFile="icon.png" #optional
+logoFile = "icon.png" #optional
 # A text field displayed in the mod UI
 #credits="Thanks for this example mod goes to Java" #optional
 # A text field displayed in the mod UI
@@ -42,7 +42,19 @@ authors = "${mod_authors}" #optional
 description = '''
 一个为Minecraft 1.20.1添加多种有趣功能和物品的Forge模组。内容均为AI制作
 
-${mod_description}'''
+${mod_description}
+
+- 连锁挖掘：一种能够快速采集相同方块的附魔，可在基岩和石头中生成矿脉。
+- 超级时运：增强版时运附魔，对矿物有额外掉落的独立概率。
+- 道德天平：攻击怪物时小概率掉落更多战利品；攻击中立生物时降低村民交易友好度。
+- 狼牙土豆：食用后获得"狼群领袖"效果，使狼群会协助攻击持有者锁定的目标，但会被熊猫敌视。
+- 镰刀：用于快速收割多个农作物的工具。
+- 火箭靴：允许玩家蓄力跳跃，实现高跳和缓降效果。
+- 假TNT：看起来像真正的TNT，但右键会让它消失并发出爆炸声，不会造成实际破坏。
+- 幸运剑：每次攻击造成随机伤害（包括负值，负值会治疗目标）。
+- 蝙蝠翅膀：杀死蝙蝠掉落的物品，用于合成尖叫派。
+- 尖叫派：食用后回满饱食度，获得缓降效果并定期发出恶魂尖叫声吸引周围敌对生物。
+'''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies."${mod_id}"]] #optional
 # the modid of the dependency

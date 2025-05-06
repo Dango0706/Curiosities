@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " G ",
+    "BWB",
+    " G "
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:ghast_tear"
+    },
+    "B": {
+      "item": "curiosities:bat_wing"
+    },
+    "W": {
+      "item": "minecraft:pumpkin_pie"
+    }
+  },
+  "result": {
+    "item": "curiosities:screaming_pie",
+    "count": 1
+  },
+  "conditions": [
+    {
+      "type": "curiosities:screaming_pie_enabled"
+    }
+  ]
+} 

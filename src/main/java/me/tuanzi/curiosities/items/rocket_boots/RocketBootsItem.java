@@ -2,6 +2,7 @@ package me.tuanzi.curiosities.items.rocket_boots;
 
 import com.mojang.logging.LogUtils;
 import me.tuanzi.curiosities.Curiosities;
+import me.tuanzi.curiosities.config.ModConfigManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -89,7 +90,7 @@ public class RocketBootsItem extends ArmorItem {
         }
 
         ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-        if (boots.getItem() instanceof RocketBootsItem && RocketBootsConfig.isRocketBootsEnabled()) {
+        if (boots.getItem() instanceof RocketBootsItem && ModConfigManager.ROCKET_BOOTS_ENABLED.get()) {
             // 玩家使用火箭靴降落，减少75%的摔落伤害
             event.setDistance(event.getDistance() * 0.25f);
 
@@ -155,7 +156,7 @@ public class RocketBootsItem extends ArmorItem {
         }
 
         // 检查是否启用
-        if (!RocketBootsConfig.isRocketBootsEnabled()) {
+        if (!ModConfigManager.ROCKET_BOOTS_ENABLED.get()) {
             return;
         }
 
@@ -181,6 +182,125 @@ public class RocketBootsItem extends ArmorItem {
     }
 
     /**
+     * 检查玩家是否装备了火箭靴
+     *
+     * @param player 要检查的玩家
+     * @return 是否装备火箭靴
+     */
+    private static boolean hasRocketBoots(Player player) {
+        ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+        return boots.getItem() instanceof RocketBootsItem;
+    }
+
+    /**
+     * 查找玩家装备的火箭靴
+     *
+     * @param player 要检查的玩家
+     * @return 火箭靴物品栈，如果没有则返回空
+     */
+    private static ItemStack findRocketBoots(Player player) {
+        ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+        if (boots.getItem() instanceof RocketBootsItem) {
+            return boots;
+        }
+        return ItemStack.EMPTY;
+    }
+
+    /**
+     * 静态版本的获取燃料数量方法
+     */
+    private static int getFuelStatic(ItemStack stack) {
+        if (stack.isEmpty() || !(stack.getItem() instanceof RocketBootsItem)) {
+            return 0;
+        }
+        CompoundTag tag = stack.getOrCreateTag();
+        return tag.getInt(TAG_FUEL);
+    }
+
+    /**
+     * 每服务器tick检查玩家状态，处理火箭靴逻辑
+     */
+    @SubscribeEvent
+    public static void serverTick(TickEvent.PlayerTickEvent event) {
+        // 确保只在服务器端的POST阶段执行
+        if (event.phase != TickEvent.Phase.END || event.player.level().isClientSide) {
+            return;
+        }
+
+        // 获取玩家
+        Player player = event.player;
+        UUID playerId = player.getUUID();
+
+        // 检查玩家是否有火箭靴
+        if (!hasRocketBoots(player)) {
+            // 从跟踪信息中移除
+            chargingPlayers.remove(playerId);
+            jumpingPlayers.remove(playerId);
+            return;
+        }
+
+        // 获取火箭靴物品
+        ItemStack boots = findRocketBoots(player);
+        int fuel = getFuelStatic(boots);
+
+        // 处理跳跃中状态
+        if (jumpingPlayers.containsKey(playerId)) {
+            RocketJumpInfo jumpInfo = jumpingPlayers.get(playerId);
+
+            // 检查玩家是否已着地
+            if (player.onGround() && System.currentTimeMillis() - jumpInfo.startTime > 500) {
+                // 着地至少0.5秒后才移除状态，避免误判
+                jumpingPlayers.remove(playerId);
+            } else {
+                // 防摔落伤害
+                player.fallDistance = 0;
+            }
+        }
+    }
+
+    /**
+     * 处理蓄力状态更新与取消
+     */
+    private static void handleCharging(Player player, ItemStack boots) {
+        UUID playerId = player.getUUID();
+        boolean wasCharging = chargingPlayers.containsKey(playerId);
+
+        boolean isCharging = player.isShiftKeyDown() && !player.onGround() && getFuelStatic(boots) >= ModConfigManager.ROCKET_BOOTS_FUEL_CONSUMPTION.get();
+
+        // 开始蓄力
+        if (isCharging && !wasCharging) {
+            chargingPlayers.put(playerId, System.currentTimeMillis());
+            if (!player.level().isClientSide) {
+                player.displayClientMessage(
+                        Component.translatable("message.curiosities.rocket_boots.charging")
+                                .withStyle(ChatFormatting.YELLOW), true);
+            }
+        }
+        // 结束蓄力
+        else if (!isCharging && wasCharging) {
+            chargingPlayers.remove(playerId);
+
+            // 检查是否满足触发条件（至少蓄力0.2秒，在服务器端）
+            if (!player.level().isClientSide && !player.onGround()) {
+                long chargingStart = chargingPlayers.getOrDefault(playerId, 0L);
+                long chargingTime = System.currentTimeMillis() - chargingStart;
+
+                // 蓄力时间达到要求
+                if (chargingTime >= 200) {
+                    // 在服务器端触发火箭跳跃
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        LOGGER.debug("[火箭靴] 触发服务器端火箭跳跃");
+                        // 直接触发火箭跳跃函数
+                        if (serverPlayer.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof RocketBootsItem rocketBoots) {
+                            rocketBoots.triggerRocketJump(serverPlayer, serverPlayer.getItemBySlot(EquipmentSlot.FEET), chargingTime);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * 每游戏刻更新物品状态
      */
     @Override
@@ -190,7 +310,7 @@ public class RocketBootsItem extends ArmorItem {
         }
 
         // 检查是否启用
-        if (!RocketBootsConfig.isRocketBootsEnabled()) {
+        if (!ModConfigManager.ROCKET_BOOTS_ENABLED.get()) {
             return;
         }
 
@@ -376,7 +496,7 @@ public class RocketBootsItem extends ArmorItem {
      */
     private boolean canJump(ItemStack stack) {
         int currentFuel = getFuel(stack);
-        return currentFuel >= RocketBootsConfig.getFuelConsumption();
+        return currentFuel >= ModConfigManager.ROCKET_BOOTS_FUEL_CONSUMPTION.get();
     }
 
     /**
@@ -384,72 +504,72 @@ public class RocketBootsItem extends ArmorItem {
      */
     private void triggerRocketJump(ServerPlayer player, ItemStack stack, long chargingTime) {
         float chargeProgress = Math.min(chargingTime / 1000.0f, 1.0f);
-        
+
         // 优化跳跃高度计算
-        float maxJumpBlocks = RocketBootsConfig.getMaxJumpHeight(); // 配置的最大跳跃高度(方块数)
-        
+        float maxJumpBlocks = ModConfigManager.ROCKET_BOOTS_MAX_JUMP_HEIGHT.get().floatValue(); // 配置的最大跳跃高度(方块数)
+
         // 在Minecraft中，初始跳跃速度约为0.42，跳跃高度约为1.25格
         // 我们需要计算出一个能够达到目标高度的初始速度
         float baseJumpVelocity = 0.42f; // 基础跳跃速度
-        
+
         // 根据测试，对于单纯的抛物线运动，初始速度v与最大高度h的关系约为：h ≈ (v^2)/(2*g)
         // 在Minecraft中，重力加速度g ≈ 0.08，所以 h ≈ (v^2)/0.16
         // 反过来，要达到高度h，需要的初始速度v ≈ sqrt(0.16*h)
-        
+
         // 计算所需的初始y轴速度，加上基础跳跃作为最小值
         float targetHeight = 1.0f + (chargeProgress * (maxJumpBlocks - 1.0f));
-        float requiredVelocity = (float)Math.sqrt(0.16 * targetHeight);
+        float requiredVelocity = (float) Math.sqrt(0.16 * targetHeight);
         float jumpStrength = Math.max(baseJumpVelocity, requiredVelocity);
-        
+
         // 记录用于日志的估计跳跃高度
         float estimatedBlocks = (jumpStrength * jumpStrength) / 0.16f;
-        
-        LOGGER.info("[火箭靴] 触发火箭跳跃，蓄力进度: {}%, 计算跳跃强度: {}, 估计高度: {}格", 
-            Math.round(chargeProgress * 100), jumpStrength, estimatedBlocks);
-        
+
+        LOGGER.info("[火箭靴] 触发火箭跳跃，蓄力进度: {}%, 计算跳跃强度: {}, 估计高度: {}格",
+                Math.round(chargeProgress * 100), jumpStrength, estimatedBlocks);
+
         // 消耗燃料
-        int fuelCost = RocketBootsConfig.getFuelConsumption();
+        int fuelCost = ModConfigManager.ROCKET_BOOTS_FUEL_CONSUMPTION.get();
         int currentFuel = getFuel(stack);
         setFuel(stack, currentFuel - fuelCost);
-        
+
         // 记录起始位置和速度
         double startX = player.getX();
         double startY = player.getY();
         double startZ = player.getZ();
         Vec3 oldMotion = player.getDeltaMovement();
-        
+
         // 获取服务器级别
         ServerLevel level = player.serverLevel();
-        
+
         // 记录跳跃信息并延长持续时间
         RocketJumpInfo jumpInfo = new RocketJumpInfo(player.getY(), chargeProgress, System.currentTimeMillis());
         jumpingPlayers.put(player.getUUID(), jumpInfo);
-        
-        LOGGER.debug("[火箭靴] 玩家起始位置: ({}, {}, {}), 原速度: ({}, {}, {})", 
-                   startX, startY, startZ, oldMotion.x, oldMotion.y, oldMotion.z);
-        
+
+        LOGGER.debug("[火箭靴] 玩家起始位置: ({}, {}, {}), 原速度: ({}, {}, {})",
+                startX, startY, startZ, oldMotion.x, oldMotion.y, oldMotion.z);
+
         // 设置垂直速度 - 保留水平速度
         player.setDeltaMovement(oldMotion.x, jumpStrength, oldMotion.z);
         LOGGER.debug("[火箭靴] 设置deltaMovement: ({}, {}, {})", oldMotion.x, jumpStrength, oldMotion.z);
-        
+
         // 确保玩家能够移动和不受伤害
         player.hasImpulse = true;
         player.fallDistance = 0;
         player.hurtMarked = true; // 标记玩家需要更新运动
-        
+
         // 播放音效和粒子效果
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), 
-                SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.PLAYERS, 
+        level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.PLAYERS,
                 1.0f, 0.8f + (chargeProgress * 0.4f));
-        
+
         // 根据蓄力程度生成粒子效果
-        spawnRocketParticles(level, player.getX(), player.getY(), player.getZ(), 
-                15 + (int)(chargeProgress * 20), chargeProgress);
-        
+        spawnRocketParticles(level, player.getX(), player.getY(), player.getZ(),
+                15 + (int) (chargeProgress * 20), chargeProgress);
+
         // 向玩家发送信息
         player.displayClientMessage(Component.translatable("message.curiosities.rocket_boots.jump")
                 .withStyle(ChatFormatting.GREEN), true);
-        
+
         // 创建持续性上升效果 - 每个tick检查速度并在需要时增加
         // 减少持续时间和增加力度
         int totalTicks = 20; // 1秒的持续上升检查，减少时间
@@ -457,46 +577,46 @@ public class RocketBootsItem extends ArmorItem {
             final int tick = i;
             level.getServer().tell(new net.minecraft.server.TickTask(i, () -> {
                 if (!player.isAlive() || player.isRemoved()) return;
-                
+
                 // 获取当前速度和位置
                 Vec3 currentMotion = player.getDeltaMovement();
                 double currentY = player.getY();
                 boolean hasJumpFlag = jumpingPlayers.containsKey(player.getUUID());
-                
+
                 // 如果玩家不再在跳跃状态，停止处理
                 if (!hasJumpFlag) return;
-                
+
                 // 每10tick记录一次状态
                 if (tick % 10 == 0 || tick == 2) {
-                    LOGGER.info("[火箭靴] 上升状态: tick={}, 位置Y={}, 上升={}, 当前速度=({},{},{})", 
-                        tick, currentY, currentY - startY, 
-                        currentMotion.x, currentMotion.y, currentMotion.z);
-                    
+                    LOGGER.info("[火箭靴] 上升状态: tick={}, 位置Y={}, 上升={}, 当前速度=({},{},{})",
+                            tick, currentY, currentY - startY,
+                            currentMotion.x, currentMotion.y, currentMotion.z);
+
                     // 同时记录当前高度对应的方块数
-                    LOGGER.info("[火箭靴] 当前高度: {}格, Y轴速度: {}", 
-                        Math.round(currentY - startY), currentMotion.y);
+                    LOGGER.info("[火箭靴] 当前高度: {}格, Y轴速度: {}",
+                            Math.round(currentY - startY), currentMotion.y);
                 }
-                
+
                 // 如果Y速度降低过多，且仍在上升阶段，给予额外推力，但推力减小
                 RocketJumpInfo info = jumpingPlayers.get(player.getUUID());
-                if (!info.isDescending && currentMotion.y < 0.5 && tick < 15 && 
-                    currentY - startY < estimatedBlocks * 0.7) { // 减小推力有效范围
-                    
+                if (!info.isDescending && currentMotion.y < 0.5 && tick < 15 &&
+                        currentY - startY < estimatedBlocks * 0.7) { // 减小推力有效范围
+
                     // 给予额外推力 - 计算随时间递减的推力，减小推力
                     float boostFactor = 1.0f - (tick / 15.0f); // 随时间逐渐减小
                     float boostStrength = jumpStrength * 0.3f * boostFactor; // 减小推力系数
-                    
+
                     // 应用推力，保留水平速度
                     player.setDeltaMovement(currentMotion.x, Math.max(currentMotion.y, boostStrength), currentMotion.z);
                     player.hasImpulse = true;
                     player.hurtMarked = true; // 再次标记需要更新
-                    
+
                     // 再次同步到客户端
                     player.connection.resetPosition();
-                    
-                    LOGGER.info("[火箭靴] 应用额外推力: tick={}, 位置Y={}, 上升={}, 原速度Y={}, 新速度Y={}", 
-                        tick, currentY, currentY - startY, currentMotion.y, boostStrength);
-                    
+
+                    LOGGER.info("[火箭靴] 应用额外推力: tick={}, 位置Y={}, 上升={}, 原速度Y={}, 新速度Y={}",
+                            tick, currentY, currentY - startY, currentMotion.y, boostStrength);
+
                     // 每5tick更新一次粒子效果
                     if (tick % 5 == 0) {
                         spawnRocketParticles(level, player.getX(), currentY, player.getZ(), 15, chargeProgress * boostFactor);
@@ -504,7 +624,7 @@ public class RocketBootsItem extends ArmorItem {
                 }
             }));
         }
-        
+
         LOGGER.warn("[火箭靴] 火箭跳跃触发完成: 蓄力时间={}ms, 跳跃强度={}, 消耗燃料={}, 剩余燃料={}, 估计高度={}格",
                 chargingTime, jumpStrength, fuelCost, currentFuel - fuelCost, Math.round(estimatedBlocks));
     }
@@ -539,31 +659,31 @@ public class RocketBootsItem extends ArmorItem {
         // 跳跃高度计算
         double jumpHeight = player.getY() - jumpInfo.startY;
         // 根据配置计算最大高度限制
-        double maxHeight = RocketBootsConfig.getMaxJumpHeight() * jumpInfo.chargePercent;
-        
+        double maxHeight = ModConfigManager.ROCKET_BOOTS_MAX_JUMP_HEIGHT.get() * jumpInfo.chargePercent;
+
         // 增加跳跃计数
         jumpInfo.ticks++;
-        
+
         if (jumpInfo.ticks % 20 == 0) { // 每秒记录一次
             LOGGER.info("[火箭靴] 跳跃状态: 当前高度={}, 已上升={}格, 最大高度={}格, Y轴速度={}, tick={}",
-                player.getY(), Math.round(jumpHeight), Math.round(maxHeight), player.getDeltaMovement().y, jumpInfo.ticks);
+                    player.getY(), Math.round(jumpHeight), Math.round(maxHeight), player.getDeltaMovement().y, jumpInfo.ticks);
         }
-        
+
         // 如果玩家已经开始下落但不在下降状态，设置为下降状态
         if (player.getDeltaMovement().y < 0 && !jumpInfo.isDescending && jumpInfo.ticks > 20) {
             jumpInfo.isDescending = true;
-            LOGGER.info("[火箭靴] 玩家 {} 开始下降，当前高度 {}格, 上升高度 {}格", 
-                player.getName().getString(), Math.round(player.getY()), Math.round(jumpHeight));
+            LOGGER.info("[火箭靴] 玩家 {} 开始下降，当前高度 {}格, 上升高度 {}格",
+                    player.getName().getString(), Math.round(player.getY()), Math.round(jumpHeight));
         }
-        
+
         // 最大高度检查
         if (jumpHeight >= maxHeight && !jumpInfo.isDescending) {
             // 如果到达最大高度，开始缓降
             jumpInfo.isDescending = true;
-            LOGGER.info("[火箭靴] 玩家 {} 达到最大高度 {}格, 开始缓降", 
-                player.getName().getString(), Math.round(jumpHeight));
+            LOGGER.info("[火箭靴] 玩家 {} 达到最大高度 {}格, 开始缓降",
+                    player.getName().getString(), Math.round(jumpHeight));
         }
-        
+
         // 如果正在下降，应用缓降效果，但缓降效果减弱
         if (jumpInfo.isDescending) {
             // 计算缓降效果，减小下落速度
@@ -572,7 +692,7 @@ public class RocketBootsItem extends ArmorItem {
                 // 减缓坠落速度，允许更快的下坠速度
                 double newYVelocity = Math.max(motion.y, -0.8);
                 player.setDeltaMovement(motion.x, newYVelocity, motion.z);
-                
+
                 // 生成缓降粒子效果
                 if (jumpInfo.ticks % 5 == 0) { // 每5tick生成一次粒子
                     ServerLevel level = player.serverLevel();
@@ -589,19 +709,19 @@ public class RocketBootsItem extends ArmorItem {
                 }
             }
         }
-        
+
         // 如果玩家落地或跳跃时间过长，移除跳跃状态
         if (player.onGround() || (System.currentTimeMillis() - jumpInfo.startTime > 30000)) {
             String reason = player.onGround() ? "玩家落地" : "超时";
             LOGGER.info("[火箭靴] 结束火箭跳跃 - 原因: {}, 总持续时间: {}ms, 最终高度: {}格, 上升高度: {}格",
-                reason, System.currentTimeMillis() - jumpInfo.startTime, 
-                Math.round(player.getY()), Math.round(player.getY() - jumpInfo.startY));
-            
+                    reason, System.currentTimeMillis() - jumpInfo.startTime,
+                    Math.round(player.getY()), Math.round(player.getY() - jumpInfo.startY));
+
             // 完全移除跳跃状态，防止重新激活
             jumpingPlayers.remove(player.getUUID());
             // 清除hurtMarked标记，防止后续受伤时触发额外跳跃
             player.hurtMarked = false;
-            
+
             // 如果是落地而不是超时，产生着陆特效
             if (player.onGround()) {
                 ServerLevel level = player.serverLevel();
@@ -621,7 +741,7 @@ public class RocketBootsItem extends ArmorItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (level.isClientSide() || !RocketBootsConfig.isRocketBootsEnabled()) {
+        if (level.isClientSide() || !ModConfigManager.ROCKET_BOOTS_ENABLED.get()) {
             return InteractionResultHolder.pass(stack);
         }
 
@@ -635,7 +755,7 @@ public class RocketBootsItem extends ArmorItem {
 
         if (hasGunpowderInOffhand || hasGunpowderInMainhand) {
             int currentFuel = getFuel(stack);
-            int maxFuel = RocketBootsConfig.getMaxFuelStorage();
+            int maxFuel = ModConfigManager.ROCKET_BOOTS_MAX_FUEL.get();
 
             // 检查是否已经充满
             if (currentFuel >= maxFuel) {
@@ -691,7 +811,7 @@ public class RocketBootsItem extends ArmorItem {
      */
     public void setFuel(ItemStack stack, int fuel) {
         CompoundTag tag = stack.getOrCreateTag();
-        tag.putInt(TAG_FUEL, Math.max(0, Math.min(fuel, RocketBootsConfig.getMaxFuelStorage())));
+        tag.putInt(TAG_FUEL, Math.max(0, Math.min(fuel, ModConfigManager.ROCKET_BOOTS_MAX_FUEL.get())));
     }
 
     /**
@@ -702,14 +822,14 @@ public class RocketBootsItem extends ArmorItem {
         super.appendHoverText(stack, level, tooltip, flag);
 
         int currentFuel = getFuel(stack);
-        int maxFuel = RocketBootsConfig.getMaxFuelStorage();
+        int maxFuel = ModConfigManager.ROCKET_BOOTS_MAX_FUEL.get();
 
         tooltip.add(Component.translatable("item.curiosities.rocket_boots.tooltip.1").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("item.curiosities.rocket_boots.tooltip.2").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("item.curiosities.rocket_boots.tooltip.3", currentFuel, maxFuel)
                 .withStyle(currentFuel > 0 ? ChatFormatting.GREEN : ChatFormatting.RED));
 
-        if (!RocketBootsConfig.isRocketBootsEnabled()) {
+        if (!ModConfigManager.ROCKET_BOOTS_ENABLED.get()) {
             tooltip.add(Component.translatable("item.curiosities.disabled").withStyle(ChatFormatting.RED));
         }
     }
@@ -723,12 +843,12 @@ public class RocketBootsItem extends ArmorItem {
                                             Player player, SlotAccess access) {
         if (action == ClickAction.SECONDARY && other.getItem() == Items.GUNPOWDER) {
             // 检查是否启用
-            if (!RocketBootsConfig.isRocketBootsEnabled()) {
+            if (!ModConfigManager.ROCKET_BOOTS_ENABLED.get()) {
                 return false;
             }
 
             int currentFuel = getFuel(stack);
-            int maxFuel = RocketBootsConfig.getMaxFuelStorage();
+            int maxFuel = ModConfigManager.ROCKET_BOOTS_MAX_FUEL.get();
 
             // 检查是否已经充满
             if (currentFuel >= maxFuel) {
@@ -780,127 +900,6 @@ public class RocketBootsItem extends ArmorItem {
             this.startY = startY;
             this.chargePercent = chargePercent;
             this.startTime = startTime;
-        }
-    }
-
-    /**
-     * 检查玩家是否装备了火箭靴
-     * @param player 要检查的玩家
-     * @return 是否装备火箭靴
-     */
-    private static boolean hasRocketBoots(Player player) {
-        ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-        return boots.getItem() instanceof RocketBootsItem;
-    }
-    
-    /**
-     * 查找玩家装备的火箭靴
-     * @param player 要检查的玩家
-     * @return 火箭靴物品栈，如果没有则返回空
-     */
-    private static ItemStack findRocketBoots(Player player) {
-        ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
-        if (boots.getItem() instanceof RocketBootsItem) {
-            return boots;
-        }
-        return ItemStack.EMPTY;
-    }
-    
-    /**
-     * 静态版本的获取燃料数量方法
-     */
-    private static int getFuelStatic(ItemStack stack) {
-        if (stack.isEmpty() || !(stack.getItem() instanceof RocketBootsItem)) {
-            return 0;
-        }
-        CompoundTag tag = stack.getOrCreateTag();
-        return tag.getInt(TAG_FUEL);
-    }
-
-    /**
-     * 每服务器tick检查玩家状态，处理火箭靴逻辑
-     */
-    @SubscribeEvent
-    public static void serverTick(TickEvent.PlayerTickEvent event) {
-        // 确保只在服务器端的POST阶段执行
-        if (event.phase != TickEvent.Phase.END || event.player.level().isClientSide) {
-            return;
-        }
-
-        // 获取玩家
-        Player player = event.player;
-        UUID playerId = player.getUUID();
-
-        // 检查玩家是否有火箭靴
-        if (!hasRocketBoots(player)) {
-            // 从跟踪信息中移除
-            if (chargingPlayers.containsKey(playerId)) {
-                chargingPlayers.remove(playerId);
-            }
-            if (jumpingPlayers.containsKey(playerId)) {
-                jumpingPlayers.remove(playerId);
-            }
-            return;
-        }
-
-        // 获取火箭靴物品
-        ItemStack boots = findRocketBoots(player);
-        int fuel = getFuelStatic(boots);
-
-        // 处理跳跃中状态
-        if (jumpingPlayers.containsKey(playerId)) {
-            RocketJumpInfo jumpInfo = jumpingPlayers.get(playerId);
-            
-            // 检查玩家是否已着地
-            if (player.onGround() && System.currentTimeMillis() - jumpInfo.startTime > 500) {
-                // 着地至少0.5秒后才移除状态，避免误判
-                jumpingPlayers.remove(playerId);
-            } else {
-                // 防摔落伤害
-                player.fallDistance = 0;
-            }
-        }
-    }
-
-    /**
-     * 处理蓄力状态更新与取消
-     */
-    private static void handleCharging(Player player, ItemStack boots) {
-        UUID playerId = player.getUUID();
-        boolean wasCharging = chargingPlayers.containsKey(playerId);
-        
-        boolean isCharging = player.isShiftKeyDown() && !player.onGround() && getFuelStatic(boots) >= RocketBootsConfig.getFuelConsumption();
-        
-        // 开始蓄力
-        if (isCharging && !wasCharging) {
-            chargingPlayers.put(playerId, System.currentTimeMillis());
-            if (!player.level().isClientSide) {
-                ((ServerPlayer) player).displayClientMessage(
-                        Component.translatable("message.curiosities.rocket_boots.charging")
-                                .withStyle(ChatFormatting.YELLOW), true);
-            }
-        }
-        // 结束蓄力
-        else if (!isCharging && wasCharging) {
-            chargingPlayers.remove(playerId);
-            
-            // 检查是否满足触发条件（至少蓄力0.2秒，在服务器端）
-            if (!player.level().isClientSide && !player.onGround()) {
-                long chargingStart = chargingPlayers.getOrDefault(playerId, 0L);
-                long chargingTime = System.currentTimeMillis() - chargingStart;
-                
-                // 蓄力时间达到要求
-                if (chargingTime >= 200) {
-                    // 在服务器端触发火箭跳跃
-                    if (player instanceof ServerPlayer serverPlayer) {
-                        LOGGER.debug("[火箭靴] 触发服务器端火箭跳跃");
-                        // 直接触发火箭跳跃函数
-                        if (serverPlayer.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof RocketBootsItem rocketBoots) {
-                            rocketBoots.triggerRocketJump(serverPlayer, serverPlayer.getItemBySlot(EquipmentSlot.FEET), chargingTime);
-                        }
-                    }
-                }
-            }
         }
     }
 } 

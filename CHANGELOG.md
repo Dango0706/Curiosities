@@ -1,5 +1,139 @@
 # 变更日志 (ChangeLog)
 
+## 版本 2025.5 (2025年5月更新)
+
+### 游戏内容更新
+
+#### 状态效果
+- **颠颠倒倒效果 (Dizzy)**
+  - 使玩家控制方向相反，WASD按键效果反转
+  - 所有效果等级都同时反转前后和左右方向
+  - 配置文件可启用或禁用该效果
+- **天旋地转效果 (Spinning)**
+  - 使玩家视角随机旋转，而玩家仍然可以操控视角
+  - 效果等级越高，旋转幅度越大
+  - 使用余弦和正弦函数计算旋转角度，保持平滑旋转
+  - 配置文件可启用或禁用该效果
+- 待补充
+
+#### 附魔
+- 待补充
+
+#### 物品
+- **幸运剑 (Lucky Sword)**
+  - 新增特殊武器，每次攻击造成随机伤害(-15~30点可配置)
+  - 负数伤害会治疗目标而非造成伤害
+  - 伤害会受到攻击冷却恢复程度的影响，需要完全冷却才能发挥最大效果
+  - 耐久度为555点
+  - 禁止使用增加攻击力的附魔(锋利、亡灵杀手等)，但可以有抢夺、耐久等功能性附魔
+  - 名字有随机颜色变化效果
+  - 可通过配置文件调整伤害范围和启用/禁用功能
+  - 合成配方：绿宝石+兔子脚+金粒+木棍
+
+- **蜜蜂手雷 (Bee Grenade)**
+  - 新增特殊投掷物，右键投掷后与方块接触会爆炸
+  - 爆炸产生小范围减速效果，持续时间可配置（默认15秒）
+  - 释放数量可配置的愤怒蜜蜂（默认5只）攻击周围生物，不会攻击投掷者
+  - 蜜蜂存活时间可配置（默认30秒后自动消失）
+  - 增强的配置选项：
+    - 蜜蜂数量可调整
+    - 蜜蜂存活时间可调整（以秒为单位）
+    - 蜂蜜减速区域半径可调整（默认2.5方块）
+    - 蜂蜜减速区域持续时间可调整（以秒为单位）
+    - 设置是否对玩家友好
+    - 启用/禁用蜂蜜减速区域
+    - 控制是否破坏方块
+  - 合成配方：蜂蜜块+火药+蜂蜜块（上排），蜂巢+铁锭+蜂巢（中排），空+线+空（下排）
+
+#### 物品与方块
+- **假TNT (Fake TNT)**
+  - 全新的方块，外观与普通TNT相似
+  - 左键点击会点燃并生成真正的TNT实体
+  - 右键点击会直接破坏方块而不爆炸
+  - 受到爆炸时不会连锁爆炸，只会掉落物品
+  - 合成配方：一圈普通TNT围绕一个拌线勾，可制作8个假TNT
+  - 配置文件中可以启用或禁用此功能
+
+#### 界面优化
+- **全新配置界面**
+  - 实现了两列式布局：左侧为配置分类目录，右侧为具体配置项
+  - 优化了配置项标题显示，使标题文字居中显示在上下分割线之间
+  - 各配置组之间添加了合理间距，使界面更加清晰
+  - 所有配置项按功能分为四类：物品设置、状态效果设置、附魔设置和方块设置
+  - 为每个配置选项添加了"恢复默认值"按钮，支持双重确认以防误操作
+  - 切换配置类别时自动滚动到顶部，提升用户体验
+  - 优化了配置界面的整体视觉效果，使其更加美观易用
+
+---
+
+# Changelog
+
+## Version 2025.5 (May 2025 Update)
+
+### Game Content Updates
+
+#### Status Effects
+- **Dizzy**
+  - Makes player controls reversed, inverting WASD key effects
+  - All effect levels simultaneously invert both forward/backward and left/right directions
+  - Can be enabled or disabled in config file
+- **Spinning**
+  - Makes player camera randomly rotate while still allowing player control
+  - Higher effect levels increase rotation amplitude
+  - Uses cosine and sine functions for smooth rotation calculations
+  - Can be enabled or disabled in config file
+- To be added
+
+#### Enchantments
+- To be added
+
+#### Items
+- **Lucky Sword**
+  - New special weapon with random damage output (-15 to 30 points, configurable)
+  - Negative damage values heal the target instead of causing damage
+  - Damage is affected by attack cooldown recovery - full cooldown needed for maximum effect
+  - 555 durability points
+  - Cannot receive attack-enhancing enchantments (Sharpness, Smite, etc.) but can have utility enchantments like Looting and Unbreaking
+  - Name features random color changes
+  - Damage range and enable/disable options available in config file
+  - Crafting recipe: Emerald + Rabbit's Foot + Gold Nugget + Stick
+  
+- **Bee Grenade**
+  - New throwable item that explodes upon impact with blocks
+  - Explosion causes a configurable area slowness effect (default: 2.5 block radius, 15 seconds duration)
+  - Releases configurable number of angry bees (default: 5) that attack nearby entities but not the thrower
+  - Bees automatically disappear after configurable time (default: 30 seconds)
+  - Enhanced configuration options:
+    - Customizable bee count
+    - Adjustable bee lifetime (in seconds)
+    - Configurable honey slowness area radius (default: 2.5 blocks)
+    - Adjustable honey slowness area duration (in seconds)
+    - Player friendliness settings
+    - Honey slowness area toggle
+    - Block damage control
+  - Crafting recipe: Honey Blocks + Gunpowder + Honey Blocks (top row), Beehives + Iron Ingot + Beehives (middle row), Empty + String + Empty (bottom row)
+
+#### Items and Blocks
+- **Fake TNT**
+  - New block that looks similar to regular TNT
+  - Left-clicking ignites and spawns a real TNT entity
+  - Right-clicking breaks the block without explosion
+  - Does not chain explode when caught in explosions, drops as an item instead
+  - Crafting recipe: Regular TNT surrounding a tripwire hook, yields 8 Fake TNT blocks
+  - Can be enabled or disabled in the config file
+
+#### Interface Improvements
+- **Redesigned Configuration Screen**
+  - Implemented a two-column layout: categories list on the left, specific configuration items on the right
+  - Optimized title display with centered text between divider lines
+  - Added appropriate spacing between configuration groups for better clarity
+  - Organized all configuration options into four categories: Items, Status Effects, Enchantments, and Blocks
+  - Added "Restore Default Value" buttons for each configuration option with double confirmation to prevent accidental resets
+  - Auto-scrolls to top when switching configuration categories for improved user experience
+  - Enhanced overall visual aesthetics of the configuration interface for better usability
+
+---
+
 ## 版本 2025.4 (2025年4月更新)
 
 ### 游戏内容更新
@@ -53,6 +187,7 @@
   - 使用燃料系统，可通过煤炭、木炭等补充
 
 - **镰刀 (Scythes)**
+  - 修正了所有镰刀的合成配方，将最下方的木棍从最左侧位置移动到中间位置
   - 提供多种材质：木质、石质、铁质、金质、钻石和下界合金
   - 能够批量收获成熟的农作物并自动补种
   - 具有丰收之舞功能，有概率在收获时触发大范围收获效果

@@ -2,7 +2,7 @@ package me.tuanzi.curiosities.crafting;
 
 import com.google.gson.JsonObject;
 import me.tuanzi.curiosities.Curiosities;
-import me.tuanzi.curiosities.items.rocket_boots.RocketBootsConfig;
+import me.tuanzi.curiosities.config.ModConfigManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
@@ -14,19 +14,22 @@ import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 public class RocketBootsEnabledCondition implements ICondition {
     private static final ResourceLocation NAME = new ResourceLocation(Curiosities.MODID, "rocket_boots_enabled");
 
-    public RocketBootsEnabledCondition() {}
+    public RocketBootsEnabledCondition() {
+    }
 
     /**
      * 检查条件是否满足
+     *
      * @return 如果火箭靴功能启用，则返回true
      */
     @Override
     public boolean test(IContext context) {
-        return RocketBootsConfig.isRocketBootsEnabled();
+        return ModConfigManager.ROCKET_BOOTS_ENABLED.get();
     }
 
     /**
      * 获取条件的名称
+     *
      * @return 条件名称资源位置
      */
     @Override
@@ -43,6 +46,7 @@ public class RocketBootsEnabledCondition implements ICondition {
 
         /**
          * 获取条件的名称
+         *
          * @return 条件名称资源位置
          */
         @Override
@@ -52,6 +56,7 @@ public class RocketBootsEnabledCondition implements ICondition {
 
         /**
          * 从JSON反序列化条件
+         *
          * @param json JSON对象
          * @return 火箭靴启用条件
          */
@@ -62,8 +67,9 @@ public class RocketBootsEnabledCondition implements ICondition {
 
         /**
          * 将条件序列化为JSON
+         *
          * @param condition 火箭靴启用条件
-         * @param json JSON对象
+         * @param json      JSON对象
          */
         @Override
         public void write(JsonObject json, RocketBootsEnabledCondition condition) {

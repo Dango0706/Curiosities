@@ -2,6 +2,7 @@ package me.tuanzi.curiosities.enchantments.moral_balance;
 
 import com.mojang.logging.LogUtils;
 import me.tuanzi.curiosities.Curiosities;
+import me.tuanzi.curiosities.config.ModConfigManager;
 import me.tuanzi.curiosities.enchantments.ModEnchantments;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -25,7 +26,7 @@ import java.util.List;
 public class MoralBalanceEnchantment extends Enchantment {
     // 日志记录器
     private static final Logger LOGGER = LogUtils.getLogger();
-    
+
     /**
      * 构造函数
      * 设置附魔稀有度、适用类别和装备槽位
@@ -35,7 +36,25 @@ public class MoralBalanceEnchantment extends Enchantment {
     }
 
     /**
+     * 检查道德天平在当前物品上是否可用
+     *
+     * @param stack 物品堆
+     * @return 是否可用
+     */
+    public static boolean isMoralBalanceUsable(ItemStack stack) {
+        // 检查配置是否启用
+        if (!ModConfigManager.MORAL_BALANCE_ENABLED.get()) {
+            return false;
+        }
+
+        // 检查物品是否有道德天平附魔
+        int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.MORAL_BALANCE.get(), stack);
+        return level > 0;
+    }
+
+    /**
      * 获取附魔最大等级
+     *
      * @return 最大等级(1)
      */
     @Override
@@ -45,6 +64,7 @@ public class MoralBalanceEnchantment extends Enchantment {
 
     /**
      * 判断是否可以在附魔台上应用此附魔
+     *
      * @param stack 物品堆
      * @return 始终返回false，因为该附魔只能通过合成获得
      */
@@ -53,36 +73,40 @@ public class MoralBalanceEnchantment extends Enchantment {
         // 无法在附魔台获得此附魔
         return false;
     }
-    
+
     /**
      * 是否为宝藏附魔
+     *
      * @return 始终为true，使其不出现在附魔台
      */
     @Override
     public boolean isTreasureOnly() {
         return true;
     }
-    
+
     /**
      * 是否可被发现（如钓鱼、村民交易等）
+     *
      * @return 始终为false，使其不出现在战利品表中
      */
     @Override
     public boolean isDiscoverable() {
         return false;
     }
-    
+
     /**
      * 是否可被交易
+     *
      * @return 始终为false，村民不会提供这个附魔
      */
     @Override
     public boolean isTradeable() {
         return false;
     }
-    
+
     /**
      * 是否是诅咒附魔
+     *
      * @return 不是诅咒附魔
      */
     @Override
@@ -92,6 +116,7 @@ public class MoralBalanceEnchantment extends Enchantment {
 
     /**
      * 检查与其他附魔的兼容性
+     *
      * @param other 其他附魔
      * @return 是否兼容
      */
@@ -100,24 +125,7 @@ public class MoralBalanceEnchantment extends Enchantment {
         // 允许与大多数附魔兼容
         return super.checkCompatibility(other);
     }
-    
-    /**
-     * 检查道德天平在当前物品上是否可用
-     * 
-     * @param stack 物品堆
-     * @return 是否可用
-     */
-    public static boolean isMoralBalanceUsable(ItemStack stack) {
-        // 检查配置是否启用
-        if (!MoralBalanceConfig.isMoralBalanceEnabled()) {
-            return false;
-        }
-        
-        // 检查物品是否有道德天平附魔
-        int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.MORAL_BALANCE.get(), stack);
-        return level > 0;
-    }
-    
+
     /**
      * 工具提示处理器
      * 为禁用的道德天平附魔添加红色警告文字
@@ -126,24 +134,24 @@ public class MoralBalanceEnchantment extends Enchantment {
     public static class TooltipHandler {
         /**
          * 物品提示事件处理
-         * 
+         *
          * @param event 物品提示事件
          */
         @SubscribeEvent
         public static void onItemTooltip(ItemTooltipEvent event) {
             ItemStack stack = event.getItemStack();
-            
+
             // 检查物品是否有道德天平附魔且当前是否禁用
             int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.MORAL_BALANCE.get(), stack);
-            if (level > 0 && !MoralBalanceConfig.isMoralBalanceEnabled()) {
+            if (level > 0 && !ModConfigManager.MORAL_BALANCE_ENABLED.get()) {
                 // 添加红色文字提示
                 List<Component> tooltip = event.getToolTip();
-                
+
                 // 寻找道德天平附魔文本的位置
                 for (int i = 1; i < tooltip.size(); i++) {
                     Component line = tooltip.get(i);
                     String plainText = line.getString();
-                    
+
                     // 如果找到道德天平附魔的描述行
                     if (plainText.contains(Component.translatable("enchantment.curiosities.moral_balance").getString())) {
                         // 在该行后添加红色警告文字

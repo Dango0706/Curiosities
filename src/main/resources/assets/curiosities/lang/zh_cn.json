@@ -122,7 +122,7 @@
   "item.curiosities.scythe.harvest_dance_range": "丰收之舞触发范围",
   "item.curiosities.scythe.tooltip.harvest_crops": "右键作物可范围收获",
   "item.curiosities.scythe.tooltip.range": "收获范围: %d",
-  "item.curiosities.scythe.tooltip.harvest_dance": "丰收之舞触发概率: %s%%",
+  "item.curiosities.scythe.tooltip.harvest_dance": "丰收之舞触发概率: %s%",
   "item.curiosities.scythe.tooltip.dance_range": "丰收之舞范围: %d",
   "item.curiosities.scythe.tooltip.disabled": "镰刀功能已禁用",
   "message.curiosities.harvest_dance": "丰收之舞已激活！",

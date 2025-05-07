@@ -126,6 +126,22 @@ public class ModConfigManager {
     private static void buildCommonConfig() {
         COMMON_BUILDER.comment("通用配置").push("common");
 
+        // 连锁挖矿配置
+        COMMON_BUILDER.comment("连锁挖矿配置").push("chain_mining");
+        CHAIN_MINING_ENABLED = COMMON_BUILDER
+                .comment("是否启用连锁挖矿")
+                .define("enabled", true);
+        CHAIN_MINING_MAX_BLOCKS = COMMON_BUILDER
+                .comment("最大连锁方块数量")
+                .defineInRange("max_blocks", 64, 0, 256);
+        CHAIN_MINING_BLOCKS_PER_LEVEL = COMMON_BUILDER
+                .comment("每级附魔增加的方块数量")
+                .defineInRange("blocks_per_level", 16, 0, 32);
+        CHAIN_MINING_HARVEST_RANGE = COMMON_BUILDER
+                .comment("挖掘检测范围")
+                .defineInRange("harvest_range", 16, 1, 32);
+        COMMON_BUILDER.pop();
+
         // 超级时运配置
         COMMON_BUILDER.comment("超级时运配置").push("super_fortune");
         SUPER_FORTUNE_ENABLED = COMMON_BUILDER
@@ -294,7 +310,7 @@ public class ModConfigManager {
     private static void buildClientConfig() {
         CLIENT_BUILDER.comment("客户端配置").push("client");
 
-        // 建立客户端配置...
+        // 客户端特有配置...
 
         CLIENT_BUILDER.pop();
         CLIENT_CONFIG = CLIENT_BUILDER.build();
@@ -306,21 +322,7 @@ public class ModConfigManager {
     private static void buildServerConfig() {
         SERVER_BUILDER.comment("服务器配置").push("server");
 
-        // 连锁挖矿配置
-        SERVER_BUILDER.comment("连锁挖矿配置").push("chain_mining");
-        CHAIN_MINING_ENABLED = SERVER_BUILDER
-                .comment("是否启用连锁挖矿")
-                .define("enabled", true);
-        CHAIN_MINING_MAX_BLOCKS = SERVER_BUILDER
-                .comment("最大连锁方块数量")
-                .defineInRange("max_blocks", 64, 0, 256);
-        CHAIN_MINING_BLOCKS_PER_LEVEL = SERVER_BUILDER
-                .comment("每级附魔增加的方块数量")
-                .defineInRange("blocks_per_level", 16, 0, 32);
-        CHAIN_MINING_HARVEST_RANGE = SERVER_BUILDER
-                .comment("挖掘检测范围")
-                .defineInRange("harvest_range", 16, 1, 32);
-        SERVER_BUILDER.pop();
+        // ... 其他服务器配置 ...
 
         SERVER_BUILDER.pop();
         SERVER_CONFIG = SERVER_BUILDER.build();

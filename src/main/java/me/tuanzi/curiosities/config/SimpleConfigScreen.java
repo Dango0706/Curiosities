@@ -1,721 +1,848 @@
 package me.tuanzi.curiosities.config;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
-import me.tuanzi.curiosities.enchantments.chain_mining.ChainMiningConfig;
-import me.tuanzi.curiosities.enchantments.moral_balance.MoralBalanceConfig;
-import me.tuanzi.curiosities.enchantments.super_fortune.SuperFortuneConfig;
-import me.tuanzi.curiosities.items.WolfFangPotatoConfig;
-import me.tuanzi.curiosities.items.rocket_boots.RocketBootsConfig;
-import me.tuanzi.curiosities.items.scythe.ScytheConfig;
+import me.tuanzi.curiosities.Curiosities;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import org.slf4j.Logger;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 /**
- * 连锁挖掘模组的自定义配置界面
- * 提供直观的UI界面用于修改模组配置
+ * 配置界面
+ * 支持分类显示和编辑各种类型的配置项
  */
 public class SimpleConfigScreen extends Screen {
-    // 日志记录器
-    private static final Logger LOGGER = LogUtils.getLogger();
-    
-    // 父界面，用于返回
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleConfigScreen.class);
+
+    // 默认标题
+    private static final Component TITLE = Component.translatable("config.curiosities.title");
+
+    // 按钮宽度
+    private static final int BUTTON_WIDTH = 150;
+    private static final int BUTTON_HEIGHT = 20;
+
+    // 分类按钮宽度
+    private static final int CATEGORY_BUTTON_WIDTH = 120;
+
+    // 分类和配置项容器
+    private final List<ConfigCategory> categories = new ArrayList<>();
+    // 父级屏幕
     private final Screen parentScreen;
+    private ConfigCategory currentCategory;
     
-    // 连锁挖掘配置参数
-    private boolean chainMiningEnabled;
-    private int maxChainBlocks;
-    private int blocksPerLevel;
-    
-    // 超级时运配置参数
-    private boolean superFortuneEnabled;
-    
-    // 狼牙土豆配置参数
-    private boolean wolfFangPotatoEnabled;
-    
-    // 镰刀配置参数
-    private boolean scytheEnabled;
-    private int harvestRange;
-    private double attackSpeed;
-    private double damageBonus;
-    private double sweepRangeBonus;
-    private double harvestDanceChance;
-    private int harvestDanceRange;
-    
-    // 火箭靴配置参数
-    private boolean rocketBootsEnabled;
-    private float maxJumpHeight;
-    private int fuelConsumption;
-    private int maxFuelStorage;
-    
-    // 道德天平配置参数
-    private boolean moralBalanceEnabled;
-    
-    // UI组件
-    private EditBox maxBlocksField;
-    private EditBox blocksPerLevelField;
-    private EditBox harvestRangeField;
-    private EditBox attackSpeedField;
-    private EditBox damageBonusField;
-    private EditBox sweepRangeBonusField;
-    private EditBox harvestDanceChanceField;
-    private EditBox harvestDanceRangeField;
-    private EditBox maxJumpHeightField;
-    private EditBox fuelConsumptionField;
-    private EditBox maxFuelStorageField;
-    private Button chainMiningToggleButton;
-    private Button superFortuneToggleButton;
-    private Button wolfFangPotatoToggleButton;
-    private Button scytheToggleButton;
-    private Button rocketBootsToggleButton;
-    private Button moralBalanceToggleButton;
-    
-    // 滚动面板
-    private ConfigList configList;
-    
-    // UI布局常量 - 减小了间距以使界面更紧凑
-    private static final int SECTION_SPACING = 8;   // 从15减小到8
-    private static final int ITEM_SPACING = 4;      // 从5减小到4
-    private static final int TITLE_SPACING = 6;     // 从10减小到6
-    private static final int LABEL_OFFSET = 10;     // 从12减小到10
-    
+    // 滚动列表
+    private CategoryList categoryList;
+    private OptionList optionList;
+
     /**
      * 构造函数
-     * 
-     * @param parentScreen 父界面，用于返回
      */
     public SimpleConfigScreen(Screen parentScreen) {
-        super(Component.translatable("config.curiosities.title"));
+        super(TITLE);
         this.parentScreen = parentScreen;
-        // 从配置获取当前值
-        this.chainMiningEnabled = ChainMiningConfig.isChainMiningEnabled();
-        this.maxChainBlocks = ChainMiningConfig.getMaxChainBlocks();
-        this.blocksPerLevel = ChainMiningConfig.getBlocksPerLevel();
-        this.superFortuneEnabled = SuperFortuneConfig.isSuperFortuneEnabled();
-        this.wolfFangPotatoEnabled = WolfFangPotatoConfig.isWolfFangPotatoEnabled();
-        this.scytheEnabled = ScytheConfig.isScytheEnabled();
-        this.harvestRange = ScytheConfig.getHarvestRange();
-        this.attackSpeed = ScytheConfig.getAttackSpeed();
-        this.damageBonus = ScytheConfig.getDamageBonus();
-        this.sweepRangeBonus = ScytheConfig.getSweepRangeBonus();
-        this.harvestDanceChance = ScytheConfig.getHarvestDanceChance();
-        this.harvestDanceRange = ScytheConfig.getHarvestDanceRange();
-        this.rocketBootsEnabled = RocketBootsConfig.isRocketBootsEnabled();
-        this.maxJumpHeight = RocketBootsConfig.getMaxJumpHeight();
-        this.fuelConsumption = RocketBootsConfig.getFuelConsumption();
-        this.maxFuelStorage = RocketBootsConfig.getMaxFuelStorage();
-        this.moralBalanceEnabled = MoralBalanceConfig.isMoralBalanceEnabled();
+
+        // 初始化配置分类
+        initCategories();
     }
-    
+
     /**
-     * 初始化UI组件
+     * 创建配置屏幕的工厂方法
      */
+    public static Screen create(Minecraft minecraft, Screen parentScreen) {
+        // 确保配置已经加载
+        if (!ModConfigManager.isConfigLoaded()) {
+            LOGGER.error("配置未加载，无法创建配置界面");
+            return parentScreen;
+        }
+        
+        try {
+            // 尝试访问一些配置值，确保配置已完全加载
+            ModConfigManager.SCYTHE_ATTACK_SPEED.get();
+            ModConfigManager.SCYTHE_DAMAGE_BONUS.get();
+            return new SimpleConfigScreen(parentScreen);
+        } catch (IllegalStateException e) {
+            LOGGER.error("配置访问失败，无法创建配置界面", e);
+            return parentScreen;
+        }
+    }
+
+    /**
+     * 初始化配置分类
+     * 根据ModConfigManager中的配置项创建分类
+     */
+    private void initCategories() {
+        try {
+            // 主分类物品配置
+            ConfigCategory itemsCategory = new ConfigCategory(
+                    Component.translatable("config.curiosities.items_section"),
+                    new ResourceLocation(Curiosities.MODID, "textures/item/wolf_fang_potato.png")
+            );
+
+            // 狼牙土豆配置
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.wolf_fang_potato_enabled"),
+                    ModConfigManager.WOLF_FANG_POTATO_ENABLED
+            );
+
+            // 镰刀工具配置
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.scythe_enabled"),
+                    ModConfigManager.SCYTHE_ENABLED
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("config.curiosities.attack_speed_label"),
+                    ModConfigManager.SCYTHE_ATTACK_SPEED
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("item.curiosities.scythe.damage_bonus"),
+                    ModConfigManager.SCYTHE_DAMAGE_BONUS
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("item.curiosities.scythe.harvest_range"),
+                    ModConfigManager.SCYTHE_HARVEST_RANGE
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("item.curiosities.scythe.sweep_range_bonus"),
+                    ModConfigManager.SCYTHE_SWEEP_RANGE_BONUS
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("item.curiosities.scythe.harvest_dance_chance"),
+                    ModConfigManager.SCYTHE_HARVEST_DANCE_CHANCE
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("item.curiosities.scythe.harvest_dance_range"),
+                    ModConfigManager.SCYTHE_HARVEST_DANCE_RANGE
+            );
+
+            // 火箭靴配置
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.rocket_boots_enabled"),
+                    ModConfigManager.ROCKET_BOOTS_ENABLED
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("item.curiosities.rocket_boots.boost_power"),
+                    ModConfigManager.ROCKET_BOOTS_BOOST_POWER
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("config.curiosities.max_jump_height_label"),
+                    ModConfigManager.ROCKET_BOOTS_MAX_JUMP_HEIGHT
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.fuel_consumption_label"),
+                    ModConfigManager.ROCKET_BOOTS_FUEL_CONSUMPTION
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.max_fuel_storage_label"),
+                    ModConfigManager.ROCKET_BOOTS_MAX_FUEL
+            );
+
+            // 幸运剑配置
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.lucky_sword_enabled"),
+                    ModConfigManager.LUCKY_SWORD_ENABLED
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("config.curiosities.min_damage_label"),
+                    ModConfigManager.LUCKY_SWORD_MIN_DAMAGE
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("config.curiosities.max_damage_label"),
+                    ModConfigManager.LUCKY_SWORD_MAX_DAMAGE
+            );
+
+            // 蝙蝠翅膀配置
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.bat_wing_enabled"),
+                    ModConfigManager.BAT_WING_ENABLED
+            );
+
+            // 尖叫派配置
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.screaming_pie_enabled"),
+                    ModConfigManager.SCREAMING_PIE_ENABLED
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.slow_falling_duration_label"),
+                    ModConfigManager.SCREAMING_PIE_SLOW_FALLING_DURATION
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.screaming_duration_label"),
+                    ModConfigManager.SCREAMING_PIE_SCREAMING_DURATION
+            );
+
+            // 蜜蜂手雷配置
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.bee_grenade_enabled"),
+                    ModConfigManager.BEE_GRENADE_ENABLED
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.bee_count_label"),
+                    ModConfigManager.BEE_GRENADE_BEE_COUNT
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.bee_lifetime_label"),
+                    ModConfigManager.BEE_GRENADE_BEE_LIFETIME
+            );
+
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.player_friendly_label"),
+                    ModConfigManager.BEE_GRENADE_PLAYER_FRIENDLY
+            );
+
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.honey_slowness_area_label"),
+                    ModConfigManager.BEE_GRENADE_HONEY_SLOWNESS_AREA_ENABLED
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("config.curiosities.honey_area_radius_label"),
+                    ModConfigManager.BEE_GRENADE_HONEY_AREA_RADIUS
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.honey_area_duration_label"),
+                    ModConfigManager.BEE_GRENADE_HONEY_AREA_DURATION
+            );
+
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.destroy_blocks_label"),
+                    ModConfigManager.BEE_GRENADE_DESTROY_BLOCKS
+            );
+
+            categories.add(itemsCategory);
+
+            // 状态效果配置
+            ConfigCategory effectsCategory = new ConfigCategory(
+                    Component.translatable("config.curiosities.effects_section"),
+                    new ResourceLocation("minecraft", "textures/item/splash_potion.png")
+            );
+
+            // 尖叫效果配置
+            effectsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.screaming_effect_enabled"),
+                    ModConfigManager.SCREAMING_EFFECT_ENABLED
+            );
+
+            effectsCategory.addIntOption(
+                    Component.translatable("config.curiosities.screaming_range_label"),
+                    ModConfigManager.SCREAMING_EFFECT_RANGE
+            );
+
+            // 颠颠倒倒效果配置
+            effectsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.dizzy_effect_enabled"),
+                    ModConfigManager.DIZZY_EFFECT_ENABLED
+            );
+
+            // 天旋地转效果配置
+            effectsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.spinning_effect_enabled"),
+                    ModConfigManager.SPINNING_EFFECT_ENABLED
+            );
+
+            categories.add(effectsCategory);
+
+            // 附魔配置主分类
+            ConfigCategory enchantsCategory = new ConfigCategory(
+                    Component.translatable("config.curiosities.enchantments_section"),
+                    new ResourceLocation("minecraft", "textures/item/enchanted_book.png")
+            );
+
+            // 连锁挖矿配置
+            enchantsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.chain_mining_enabled"),
+                    ModConfigManager.CHAIN_MINING_ENABLED
+            );
+
+            enchantsCategory.addIntOption(
+                    Component.translatable("config.curiosities.max_blocks_label"),
+                    ModConfigManager.CHAIN_MINING_MAX_BLOCKS
+            );
+
+            enchantsCategory.addIntOption(
+                    Component.translatable("config.curiosities.blocks_per_level_label"),
+                    ModConfigManager.CHAIN_MINING_BLOCKS_PER_LEVEL
+            );
+
+            enchantsCategory.addIntOption(
+                    Component.translatable("config.curiosities.harvest_range_label"),
+                    ModConfigManager.CHAIN_MINING_HARVEST_RANGE
+            );
+
+            // 超级时运配置
+            enchantsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.super_fortune_enabled"),
+                    ModConfigManager.SUPER_FORTUNE_ENABLED
+            );
+
+            // 道德天平配置
+            enchantsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.moral_balance_enabled"),
+                    ModConfigManager.MORAL_BALANCE_ENABLED
+            );
+
+            categories.add(enchantsCategory);
+
+            // 方块配置主分类
+            ConfigCategory blocksCategory = new ConfigCategory(
+                    Component.translatable("config.curiosities.blocks_section"),
+                    new ResourceLocation("minecraft", "textures/item/tnt_minecart.png")
+            );
+
+            // 假TNT配置
+            blocksCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.fake_tnt_enabled"),
+                    ModConfigManager.FAKE_TNT_ENABLED
+            );
+
+            categories.add(blocksCategory);
+
+            // 设置初始分类
+            if (!categories.isEmpty()) {
+                currentCategory = categories.get(0);
+            }
+        } catch (IllegalStateException e) {
+            LOGGER.error("配置初始化失败", e);
+        }
+    }
+
     @Override
     protected void init() {
-        int buttonWidth = Math.min(200, this.width - 40);
-        
-        // 创建滚动列表，增加滚动区域高度
-        this.configList = new ConfigList(this.minecraft, this.width, this.height, 32, this.height - 36, 20); // 项目高度从25减小到20
-        this.addWidget(this.configList);
-        
-        // 添加连锁挖掘配置区域
-        this.configList.addConfigEntry(new SectionTitleEntry(Component.translatable("config.curiosities.chain_mining_section")));
-        
-        // 添加连锁挖掘开关
-        chainMiningToggleButton = Button.builder(
-            Component.translatable("config.curiosities.chain_mining_enabled")
-                .append(chainMiningEnabled ? 
-                    Component.translatable("config.curiosities.enabled") : 
-                    Component.translatable("config.curiosities.disabled")),
-            button -> {
-                chainMiningEnabled = !chainMiningEnabled;
-                button.setMessage(Component.translatable("config.curiosities.chain_mining_enabled")
-                    .append(chainMiningEnabled ? 
-                        Component.translatable("config.curiosities.enabled") : 
-                        Component.translatable("config.curiosities.disabled")));
-            }).build();
-        this.configList.addConfigEntry(new ButtonEntry(chainMiningToggleButton, buttonWidth));
-        
-        // 添加最大方块数输入框
-        this.configList.addConfigEntry(new LabelEntry(Component.translatable("config.curiosities.max_blocks_label")));
-        maxBlocksField = new EditBox(this.font, 0, 0, buttonWidth, 20, Component.empty());
-        maxBlocksField.setValue(String.valueOf(maxChainBlocks));
-        maxBlocksField.setFilter(s -> s.isEmpty() || s.matches("\\d+"));
-        this.configList.addConfigEntry(new EditBoxEntry(maxBlocksField));
-        
-        // 添加每级方块数输入框
-        this.configList.addConfigEntry(new LabelEntry(Component.translatable("config.curiosities.blocks_per_level_label")));
-        blocksPerLevelField = new EditBox(this.font, 0, 0, buttonWidth, 20, Component.empty());
-        blocksPerLevelField.setValue(String.valueOf(blocksPerLevel));
-        blocksPerLevelField.setFilter(s -> s.isEmpty() || s.matches("\\d+"));
-        this.configList.addConfigEntry(new EditBoxEntry(blocksPerLevelField));
-        
-        // 添加间隔
-        this.configList.addConfigEntry(new SpacerEntry(SECTION_SPACING));
-        
-        // 添加超级时运配置区域
-        this.configList.addConfigEntry(new SectionTitleEntry(Component.translatable("config.curiosities.super_fortune_section")));
-        
-        // 添加超级时运开关
-        superFortuneToggleButton = Button.builder(
-            Component.translatable("config.curiosities.super_fortune_enabled")
-                .append(superFortuneEnabled ? 
-                    Component.translatable("config.curiosities.enabled") : 
-                    Component.translatable("config.curiosities.disabled")),
-            button -> {
-                superFortuneEnabled = !superFortuneEnabled;
-                button.setMessage(Component.translatable("config.curiosities.super_fortune_enabled")
-                    .append(superFortuneEnabled ? 
-                        Component.translatable("config.curiosities.enabled") : 
-                        Component.translatable("config.curiosities.disabled")));
-            }).build();
-        this.configList.addConfigEntry(new ButtonEntry(superFortuneToggleButton, buttonWidth));
-        
-        // 添加间隔
-        this.configList.addConfigEntry(new SpacerEntry(SECTION_SPACING));
-        
-        // 添加狼牙土豆配置区域
-        this.configList.addConfigEntry(new SectionTitleEntry(Component.translatable("config.curiosities.wolf_fang_potato_section")));
-        
-        // 添加狼牙土豆开关
-        wolfFangPotatoToggleButton = Button.builder(
-            Component.translatable("config.curiosities.wolf_fang_potato_enabled")
-                .append(wolfFangPotatoEnabled ? 
-                    Component.translatable("config.curiosities.enabled") : 
-                    Component.translatable("config.curiosities.disabled")),
-            button -> {
-                wolfFangPotatoEnabled = !wolfFangPotatoEnabled;
-                button.setMessage(Component.translatable("config.curiosities.wolf_fang_potato_enabled")
-                    .append(wolfFangPotatoEnabled ? 
-                        Component.translatable("config.curiosities.enabled") : 
-                        Component.translatable("config.curiosities.disabled")));
-            }).build();
-        this.configList.addConfigEntry(new ButtonEntry(wolfFangPotatoToggleButton, buttonWidth));
-        
-        // 添加间隔
-        this.configList.addConfigEntry(new SpacerEntry(SECTION_SPACING));
-        
-        // 添加镰刀配置区域
-        this.configList.addConfigEntry(new SectionTitleEntry(Component.translatable("config.curiosities.scythe_section")));
-        
-        // 添加镰刀开关
-        scytheToggleButton = Button.builder(
-            Component.translatable("config.curiosities.scythe_enabled")
-                .append(scytheEnabled ? 
-                    Component.translatable("config.curiosities.enabled") : 
-                    Component.translatable("config.curiosities.disabled")),
-            button -> {
-                scytheEnabled = !scytheEnabled;
-                button.setMessage(Component.translatable("config.curiosities.scythe_enabled")
-                    .append(scytheEnabled ? 
-                        Component.translatable("config.curiosities.enabled") : 
-                        Component.translatable("config.curiosities.disabled")));
-            }).build();
-        this.configList.addConfigEntry(new ButtonEntry(scytheToggleButton, buttonWidth));
-        
-        // 添加收获范围输入框
-        this.configList.addConfigEntry(new LabelEntry(Component.translatable("config.curiosities.harvest_range_label")));
-        harvestRangeField = new EditBox(this.font, 0, 0, buttonWidth, 20, Component.empty());
-        harvestRangeField.setValue(String.valueOf(harvestRange));
-        harvestRangeField.setFilter(s -> s.isEmpty() || s.matches("\\d+"));
-        this.configList.addConfigEntry(new EditBoxEntry(harvestRangeField));
-        
-        // 添加攻击速度输入框
-        this.configList.addConfigEntry(new LabelEntry(Component.translatable("config.curiosities.attack_speed_label")));
-        attackSpeedField = new EditBox(this.font, 0, 0, buttonWidth, 20, Component.empty());
-        attackSpeedField.setValue(String.valueOf(attackSpeed));
-        attackSpeedField.setFilter(s -> s.isEmpty() || s.matches("^\\d*\\.?\\d*$"));
-        this.configList.addConfigEntry(new EditBoxEntry(attackSpeedField));
-        
-        // 添加攻击伤害加成输入框
-        this.configList.addConfigEntry(new LabelEntry(Component.translatable("config.curiosities.damage_bonus_label")));
-        damageBonusField = new EditBox(this.font, 0, 0, buttonWidth, 20, Component.empty());
-        damageBonusField.setValue(String.valueOf(damageBonus));
-        damageBonusField.setFilter(s -> s.isEmpty() || s.matches("^\\d*\\.?\\d*$"));
-        this.configList.addConfigEntry(new EditBoxEntry(damageBonusField));
-        
-        // 添加横扫范围加成输入框
-        this.configList.addConfigEntry(new LabelEntry(Component.translatable("config.curiosities.sweep_range_bonus_label")));
-        sweepRangeBonusField = new EditBox(this.font, 0, 0, buttonWidth, 20, Component.empty());
-        sweepRangeBonusField.setValue(String.valueOf(sweepRangeBonus));
-        sweepRangeBonusField.setFilter(s -> s.isEmpty() || s.matches("^\\d*\\.?\\d*$"));
-        this.configList.addConfigEntry(new EditBoxEntry(sweepRangeBonusField));
-        
-        // 添加丰收之舞触发概率输入框
-        this.configList.addConfigEntry(new LabelEntry(Component.translatable("config.curiosities.harvest_dance_chance_label")));
-        harvestDanceChanceField = new EditBox(this.font, 0, 0, buttonWidth, 20, Component.empty());
-        harvestDanceChanceField.setValue(String.valueOf(harvestDanceChance));
-        harvestDanceChanceField.setFilter(s -> s.isEmpty() || s.matches("^\\d*\\.?\\d*$"));
-        this.configList.addConfigEntry(new EditBoxEntry(harvestDanceChanceField));
-        
-        // 添加丰收之舞范围输入框
-        this.configList.addConfigEntry(new LabelEntry(Component.translatable("config.curiosities.harvest_dance_range_label")));
-        harvestDanceRangeField = new EditBox(this.font, 0, 0, buttonWidth, 20, Component.empty());
-        harvestDanceRangeField.setValue(String.valueOf(harvestDanceRange));
-        harvestDanceRangeField.setFilter(s -> s.isEmpty() || s.matches("\\d+"));
-        this.configList.addConfigEntry(new EditBoxEntry(harvestDanceRangeField));
-        
-        // 添加间隔
-        this.configList.addConfigEntry(new SpacerEntry(SECTION_SPACING));
-        
-        // 添加火箭靴配置区域
-        this.configList.addConfigEntry(new SectionTitleEntry(Component.translatable("config.curiosities.rocket_boots_section")));
-        
-        // 添加火箭靴开关
-        rocketBootsToggleButton = Button.builder(
-            Component.translatable("config.curiosities.rocket_boots_enabled")
-                .append(rocketBootsEnabled ? 
-                    Component.translatable("config.curiosities.enabled") : 
-                    Component.translatable("config.curiosities.disabled")),
-            button -> {
-                rocketBootsEnabled = !rocketBootsEnabled;
-                button.setMessage(Component.translatable("config.curiosities.rocket_boots_enabled")
-                    .append(rocketBootsEnabled ? 
-                        Component.translatable("config.curiosities.enabled") : 
-                        Component.translatable("config.curiosities.disabled")));
-            }).build();
-        this.configList.addConfigEntry(new ButtonEntry(rocketBootsToggleButton, buttonWidth));
-        
-        // 添加最大跳跃高度输入框
-        this.configList.addConfigEntry(new LabelEntry(Component.translatable("config.curiosities.max_jump_height_label")));
-        maxJumpHeightField = new EditBox(this.font, 0, 0, buttonWidth, 20, Component.empty());
-        maxJumpHeightField.setValue(String.valueOf(maxJumpHeight));
-        maxJumpHeightField.setFilter(s -> s.isEmpty() || s.matches("\\d+"));
-        this.configList.addConfigEntry(new EditBoxEntry(maxJumpHeightField));
-        
-        // 添加燃料消耗输入框
-        this.configList.addConfigEntry(new LabelEntry(Component.translatable("config.curiosities.fuel_consumption_label")));
-        fuelConsumptionField = new EditBox(this.font, 0, 0, buttonWidth, 20, Component.empty());
-        fuelConsumptionField.setValue(String.valueOf(fuelConsumption));
-        fuelConsumptionField.setFilter(s -> s.isEmpty() || s.matches("\\d+"));
-        this.configList.addConfigEntry(new EditBoxEntry(fuelConsumptionField));
-        
-        // 添加最大燃料存储输入框
-        this.configList.addConfigEntry(new LabelEntry(Component.translatable("config.curiosities.max_fuel_storage_label")));
-        maxFuelStorageField = new EditBox(this.font, 0, 0, buttonWidth, 20, Component.empty());
-        maxFuelStorageField.setValue(String.valueOf(maxFuelStorage));
-        maxFuelStorageField.setFilter(s -> s.isEmpty() || s.matches("\\d+"));
-        this.configList.addConfigEntry(new EditBoxEntry(maxFuelStorageField));
-        
-        // 添加道德天平配置区域
-        this.configList.addConfigEntry(new SectionTitleEntry(Component.translatable("config.curiosities.moral_balance_section")));
-        
-        // 添加道德天平开关
-        moralBalanceToggleButton = Button.builder(
-            Component.translatable("config.curiosities.moral_balance_enabled")
-                .append(moralBalanceEnabled ? 
-                    Component.translatable("config.curiosities.enabled") : 
-                    Component.translatable("config.curiosities.disabled")),
-            button -> {
-                moralBalanceEnabled = !moralBalanceEnabled;
-                button.setMessage(Component.translatable("config.curiosities.moral_balance_enabled")
-                    .append(moralBalanceEnabled ? 
-                        Component.translatable("config.curiosities.enabled") : 
-                        Component.translatable("config.curiosities.disabled")));
-            }).build();
-        this.configList.addConfigEntry(new ButtonEntry(moralBalanceToggleButton, buttonWidth));
-        
-        // 添加间隔
-        this.configList.addConfigEntry(new SpacerEntry(SECTION_SPACING));
-        
-        // 底部按钮不放在滚动列表中
-        int bottomButtonY = this.height - 30;
-        
+        super.init();
+
+        // 创建左侧分类滚动列表
+        categoryList = new CategoryList(minecraft, CATEGORY_BUTTON_WIDTH, height, 30, height - 40, 25);
+        this.addRenderableWidget(categoryList);
+
+        // 创建右侧配置项滚动列表
+        optionList = new OptionList(minecraft, width - CATEGORY_BUTTON_WIDTH - 20, height, 30, height - 40, 30);
+        this.addRenderableWidget(optionList);
+
+        // 填充分类列表
+        categoryList.children().clear();
+        for (int i = 0; i < categories.size(); i++) {
+            ConfigCategory category = categories.get(i);
+            categoryList.children().add(new CategoryEntry(category, i));
+        }
+
+        // 如果当前分类不为空，显示其配置项
+        if (currentCategory != null) {
+            refreshOptionList();
+        }
+
+        // 添加底部按钮
         // 保存按钮
-        this.addRenderableWidget(Button.builder(
-            Component.translatable("config.curiosities.save"),
-            button -> this.saveAndClose()
-        ).pos(this.width / 2 - buttonWidth / 2, bottomButtonY).size(buttonWidth / 2 - 5, 20).build());
-        
-        // 取消按钮
-        this.addRenderableWidget(Button.builder(
-            CommonComponents.GUI_CANCEL,
-            button -> this.onClose()
-        ).pos(this.width / 2 + 5, bottomButtonY).size(buttonWidth / 2 - 5, 20).build());
+        Button saveButton = Button.builder(Component.translatable("gui.done"), button -> {
+                    // 关闭界面，返回父级屏幕
+                    onClose();
+                })
+                .pos(width / 2 - BUTTON_WIDTH / 2, height - 30)
+                .size(BUTTON_WIDTH, BUTTON_HEIGHT)
+                .build();
+
+        addRenderableWidget(saveButton);
     }
-    
+
     /**
-     * 渲染界面
+     * 刷新右侧配置项列表
+     * @param resetScroll 是否重置滚动位置
      */
+    private void refreshOptionList(boolean resetScroll) {
+        optionList.children().clear();
+        for (int i = 0; i < currentCategory.getOptions().size(); i++) {
+            ConfigOption<?> option = currentCategory.getOptions().get(i);
+            optionList.children().add(new OptionEntry(option, i));
+        }
+        
+        // 根据参数决定是否重置滚动条位置
+        if (resetScroll) {
+            optionList.setScrollAmount(0);
+        }
+    }
+
+    /**
+     * 刷新右侧配置项列表（并重置滚动位置）
+     */
+    private void refreshOptionList() {
+        refreshOptionList(true);
+    }
+
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        // 渲染灰色背景
-        this.renderBackground(graphics);
-        
-        // 渲染滚动列表
-        this.configList.render(graphics, mouseX, mouseY, partialTick);
-        
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        // 渲染背景
+        renderBackground(guiGraphics);
+
         // 渲染标题
-        graphics.drawCenteredString(this.font, this.title, this.width / 2, 15, 0xFFFFFF);
-        
-        // 渲染其他UI组件
-        super.render(graphics, mouseX, mouseY, partialTick);
+        guiGraphics.drawCenteredString(font, title, width / 2, 10, 0xFFFFFF);
+
+        // 渲染分类区域和配置区域的分隔线
+        int leftPanelWidth = CATEGORY_BUTTON_WIDTH + 10;
+        guiGraphics.fill(leftPanelWidth, 30, leftPanelWidth + 2, height - 40, 0xFFAAAAAA);
+
+        // 渲染当前分类的标题
+        if (currentCategory != null) {
+            guiGraphics.drawString(font, currentCategory.getTitle(), leftPanelWidth + 20, 10, 0xFFFFFF);
+
+            // 渲染分类图标
+            ResourceLocation icon = currentCategory.getIcon();
+            if (icon != null) {
+                RenderSystem.setShaderTexture(0, icon);
+                guiGraphics.blit(icon, leftPanelWidth + 50, 10, 0, 0, 16, 16, 16, 16);
+            }
+        }
+
+        // 渲染滚动列表
+        categoryList.render(guiGraphics, mouseX, mouseY, partialTick);
+        optionList.render(guiGraphics, mouseX, mouseY, partialTick);
+
+        // 渲染控件
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
-    
-    /**
-     * 鼠标滚轮事件处理，提高滚动速度
-     */
-    @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double deltaY) {
-        // 增加滚动速度
-        return this.configList.mouseScrolled(mouseX, mouseY, deltaY * 1.5);
-    }
-    
-    /**
-     * 关闭界面时的处理
-     */
+
     @Override
     public void onClose() {
-        this.minecraft.setScreen(parentScreen);
+        minecraft.setScreen(parentScreen);
     }
-    
+
     /**
-     * 保存配置并关闭界面
+     * 分类滚动列表
      */
-    private void saveAndClose() {
-        // 保存连锁挖掘启用状态
-        ChainMiningConfig.CHAIN_MINING_ENABLED.set(chainMiningEnabled);
-        
-        // 保存最大方块数
-        try {
-            int blocks = Integer.parseInt(maxBlocksField.getValue());
-            // 限制在有效范围内
-            blocks = Math.max(16, Math.min(128, blocks));
-            ChainMiningConfig.MAX_BLOCKS.set(blocks);
-        } catch (NumberFormatException e) {
-            // 无效输入，使用默认值
-            ChainMiningConfig.MAX_BLOCKS.set(64);
-        }
-        
-        // 保存每级方块数
-        try {
-            int blocksPerLevel = Integer.parseInt(blocksPerLevelField.getValue());
-            // 限制在有效范围内
-            blocksPerLevel = Math.max(1, Math.min(64, blocksPerLevel));
-            ChainMiningConfig.BLOCKS_PER_LEVEL.set(blocksPerLevel);
-        } catch (NumberFormatException e) {
-            // 无效输入，使用默认值
-            ChainMiningConfig.BLOCKS_PER_LEVEL.set(16);
-        }
-        
-        // 保存超级时运启用状态
-        SuperFortuneConfig.SUPER_FORTUNE_ENABLED.set(superFortuneEnabled);
-        
-        // 保存狼牙土豆启用状态
-        WolfFangPotatoConfig.WOLF_FANG_POTATO_ENABLED.set(wolfFangPotatoEnabled);
-        
-        // 保存镰刀启用状态
-        ScytheConfig.SCYTHE_ENABLED.set(scytheEnabled);
-        
-        // 保存收获范围
-        try {
-            int range = Integer.parseInt(harvestRangeField.getValue());
-            // 限制在有效范围内
-            range = Math.max(1, Math.min(5, range));
-            ScytheConfig.HARVEST_RANGE.set(range);
-        } catch (NumberFormatException e) {
-            // 无效输入，使用默认值
-            ScytheConfig.HARVEST_RANGE.set(1);
-        }
-        
-        // 保存攻击速度
-        try {
-            double speed = Double.parseDouble(attackSpeedField.getValue());
-            // 限制在有效范围内
-            speed = Math.max(0.1, Math.min(3.0, speed));
-            ScytheConfig.ATTACK_SPEED.set(speed);
-        } catch (NumberFormatException e) {
-            // 无效输入，使用默认值
-            ScytheConfig.ATTACK_SPEED.set(1.0);
-        }
-        
-        // 保存攻击伤害加成
-        try {
-            double bonus = Double.parseDouble(damageBonusField.getValue());
-            // 限制在有效范围内
-            bonus = Math.max(0.0, Math.min(5.0, bonus));
-            ScytheConfig.DAMAGE_BONUS.set(bonus);
-        } catch (NumberFormatException e) {
-            // 无效输入，使用默认值
-            ScytheConfig.DAMAGE_BONUS.set(1.0);
-        }
-        
-        // 保存横扫范围加成
-        try {
-            double bonus = Double.parseDouble(sweepRangeBonusField.getValue());
-            // 限制在有效范围内
-            bonus = Math.max(0.0, Math.min(2.0, bonus));
-            ScytheConfig.SWEEP_RANGE_BONUS.set(bonus);
-        } catch (NumberFormatException e) {
-            // 无效输入，使用默认值
-            ScytheConfig.SWEEP_RANGE_BONUS.set(0.5);
-        }
-        
-        // 保存丰收之舞触发概率
-        try {
-            double chance = Double.parseDouble(harvestDanceChanceField.getValue());
-            // 限制在有效范围内
-            chance = Math.max(0.0, Math.min(1.0, chance));
-            ScytheConfig.HARVEST_DANCE_CHANCE.set(chance);
-        } catch (NumberFormatException e) {
-            // 无效输入，使用默认值
-            ScytheConfig.HARVEST_DANCE_CHANCE.set(0.05);
-        }
-        
-        // 保存丰收之舞范围
-        try {
-            int range = Integer.parseInt(harvestDanceRangeField.getValue());
-            // 限制在有效范围内
-            range = Math.max(1, Math.min(10, range));
-            ScytheConfig.HARVEST_DANCE_RANGE.set(range);
-        } catch (NumberFormatException e) {
-            // 无效输入，使用默认值
-            ScytheConfig.HARVEST_DANCE_RANGE.set(2);
-        }
-        
-        // 保存火箭靴配置
-        try {
-            RocketBootsConfig.ROCKET_BOOTS_ENABLED.set(rocketBootsEnabled);
-            RocketBootsConfig.MAX_JUMP_HEIGHT.set(Double.valueOf(maxJumpHeightField.getValue()));
-            RocketBootsConfig.FUEL_CONSUMPTION.set(Integer.parseInt(fuelConsumptionField.getValue()));
-            RocketBootsConfig.MAX_FUEL_STORAGE.set(Integer.parseInt(maxFuelStorageField.getValue()));
-        } catch (NumberFormatException e) {
-            LOGGER.warn("保存火箭靴配置时发生错误", e);
-        }
-        
-        // 保存道德天平配置
-        MoralBalanceConfig.MORAL_BALANCE_ENABLED.set(moralBalanceEnabled);
-        
-        // 返回上一个屏幕
-        this.onClose();
-    }
-    
-    /**
-     * 创建配置界面的工厂方法
-     * 
-     * @param minecraft Minecraft实例
-     * @param parent 父界面
-     * @return 配置界面实例
-     */
-    public static Screen create(Minecraft minecraft, Screen parent) {
-        return new SimpleConfigScreen(parent);
-    }
-    
-    /**
-     * 配置滚动列表类
-     */
-    private class ConfigList extends ContainerObjectSelectionList<ConfigList.Entry> {
-        public ConfigList(Minecraft minecraft, int width, int height, int top, int bottom, int itemHeight) {
+    private class CategoryList extends ContainerObjectSelectionList<CategoryEntry> {
+        public CategoryList(Minecraft minecraft, int width, int height, int top, int bottom, int itemHeight) {
             super(minecraft, width, height, top, bottom, itemHeight);
-            this.setRenderBackground(false);
-            this.setRenderTopAndBottom(false);
+            this.setLeftPos(5);
         }
-        
-        // 添加公开方法用于添加条目
-        public void addConfigEntry(Entry entry) {
-            this.addEntry(entry);
-        }
-        
+
         @Override
         public int getRowWidth() {
-            return Math.min(400, width - 40);
+            return CATEGORY_BUTTON_WIDTH - 10;
         }
-        
+
         @Override
         protected int getScrollbarPosition() {
-            return this.width / 2 + getRowWidth() / 2 + 5;
+            return this.getLeft() + this.width - 6;
         }
-        
-        /**
-         * 列表条目基类
-         */
-        public abstract static class Entry extends ContainerObjectSelectionList.Entry<Entry> {
-            public boolean changeFocus(boolean focus) {
-                return false;
+    }
+
+    /**
+     * 分类列表项
+     */
+    private class CategoryEntry extends ContainerObjectSelectionList.Entry<CategoryEntry> {
+        private final ConfigCategory category;
+        private final Button button;
+        private final int index;
+
+        public CategoryEntry(ConfigCategory category, int index) {
+            this.category = category;
+            this.index = index;
+            this.button = Button.builder(category.getTitle(), b -> {
+                currentCategory = category;
+                refreshOptionList();
+            })
+            .size(CATEGORY_BUTTON_WIDTH - 10, 20)
+            .build();
+
+            // 高亮当前选中的分类
+            if (category == currentCategory) {
+                button.active = false;
+            }
+        }
+
+        @Override
+        public List<? extends GuiEventListener> children() {
+            return List.of(this.button);
+        }
+
+        @Override
+        public List<? extends NarratableEntry> narratables() {
+            return List.of(this.button);
+        }
+
+        @Override
+        public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+            this.button.setPosition(left, top);
+            // 更新按钮的激活状态
+            this.button.active = (category != currentCategory);
+            this.button.render(guiGraphics, mouseX, mouseY, partialTick);
+
+            // 如果有图标，绘制图标
+            ResourceLocation icon = category.getIcon();
+            if (icon != null) {
+                RenderSystem.setShaderTexture(0, icon);
+                guiGraphics.blit(icon, left + 2, top + 2, 0, 0, 16, 16, 16, 16);
             }
         }
     }
-    
+
     /**
-     * 空白间隔条目
+     * 配置项滚动列表
      */
-    private class SpacerEntry extends ConfigList.Entry {
-        private final int height;
-        
-        public SpacerEntry(int height) {
-            this.height = height;
+    private class OptionList extends ContainerObjectSelectionList<OptionEntry> {
+        public OptionList(Minecraft minecraft, int width, int height, int top, int bottom, int itemHeight) {
+            super(minecraft, width, height, top, bottom, itemHeight);
+            this.setLeftPos(CATEGORY_BUTTON_WIDTH + 20);
         }
-        
+
         @Override
-        public void render(GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovered, float partialTick) {
-            // 空白间隔，不需要渲染任何内容
+        public int getRowWidth() {
+            return width - 10;
         }
-        
+
         @Override
-        public List<? extends GuiEventListener> children() {
-            return List.of();
-        }
-        
-        @Override
-        public List<? extends NarratableEntry> narratables() {
-            return List.of();
-        }
-        
-        public int getHeight() {
-            return height;
+        protected int getScrollbarPosition() {
+            return this.getLeft() + this.width - 6;
         }
     }
-    
+
     /**
-     * 分区标题条目
+     * 配置项列表项
      */
-    private class SectionTitleEntry extends ConfigList.Entry {
+    private class OptionEntry extends ContainerObjectSelectionList.Entry<OptionEntry> {
+        private final ConfigOption<?> option;
+        private final int index;
+        private final List<GuiEventListener> widgets = new ArrayList<>();
+        private Button resetButton;
+        private boolean isConfirming = false;
+
+        public OptionEntry(@NotNull ConfigOption<?> option, int index) {
+            this.option = option;
+            this.index = index;
+
+            // 添加重置按钮
+            this.resetButton = Button.builder(
+                    Component.translatable("config.curiosities.reset_default"),
+                    button -> {
+                        if (!isConfirming) {
+                            // 第一次点击，显示确认文本
+                            isConfirming = true;
+                            button.setMessage(Component.translatable("config.curiosities.reset_confirm"));
+                        } else {
+                            // 第二次点击，执行重置
+                            try {
+                                // 获取配置值的默认值
+                                ForgeConfigSpec.ConfigValue<?> configValue = option.getValue();
+                                if (configValue instanceof ForgeConfigSpec.BooleanValue booleanValue) {
+                                    booleanValue.set(booleanValue.getDefault());
+                                } else if (configValue instanceof ForgeConfigSpec.IntValue intValue) {
+                                    intValue.set(intValue.getDefault());
+                                } else if (configValue instanceof ForgeConfigSpec.DoubleValue doubleValue) {
+                                    doubleValue.set(doubleValue.getDefault());
+                                }
+                                // 刷新显示，但不重置滚动位置
+                                refreshOptionList(false);
+                            } catch (IllegalStateException e) {
+                                // 如果配置未加载，不执行任何操作
+                            }
+                            // 重置确认状态
+                            isConfirming = false;
+                            button.setMessage(Component.translatable("config.curiosities.reset_default"));
+                        }
+                    })
+                    .size(100, 20)
+                    .build();
+            
+            widgets.add(resetButton);
+
+            // 根据配置类型创建不同的控件
+            if (option.getValue() instanceof ForgeConfigSpec.BooleanValue booleanValue) {
+                // 布尔值选项 - 使用开关按钮
+                Button toggleButton = Button.builder(
+                                // 根据实际配置值设置初始文本
+                                Component.literal(booleanValue.get() ? "✓" : "✗"), button -> {
+                                    try {
+                                        // 切换布尔值
+                                        booleanValue.set(!booleanValue.get());
+                                        // 更新按钮文本
+                                        button.setMessage(Component.literal(booleanValue.get() ? "✓" : "✗"));
+                                    } catch (IllegalStateException e) {
+                                        // 如果配置未加载，显示错误信息
+                                        button.setMessage(Component.literal("✗"));
+                                    }
+                                })
+                        .size(30, 20)
+                        .build();
+                widgets.add(toggleButton);
+            } else if (option.getValue() instanceof ForgeConfigSpec.IntValue intValue) {
+                // 整数值选项 - 使用加减按钮和文本框
+                // 添加减号按钮
+                Button decreaseButton = Button.builder(Component.literal("-"), button -> {
+                        try {
+                            int newValue = intValue.get() - 1;
+                            intValue.set(newValue);
+                            refreshOptionList(false); // 刷新显示但不重置滚动位置
+                        } catch (IllegalStateException e) {
+                            // 如果配置未加载，不执行任何操作
+                        }
+                    })
+                    .size(20, 20)
+                    .build();
+                widgets.add(decreaseButton);
+                
+                // 添加显示当前值的文本
+                EditBox valueBox = new EditBox(font, 0, 0, 70, 20, Component.empty());
+                try {
+                    valueBox.setValue(String.valueOf(intValue.get()));
+                } catch (IllegalStateException e) {
+                    valueBox.setValue("0");
+                }
+                valueBox.setResponder(s -> {
+                    try {
+                        int value = Integer.parseInt(s);
+                        intValue.set(value);
+                    } catch (NumberFormatException | IllegalStateException ignored) {
+                        // 忽略非数字输入或配置未加载的情况
+                    }
+                });
+                widgets.add(valueBox);
+                
+                // 添加加号按钮
+                Button increaseButton = Button.builder(Component.literal("+"), button -> {
+                        try {
+                            int newValue = intValue.get() + 1;
+                            intValue.set(newValue);
+                            refreshOptionList(false); // 刷新显示但不重置滚动位置
+                        } catch (IllegalStateException e) {
+                            // 如果配置未加载，不执行任何操作
+                        }
+                    })
+                    .size(20, 20)
+                    .build();
+                widgets.add(increaseButton);
+            } else if (option.getValue() instanceof ForgeConfigSpec.DoubleValue doubleValue) {
+                // 浮点数选项 - 使用加减按钮和文本框
+                // 添加减号按钮
+                Button decreaseButton = Button.builder(Component.literal("-"), button -> {
+                        try {
+                            double newValue = doubleValue.get() - 0.1;
+                            doubleValue.set(newValue);
+                            refreshOptionList(false); // 刷新显示但不重置滚动位置
+                        } catch (IllegalStateException e) {
+                            // 如果配置未加载，不执行任何操作
+                        }
+                    })
+                    .size(20, 20)
+                    .build();
+                widgets.add(decreaseButton);
+                
+                // 添加显示当前值的文本
+                EditBox valueBox = new EditBox(font, 0, 0, 70, 20, Component.empty());
+                try {
+                    valueBox.setValue(String.format("%.2f", doubleValue.get()));
+                } catch (IllegalStateException e) {
+                    valueBox.setValue("0.0");
+                }
+                valueBox.setResponder(s -> {
+                    try {
+                        double value = Double.parseDouble(s);
+                        doubleValue.set(value);
+                    } catch (NumberFormatException | IllegalStateException ignored) {
+                        // 忽略非数字输入或配置未加载的情况
+                    }
+                });
+                widgets.add(valueBox);
+                
+                // 添加加号按钮
+                Button increaseButton = Button.builder(Component.literal("+"), button -> {
+                        try {
+                            double newValue = doubleValue.get() + 0.1;
+                            doubleValue.set(newValue);
+                            refreshOptionList(false); // 刷新显示但不重置滚动位置
+                        } catch (IllegalStateException e) {
+                            // 如果配置未加载，不执行任何操作
+                        }
+                    })
+                    .size(20, 20)
+                    .build();
+                widgets.add(increaseButton);
+            } else if (option.getValue() instanceof ForgeConfigSpec.ConfigValue<?>) {
+                // 字符串选项 - 使用文本框
+                if (option.getValue().get() instanceof String) {
+                    String currentValue = "";
+                    try {
+                        currentValue = option.getValue().get().toString();
+                    } catch (IllegalStateException e) {
+                        // 如果配置未加载，使用空字符串
+                    }
+
+                    EditBox editBox = new EditBox(
+                            font, 0, 0, 120, 20,
+                            Component.empty());
+
+                    editBox.setValue(currentValue);
+                    editBox.setResponder(text -> {
+                        try {
+                            ((ForgeConfigSpec.ConfigValue<String>) option.getValue()).set(text);
+                        } catch (IllegalStateException ignored) {
+                            // 如果配置未加载，不执行任何操作
+                        }
+                    });
+
+                    widgets.add(editBox);
+                }
+            }
+        }
+
+        @Override
+        public List<? extends GuiEventListener> children() {
+            return widgets;
+        }
+
+        @Override
+        public List<? extends NarratableEntry> narratables() {
+            return widgets.stream()
+                    .filter(w -> w instanceof NarratableEntry)
+                    .map(w -> (NarratableEntry) w)
+                    .toList();
+        }
+
+        @Override
+        public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+            // 渲染配置项标签
+            guiGraphics.drawString(font, option.getLabel(), left, top + 6, 0xFFFFFF);
+
+            // 根据控件类型调整位置
+            int controlX = left + 150;
+            
+            // 渲染重置按钮
+            resetButton.setPosition(controlX + 120, top);
+            resetButton.render(guiGraphics, mouseX, mouseY, partialTick);
+            
+            if (widgets.size() == 2) {
+                // 单个控件（布尔值）
+                GuiEventListener widget = widgets.get(1);
+                if (widget instanceof Button button) {
+                    button.setPosition(controlX, top);
+                    button.render(guiGraphics, mouseX, mouseY, partialTick);
+                }
+            } else if (widgets.size() == 4) {
+                // 三个控件（数值类型：减号、文本框、加号）
+                Button decreaseButton = (Button) widgets.get(1);
+                EditBox valueBox = (EditBox) widgets.get(2);
+                Button increaseButton = (Button) widgets.get(3);
+                
+                decreaseButton.setPosition(controlX, top);
+                valueBox.setPosition(controlX + 25, top);
+                increaseButton.setPosition(controlX + 100, top);
+                
+                decreaseButton.render(guiGraphics, mouseX, mouseY, partialTick);
+                valueBox.render(guiGraphics, mouseX, mouseY, partialTick);
+                increaseButton.render(guiGraphics, mouseX, mouseY, partialTick);
+            }
+        }
+
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            // 检查是否点击了重置按钮
+            if (resetButton.isMouseOver(mouseX, mouseY)) {
+                if (button == 1) { // 右键点击
+                    if (isConfirming) {
+                        // 右键点击取消确认
+                        isConfirming = false;
+                        resetButton.setMessage(Component.translatable("config.curiosities.reset_default"));
+                        return true;
+                    }
+                }
+            }
+            return super.mouseClicked(mouseX, mouseY, button);
+        }
+    }
+
+    /**
+     * 配置分类
+     * 包含一组相关的配置选项
+     */
+    private static class ConfigCategory {
         private final Component title;
-        
-        public SectionTitleEntry(Component title) {
+        private final ResourceLocation icon;
+        private final List<ConfigOption<?>> options = new ArrayList<>();
+
+        public ConfigCategory(Component title, ResourceLocation icon) {
             this.title = title;
+            this.icon = icon;
         }
-        
-        @Override
-        public void render(GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovered, float partialTick) {
-            Font font = Minecraft.getInstance().font;
-            int x = SimpleConfigScreen.this.width / 2;
-            int y = top + 5;
-            graphics.drawCenteredString(font, title, x, y, 0xFFFF55);
+
+        public Component getTitle() {
+            return title;
         }
-        
-        @Override
-        public List<? extends GuiEventListener> children() {
-            return List.of();
+
+        public ResourceLocation getIcon() {
+            return icon;
         }
-        
-        @Override
-        public List<? extends NarratableEntry> narratables() {
-            return List.of();
+
+        public List<ConfigOption<?>> getOptions() {
+            return options;
         }
-        
-        public int getHeight() {
-            return 18; // 从20减小到18
+
+        public void addBooleanOption(Component label, ForgeConfigSpec.BooleanValue value) {
+            options.add(new ConfigOption<>(label, value));
+        }
+
+        public void addIntOption(Component label, ForgeConfigSpec.IntValue value) {
+            options.add(new ConfigOption<>(label, value));
+        }
+
+        public void addDoubleOption(Component label, ForgeConfigSpec.DoubleValue value) {
+            options.add(new ConfigOption<>(label, value));
+        }
+
+        public <T> void addOption(Component label, ForgeConfigSpec.ConfigValue<T> value) {
+            options.add(new ConfigOption<>(label, value));
         }
     }
-    
+
     /**
-     * 标签条目
+     * 配置选项
+     * 包含一个标签和一个配置值
      */
-    private class LabelEntry extends ConfigList.Entry {
+    private static class ConfigOption<T> {
         private final Component label;
-        
-        public LabelEntry(Component label) {
+        private final ForgeConfigSpec.ConfigValue<T> value;
+
+        public ConfigOption(Component label, ForgeConfigSpec.ConfigValue<T> value) {
             this.label = label;
+            this.value = value;
         }
-        
-        @Override
-        public void render(GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovered, float partialTick) {
-            Font font = Minecraft.getInstance().font;
-            int x = SimpleConfigScreen.this.width / 2 - configList.getRowWidth() / 2;
-            int y = top + 3; // 从5减小到3
-            graphics.drawString(font, label, x, y, 0xFFFFFF);
+
+        public Component getLabel() {
+            return label;
         }
-        
-        @Override
-        public List<? extends GuiEventListener> children() {
-            return List.of();
-        }
-        
-        @Override
-        public List<? extends NarratableEntry> narratables() {
-            return List.of();
-        }
-        
-        public int getHeight() {
-            return 13; // 从15减小到13
-        }
-    }
-    
-    /**
-     * 按钮条目
-     */
-    private class ButtonEntry extends ConfigList.Entry {
-        private final Button button;
-        private final int buttonWidth;
-        private final List<Button> buttons = new ArrayList<>();
-        
-        public ButtonEntry(Button button, int buttonWidth) {
-            this.button = button;
-            this.buttonWidth = buttonWidth;
-            buttons.add(button);
-        }
-        
-        @Override
-        public void render(GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovered, float partialTick) {
-            int x = SimpleConfigScreen.this.width / 2 - buttonWidth / 2;
-            button.setX(x);
-            button.setY(top);
-            button.setWidth(buttonWidth);
-            button.render(graphics, mouseX, mouseY, partialTick);
-        }
-        
-        @Override
-        public List<? extends GuiEventListener> children() {
-            return buttons;
-        }
-        
-        @Override
-        public List<? extends NarratableEntry> narratables() {
-            return buttons;
-        }
-        
-        public int getHeight() {
-            return 22; // 从24减小到22
-        }
-    }
-    
-    /**
-     * 输入框条目
-     */
-    private class EditBoxEntry extends ConfigList.Entry {
-        private final EditBox editBox;
-        private final List<EditBox> editBoxes = new ArrayList<>();
-        
-        public EditBoxEntry(EditBox editBox) {
-            this.editBox = editBox;
-            editBoxes.add(editBox);
-        }
-        
-        @Override
-        public void render(GuiGraphics graphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovered, float partialTick) {
-            int x = SimpleConfigScreen.this.width / 2 - configList.getRowWidth() / 2;
-            editBox.setX(x);
-            editBox.setY(top);
-            editBox.setWidth(configList.getRowWidth());
-            editBox.render(graphics, mouseX, mouseY, partialTick);
-        }
-        
-        @Override
-        public List<? extends GuiEventListener> children() {
-            return editBoxes;
-        }
-        
-        @Override
-        public List<? extends NarratableEntry> narratables() {
-            return editBoxes;
-        }
-        
-        public int getHeight() {
-            return 22; // 从24减小到22
+
+        public ForgeConfigSpec.ConfigValue<T> getValue() {
+            return value;
         }
     }
 }

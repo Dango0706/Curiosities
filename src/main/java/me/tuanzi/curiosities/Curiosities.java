@@ -185,21 +185,27 @@ public class Curiosities {
      * 配置加载完成事件
      */
     private void onConfigLoad(FMLCommonSetupEvent event) {
-        // 确保配置已经加载
-        LOGGER.info("配置加载完成，攻击速度: {}, 伤害加成: {}",
-                ModConfigManager.SCYTHE_ATTACK_SPEED.get(),
-                ModConfigManager.SCYTHE_DAMAGE_BONUS.get());
-
-        // 标记配置已加载
-        ModConfigManager.setConfigLoaded(true);
-
-        // 配置加载完成后注册配置界面
-        BiFunction<Minecraft, Screen, Screen> screenFactory = SimpleConfigScreen::create;
-        ModLoadingContext.get().registerExtensionPoint(
-                ConfigScreenHandler.ConfigScreenFactory.class,
-                () -> new ConfigScreenHandler.ConfigScreenFactory(screenFactory)
-        );
-        LOGGER.info("配置界面已注册");
+        // 等待配置加载完成
+        event.enqueueWork(() -> {
+            try {
+                // 尝试访问配置值，确保配置已加载
+                ModConfigManager.SCYTHE_ATTACK_SPEED.get();
+                ModConfigManager.SCYTHE_DAMAGE_BONUS.get();
+                
+                // 标记配置已加载
+                ModConfigManager.setConfigLoaded(true);
+                
+                // 配置加载完成后注册配置界面
+                BiFunction<Minecraft, Screen, Screen> screenFactory = SimpleConfigScreen::create;
+                ModLoadingContext.get().registerExtensionPoint(
+                        ConfigScreenHandler.ConfigScreenFactory.class,
+                        () -> new ConfigScreenHandler.ConfigScreenFactory(screenFactory)
+                );
+                LOGGER.info("配置界面已注册");
+            } catch (IllegalStateException e) {
+                LOGGER.error("配置加载失败，无法注册配置界面", e);
+            }
+        });
     }
 
     /**

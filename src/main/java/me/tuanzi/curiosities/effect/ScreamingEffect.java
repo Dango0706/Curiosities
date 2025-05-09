@@ -46,7 +46,7 @@ public class ScreamingEffect extends MobEffect {
     public void applyEffectTick(LivingEntity entity, int amplifier) {
         // 只在服务端且实体是玩家时处理
         if (!(entity.level() instanceof ServerLevel level) || !(entity instanceof Player player)) {
-            return; 
+            return;
         }
 
         // 检查是否为触发时间点(每5秒)

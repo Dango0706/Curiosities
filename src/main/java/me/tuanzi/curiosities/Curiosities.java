@@ -191,10 +191,10 @@ public class Curiosities {
                 // 尝试访问配置值，确保配置已加载
                 ModConfigManager.SCYTHE_ATTACK_SPEED.get();
                 ModConfigManager.SCYTHE_DAMAGE_BONUS.get();
-                
+
                 // 标记配置已加载
                 ModConfigManager.setConfigLoaded(true);
-                
+
                 // 配置加载完成后注册配置界面
                 BiFunction<Minecraft, Screen, Screen> screenFactory = SimpleConfigScreen::create;
                 ModLoadingContext.get().registerExtensionPoint(

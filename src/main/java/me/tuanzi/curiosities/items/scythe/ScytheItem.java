@@ -474,13 +474,13 @@ public class ScytheItem extends SwordItem {
         if (ModConfigManager.SCYTHE_ENABLED.get()) {
             // 基本功能提示
             tooltip.add(Component.translatable("item.curiosities.scythe.tooltip.harvest_crops"));
-            tooltip.add(Component.translatable("item.curiosities.scythe.tooltip.range", 
+            tooltip.add(Component.translatable("item.curiosities.scythe.tooltip.range",
                     ModConfigManager.SCYTHE_HARVEST_RANGE.get()));
 
             // 丰收之舞提示
-            tooltip.add(Component.translatable("item.curiosities.scythe.tooltip.harvest_dance", 
+            tooltip.add(Component.translatable("item.curiosities.scythe.tooltip.harvest_dance",
                     String.format("%.1f%%", ModConfigManager.SCYTHE_HARVEST_DANCE_CHANCE.get() * 100)));
-            tooltip.add(Component.translatable("item.curiosities.scythe.tooltip.dance_range", 
+            tooltip.add(Component.translatable("item.curiosities.scythe.tooltip.dance_range",
                     ModConfigManager.SCYTHE_HARVEST_DANCE_RANGE.get()));
         } else {
             tooltip.add(Component.translatable("item.curiosities.scythe.tooltip.disabled")

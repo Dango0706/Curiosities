@@ -105,7 +105,7 @@ public class ScreamingPieItem extends Item {
                     .withStyle(net.minecraft.ChatFormatting.RED));
         }
     }
-    
+
     /**
      * 检查物品是否可食用
      */

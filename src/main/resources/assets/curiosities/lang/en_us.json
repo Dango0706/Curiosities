@@ -5,6 +5,8 @@
   "enchantment.curiosities.super_fortune.desc": "Gives 1.5 times the effect of vanilla Fortune and can be combined with Silk Touch",
   "enchantment.curiosities.moral_balance": "Moral Balance",
   "enchantment.curiosities.moral_balance.desc": "Double damage to peaceful entities but gives 'Guilt' debuff; Half damage to hostile entities but triple drops",
+  "enchantment.curiosities.proficiency": "Proficiency",
+  "enchantment.curiosities.proficiency.desc": "Increases attack speed by a percentage for each level",
   "key.curiosities.chain_mining": "Chain Mining",
   "key.categories.gameplay": "Gameplay",
   "config.curiosities.title": "Mod Configuration",
@@ -105,5 +107,8 @@
   "item.curiosities.screaming_pie.tooltip.effect": "Effects when consumed:",
   "item.curiosities.screaming_pie.tooltip.screaming": "§5Screaming Effect§r: %s seconds",
   "item.curiosities.screaming_pie.tooltip.slow_falling": "§bSlow Falling§r: %s seconds",
-  "item.curiosities.screaming_pie.tooltip.disabled": "This item's functionality is disabled"
+  "item.curiosities.screaming_pie.tooltip.disabled": "This item's functionality is disabled",
+  "config.curiosities.proficiency_section": "Proficiency Enchantment Configuration",
+  "config.curiosities.proficiency_enabled": "Enable Proficiency Enchantment: ",
+  "config.curiosities.proficiency_attack_speed_percent_label": "Attack Speed Increase Per Level (%): "
 }

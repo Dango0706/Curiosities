@@ -86,17 +86,27 @@ public class Curiosities {
 
 
                         // 添加道德天平附魔书
-
-                        ItemStack enchantedBook = new ItemStack(Items.ENCHANTED_BOOK);
+                        ItemStack moralBalanceBook = new ItemStack(Items.ENCHANTED_BOOK);
                         net.minecraft.world.item.EnchantedBookItem.addEnchantment(
-                                enchantedBook,
+                                moralBalanceBook,
                                 new EnchantmentInstance(ModEnchantments.MORAL_BALANCE.get(), 1)
                         );
-                        output.accept(enchantedBook);
+                        output.accept(moralBalanceBook);
+
+
+                        // 添加熟练附魔书
+                        // 添加所有等级的熟练附魔书（1-4级）
+                        for (int level = 1; level <= 4; level++) {
+                            ItemStack proficiencyBook = new ItemStack(Items.ENCHANTED_BOOK);
+                            EnchantedBookItem.addEnchantment(
+                                    proficiencyBook,
+                                    new EnchantmentInstance(ModEnchantments.PROFICIENCY.get(), level)
+                            );
+                            output.accept(proficiencyBook);
+                        }
 
 
                         // 添加狼牙土豆
-
                         output.accept(ModItems.WOLF_FANG_POTATO.get());
 
 

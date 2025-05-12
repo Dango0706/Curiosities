@@ -272,45 +272,56 @@ public class SimpleConfigScreen extends Screen {
             categories.add(effectsCategory);
 
             // 附魔配置主分类
-            ConfigCategory enchantsCategory = new ConfigCategory(
+            ConfigCategory enchantmentsCategory = new ConfigCategory(
                     Component.translatable("config.curiosities.enchantments_section"),
                     new ResourceLocation("minecraft", "textures/item/enchanted_book.png")
             );
 
             // 连锁挖矿配置
-            enchantsCategory.addBooleanOption(
+            enchantmentsCategory.addBooleanOption(
                     Component.translatable("config.curiosities.chain_mining_enabled"),
                     ModConfigManager.CHAIN_MINING_ENABLED
             );
 
-            enchantsCategory.addIntOption(
+            enchantmentsCategory.addIntOption(
                     Component.translatable("config.curiosities.max_blocks_label"),
                     ModConfigManager.CHAIN_MINING_MAX_BLOCKS
             );
 
-            enchantsCategory.addIntOption(
+            enchantmentsCategory.addIntOption(
                     Component.translatable("config.curiosities.blocks_per_level_label"),
                     ModConfigManager.CHAIN_MINING_BLOCKS_PER_LEVEL
             );
 
-            enchantsCategory.addIntOption(
+            enchantmentsCategory.addIntOption(
                     Component.translatable("config.curiosities.harvest_range_label"),
                     ModConfigManager.CHAIN_MINING_HARVEST_RANGE
             );
 
             // 超级时运配置
-            enchantsCategory.addBooleanOption(
+            enchantmentsCategory.addBooleanOption(
                     Component.translatable("config.curiosities.super_fortune_enabled"),
                     ModConfigManager.SUPER_FORTUNE_ENABLED
             );
 
             // 道德天平配置
-            enchantsCategory.addBooleanOption(
+            enchantmentsCategory.addBooleanOption(
                     Component.translatable("config.curiosities.moral_balance_enabled"),
                     ModConfigManager.MORAL_BALANCE_ENABLED
             );
 
-            categories.add(enchantsCategory);
+            // 熟练附魔配置
+            enchantmentsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.proficiency_enabled"),
+                    ModConfigManager.PROFICIENCY_ENABLED
+            );
+
+            enchantmentsCategory.addDoubleOption(
+                    Component.translatable("config.curiosities.proficiency_attack_speed_percent_label"),
+                    ModConfigManager.PROFICIENCY_ATTACK_SPEED_PERCENT
+            );
+
+            categories.add(enchantmentsCategory);
 
             // 方块配置主分类
             ConfigCategory blocksCategory = new ConfigCategory(

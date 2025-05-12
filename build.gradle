@@ -12,6 +12,7 @@ buildscript {
 plugins {
     id 'eclipse'
     id 'idea'
+    id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
 }
 
@@ -97,6 +98,12 @@ minecraft {
         client {
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', mod_id
+            // 关键：启用热重载 Mixin 和类
+            jvmArgs '-Dfml.coreMods.load=your.core.mod.CoreModClass' // 如果有 CoreMod
+            jvmArgs '-Dmixin.hotSwap=true' // 启用 Mixin 热重载
+            jvmArgs '-Dmixin.debug.export=true' // 可选：导出 Mixin 调试信息
+            jvmArgs '-XX:+AllowEnhancedClassRedefinition' // 允许类重定义（JDK 17+）
+            jvmArgs '-XX:+IgnoreUnrecognizedVMOptions' // 忽略不支持的 JVM 选项
         }
 
         server {

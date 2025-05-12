@@ -104,18 +104,11 @@ public class ScytheItem extends SwordItem {
         int harvestRange = ModConfigManager.SCYTHE_HARVEST_RANGE.get().intValue();
         int harvestedCount = 0;
 
-        // 检查是否触发丰收之舞（先检查，再收获）
-        double harvestDanceChance = ModConfigManager.SCYTHE_HARVEST_DANCE_CHANCE.get();
-        double randomValue = RANDOM.nextDouble();
-        boolean triggerDance = randomValue < harvestDanceChance;
-
-        LOGGER.info("尝试触发丰收之舞: 概率={}, 随机值={}, 结果={}",
-                harvestDanceChance, randomValue, triggerDance ? "成功" : "失败");
-
-        // 计算范围内的方块
-        int actualRange = harvestRange - 1;
-        for (int x = -actualRange; x <= actualRange; x++) {
-            for (int z = -actualRange; z <= actualRange; z++) {
+        // 计算范围内的方块 - 修改范围计算逻辑
+        // 如果harvestRange是3，那么实际上是一个3x3的范围，即中心方块周围各1格
+        int halfRange = (harvestRange - 1) / 2;
+        for (int x = -halfRange; x <= halfRange; x++) {
+            for (int z = -halfRange; z <= halfRange; z++) {
                 BlockPos harvestPos = pos.offset(x, 0, z);
                 if (harvestCrop(serverLevel, harvestPos, player)) {
                     harvestedCount++;
@@ -123,7 +116,7 @@ public class ScytheItem extends SwordItem {
             }
         }
 
-        // 如果收获了作物，则消耗耐久度
+        // 如果收获了作物，则消耗耐久度并可能触发丰收之舞
         if (harvestedCount > 0) {
             ItemStack stack = context.getItemInHand();
             // 消耗耐久度，根据收获数量比例计算
@@ -135,6 +128,14 @@ public class ScytheItem extends SwordItem {
             // 播放音效
             level.playSound(player, player.getX(), player.getY(), player.getZ(),
                     SoundEvents.CROP_BREAK, SoundSource.BLOCKS, 1.0F, 1.0F);
+
+            // 收获后才检查是否触发丰收之舞
+            double harvestDanceChance = ModConfigManager.SCYTHE_HARVEST_DANCE_CHANCE.get();
+            double randomValue = RANDOM.nextDouble();
+            boolean triggerDance = randomValue < harvestDanceChance;
+
+            LOGGER.info("尝试触发丰收之舞: 概率={}, 随机值={}, 结果={}",
+                    harvestDanceChance, randomValue, triggerDance ? "成功" : "失败");
 
             // 触发丰收之舞
             if (triggerDance) {
@@ -245,10 +246,11 @@ public class ScytheItem extends SwordItem {
     private void triggerHarvestDance(ServerLevel level, Player player, BlockPos center) {
         // 获取配置的舞蹈范围
         int danceRange = ModConfigManager.SCYTHE_HARVEST_DANCE_RANGE.get().intValue();
-        int actualDanceRange = danceRange - 1;
+        // 修改范围计算逻辑，使用半范围
+        int halfRange = (danceRange - 1) / 2;
 
-        LOGGER.info("执行丰收之舞: 玩家={}, 中心坐标={}, 范围={}",
-                player.getName().getString(), center, danceRange);
+        LOGGER.info("执行丰收之舞: 玩家={}, 中心坐标={}, 范围={}x{}",
+                player.getName().getString(), center, danceRange, danceRange);
 
         // 播放特殊音效 - 音量更大，音调略高
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
@@ -266,11 +268,12 @@ public class ScytheItem extends SwordItem {
                         .withStyle(style -> style.withColor(ChatFormatting.GOLD).withBold(true)),
                 true);
 
-        // 在范围内生成大量粒子效果
+        // 在范围内生成大量粒子效果，使用方形范围而不是圆形
         for (int i = 0; i < 3; i++) { // 做3次螺旋
             for (int angle = 0; angle < 360; angle += 5) {
                 double radians = Math.toRadians(angle);
-                double radius = actualDanceRange * 0.8 * (i + 1) / 3.0;
+                // 使用半范围配置舞蹈范围
+                double radius = halfRange * 1.6 * (i + 1) / 3.0;
                 double x = center.getX() + 0.5 + Math.cos(radians) * radius;
                 double z = center.getZ() + 0.5 + Math.sin(radians) * radius;
 
@@ -292,10 +295,10 @@ public class ScytheItem extends SwordItem {
 
         int growthCounter = 0;
 
-        // 使周围农作物生长多个阶段
-        for (int x = -actualDanceRange; x <= actualDanceRange; x++) {
+        // 使周围农作物生长多个阶段 - 使用方形范围
+        for (int x = -halfRange; x <= halfRange; x++) {
             for (int y = -1; y <= 1; y++) {
-                for (int z = -actualDanceRange; z <= actualDanceRange; z++) {
+                for (int z = -halfRange; z <= halfRange; z++) {
                     BlockPos growPos = center.offset(x, y, z);
                     BlockState state = level.getBlockState(growPos);
                     Block block = state.getBlock();
@@ -391,20 +394,25 @@ public class ScytheItem extends SwordItem {
      */
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
+        // 检查攻击冷却是否完成，只有攻击条满时才能触发横扫
+        if (player.getAttackStrengthScale(0.5F) < 0.9F) {
+            LOGGER.info("攻击冷却未完成，不执行横扫攻击");
+            return super.onLeftClickEntity(stack, player, entity);
+        }
+        
         // 横扫范围增幅
         float sweepRangeBonus = ModConfigManager.SCYTHE_SWEEP_RANGE_BONUS.get().floatValue();
         LOGGER.info("横扫攻击: 配置范围加成={}", sweepRangeBonus);
 
-        // 如果有横扫攻击附魔，执行横扫攻击
+        // 如果有横扫攻击附魔或镰刀功能启用，执行横扫攻击
         int sweepingLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, stack);
         if (sweepingLevel > 0 || ModConfigManager.SCYTHE_ENABLED.get()) {
             // 获取范围内的所有生物
-            float baseRange = 1.0f;
-            float configRange = sweepRangeBonus;
-            float totalRange = baseRange + configRange;
+            // 修改范围计算逻辑，现在配置值表示的是总范围而不是加成
+            float totalRange = sweepRangeBonus;
 
-            LOGGER.info("横扫范围计算: 基础范围={}, 配置加成={}, 总范围={}",
-                    baseRange, configRange, totalRange);
+            LOGGER.info("横扫范围: 配置范围={}, 总范围={}",
+                    sweepRangeBonus, totalRange);
 
             Level level = player.level();
 

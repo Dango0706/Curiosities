@@ -5,6 +5,8 @@
   "enchantment.curiosities.super_fortune.desc": "效果是原版时运的1.5倍，可以与精准采集兼容",
   "enchantment.curiosities.moral_balance": "道德天平",
   "enchantment.curiosities.moral_balance.desc": "对和平生物造成伤害时，武器攻击力x2但玩家获得'罪恶'debuff；对敌对生物造成伤害时，攻击力减半但掉落物×3",
+  "enchantment.curiosities.proficiency": "熟练",
+  "enchantment.curiosities.proficiency.desc": "每级增加一定百分比的攻击速度",
   "key.curiosities.chain_mining": "连锁挖矿",
   "key.categories.gameplay": "游戏玩法",
   "config.curiosities.title": "好奇工艺模组配置",
@@ -113,7 +115,7 @@
   "item.curiosities.scythe.tooltip.harvest_range": "收获范围: %d",
   "item.curiosities.scythe.tooltip.damage_bonus": "伤害加成: %s",
   "item.curiosities.scythe.tooltip.sweep_range_bonus": "横扫范围加成: %s",
-  "item.curiosities.scythe.tooltip.harvest_dance_chance": "丰收之舞触发概率: %s%",
+  "item.curiosities.scythe.tooltip.harvest_dance_chance": "丰收之舞触发概率: %s",
   "item.curiosities.scythe.tooltip.harvest_dance_range": "丰收之舞范围: %d",
   "item.curiosities.scythe.harvest_range": "收获范围",
   "item.curiosities.scythe.damage_bonus": "伤害加成",
@@ -122,7 +124,7 @@
   "item.curiosities.scythe.harvest_dance_range": "丰收之舞触发范围",
   "item.curiosities.scythe.tooltip.harvest_crops": "右键作物可范围收获",
   "item.curiosities.scythe.tooltip.range": "收获范围: %d",
-  "item.curiosities.scythe.tooltip.harvest_dance": "丰收之舞触发概率: %s%",
+  "item.curiosities.scythe.tooltip.harvest_dance": "丰收之舞触发概率: %s",
   "item.curiosities.scythe.tooltip.dance_range": "丰收之舞范围: %d",
   "item.curiosities.scythe.tooltip.disabled": "镰刀功能已禁用",
   "message.curiosities.harvest_dance": "丰收之舞已激活！",
@@ -151,5 +153,8 @@
   "item.curiosities.screaming_pie.tooltip.disabled": "该物品功能已禁用",
   "item.curiosities.bee_grenade": "蜜蜂手雷",
   "item.curiosities.bee_grenade.tooltip.bee_count": "释放 %d 只愤怒的蜜蜂",
-  "item.curiosities.bee_grenade.tooltip.disabled": "物品已禁用"
+  "item.curiosities.bee_grenade.tooltip.disabled": "物品已禁用",
+  "config.curiosities.proficiency_section": "熟练附魔配置",
+  "config.curiosities.proficiency_enabled": "启用熟练附魔: ",
+  "config.curiosities.proficiency_attack_speed_percent_label": "每级攻击速度提升百分比: "
 }

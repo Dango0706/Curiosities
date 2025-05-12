@@ -19,7 +19,12 @@
 
 #### 附魔
 
-- 待补充
+- **熟练 (Proficiency)**
+  - 提高玩家武器的攻击速度，每级增加15%（可在配置中调整）
+  - 最高支持4级附魔
+  - 作为超级稀有附魔出现，30级附魔台最高只能附3级
+  - 可通过村民交易获得
+  - 配置选项包括是否启用以及每级攻速提升百分比
 
 #### 物品
 
@@ -92,7 +97,12 @@
 
 #### Enchantments
 
-- To be added
+- **Proficiency**
+  - Increases weapon attack speed by 15% per level (adjustable in config)
+  - Supports up to level 4
+  - Appears as a super rare enchantment, with level 30 enchanting table limited to level 3
+  - Available through villager trading
+  - Configuration options include toggle for enabling/disabling and percent increase per level
 
 #### Items
 
@@ -229,7 +239,7 @@
 
 - **Guilt**
     - Increases villager trade prices by 75% at base level
-    - Each amplifier level adds an additional 75% price increase
+  - Each amplifier level adds 75% price increase
     - Opposite effect of Hero of the Village
     - Triggered by the Moral Balance enchantment
 

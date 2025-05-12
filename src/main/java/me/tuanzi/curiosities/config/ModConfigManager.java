@@ -58,6 +58,9 @@ public class ModConfigManager {
     public static ForgeConfigSpec.DoubleValue BEE_GRENADE_HONEY_AREA_RADIUS;
     public static ForgeConfigSpec.IntValue BEE_GRENADE_HONEY_AREA_DURATION;
     public static ForgeConfigSpec.BooleanValue BEE_GRENADE_DESTROY_BLOCKS;
+    // 熟练附魔配置
+    public static ForgeConfigSpec.BooleanValue PROFICIENCY_ENABLED;
+    public static ForgeConfigSpec.DoubleValue PROFICIENCY_ATTACK_SPEED_PERCENT;
     // 状态效果配置
     // 尖叫效果配置
     public static ForgeConfigSpec.BooleanValue SCREAMING_EFFECT_ENABLED;
@@ -168,16 +171,16 @@ public class ModConfigManager {
                 .comment("镰刀伤害加成（相比于剑）")
                 .defineInRange("damage_bonus", 1.0, 0.0, 10.0);
         SCYTHE_HARVEST_RANGE = COMMON_BUILDER
-                .comment("镰刀收获范围")
+                .comment("镰刀收获范围（NxN区域，如3表示3x3范围）")
                 .defineInRange("harvest_range", 3.0, 1.0, 10.0);
         SCYTHE_SWEEP_RANGE_BONUS = COMMON_BUILDER
-                .comment("镰刀横扫范围加成")
+                .comment("镰刀横扫范围（方块数）")
                 .defineInRange("sweep_range_bonus", 1.0, 0.5, 5.0);
         SCYTHE_HARVEST_DANCE_CHANCE = COMMON_BUILDER
                 .comment("丰收之舞触发概率")
                 .defineInRange("harvest_dance_chance", 0.03, 0.0, 1.0);
         SCYTHE_HARVEST_DANCE_RANGE = COMMON_BUILDER
-                .comment("丰收之舞触发范围")
+                .comment("丰收之舞范围（NxN区域，如5表示5x5范围）")
                 .defineInRange("harvest_dance_range", 5.0, 1.0, 20.0);
         COMMON_BUILDER.pop();
 
@@ -269,6 +272,16 @@ public class ModConfigManager {
         BEE_GRENADE_DESTROY_BLOCKS = COMMON_BUILDER
                 .comment("爆炸是否破坏方块")
                 .define("destroy_blocks", false);
+        COMMON_BUILDER.pop();
+
+        // 熟练附魔配置
+        COMMON_BUILDER.comment("熟练附魔配置").push("proficiency");
+        PROFICIENCY_ENABLED = COMMON_BUILDER
+                .comment("是否启用熟练附魔")
+                .define("enabled", true);
+        PROFICIENCY_ATTACK_SPEED_PERCENT = COMMON_BUILDER
+                .comment("每级附魔增加的攻击速度百分比")
+                .defineInRange("attack_speed_percent", 15.0, 1.0, 50.0);
         COMMON_BUILDER.pop();
 
         // 状态效果配置

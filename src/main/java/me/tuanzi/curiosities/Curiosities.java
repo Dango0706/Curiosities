@@ -14,6 +14,7 @@ import me.tuanzi.curiosities.items.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
@@ -131,6 +132,16 @@ public class Curiosities {
 
                         // 添加幸运剑
                         output.accept(ModItems.LUCKY_SWORD.get());
+
+
+                        // 添加虚空吞噬之剑
+                        output.accept(ModItems.VOID_SWORD.get());
+
+                        // 添加满能量的虚空吞噬之剑用于测试
+                        ItemStack fullEnergySword = new ItemStack(ModItems.VOID_SWORD.get());
+                        CompoundTag tag = fullEnergySword.getOrCreateTag();
+                        tag.putInt("VoidEnergy", 1000); // 设置满能量
+                        output.accept(fullEnergySword);
 
 
                         // 添加蝙蝠翅膀

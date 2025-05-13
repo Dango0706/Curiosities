@@ -67,6 +67,16 @@ public class ModConfigManager {
     public static ForgeConfigSpec.IntValue SCROLL_OF_SPACETIME_COOLDOWN;
     public static ForgeConfigSpec.BooleanValue SCROLL_OF_SPACETIME_TRADEABLE;
     public static ForgeConfigSpec.IntValue SCROLL_OF_SPACETIME_DURABILITY_COST;
+    // 虚空吞噬之剑配置
+    public static ForgeConfigSpec.BooleanValue VOID_SWORD_ENABLED;
+    public static ForgeConfigSpec.IntValue VOID_SWORD_MAX_ENERGY;
+    public static ForgeConfigSpec.DoubleValue VOID_SWORD_ENERGY_PERCENT;
+    public static ForgeConfigSpec.DoubleValue VOID_SWORD_BLACK_HOLE_RANGE;
+    public static ForgeConfigSpec.DoubleValue VOID_SWORD_BLACK_HOLE_DAMAGE;
+    public static ForgeConfigSpec.IntValue VOID_SWORD_BLACK_HOLE_DURATION;
+    public static ForgeConfigSpec.IntValue VOID_SWORD_BLACK_HOLE_DAMAGE_INTERVAL;
+    public static ForgeConfigSpec.IntValue VOID_SWORD_COOLDOWN;
+    public static ForgeConfigSpec.IntValue VOID_SWORD_MAX_CAST_DISTANCE;
     // 状态效果配置
     // 尖叫效果配置
     public static ForgeConfigSpec.BooleanValue SCREAMING_EFFECT_ENABLED;
@@ -334,6 +344,37 @@ public class ModConfigManager {
         SPINNING_EFFECT_ENABLED = COMMON_BUILDER
                 .comment("是否启用天旋地转效果")
                 .define("enabled", true);
+        COMMON_BUILDER.pop();
+
+        // 虚空吞噬之剑配置
+        COMMON_BUILDER.comment("虚空吞噬之剑配置").push("void_sword");
+        VOID_SWORD_ENABLED = COMMON_BUILDER
+                .comment("是否启用虚空吞噬之剑")
+                .define("enabled", true);
+        VOID_SWORD_MAX_ENERGY = COMMON_BUILDER
+                .comment("虚空能量最大存储量")
+                .defineInRange("max_energy", 1000, 100, 10000);
+        VOID_SWORD_ENERGY_PERCENT = COMMON_BUILDER
+                .comment("击杀生物获得的生命值上限百分比")
+                .defineInRange("energy_percent", 10.0, 1.0, 100.0);
+        VOID_SWORD_BLACK_HOLE_RANGE = COMMON_BUILDER
+                .comment("黑洞吸附范围（方块）")
+                .defineInRange("black_hole_range", 10.0, 1.0, 50.0);
+        VOID_SWORD_BLACK_HOLE_DAMAGE = COMMON_BUILDER
+                .comment("黑洞造成的伤害值（设为0则使用玩家攻击力）")
+                .defineInRange("black_hole_damage", 0.0, 0.0, 100.0);
+        VOID_SWORD_BLACK_HOLE_DURATION = COMMON_BUILDER
+                .comment("黑洞持续时间（秒）")
+                .defineInRange("black_hole_duration", 10, 1, 60);
+        VOID_SWORD_BLACK_HOLE_DAMAGE_INTERVAL = COMMON_BUILDER
+                .comment("黑洞伤害间隔（秒）")
+                .defineInRange("black_hole_damage_interval", 1, 0, 10);
+        VOID_SWORD_COOLDOWN = COMMON_BUILDER
+                .comment("黑洞冷却时间（秒）")
+                .defineInRange("cooldown", 10, 0, 3600);
+        VOID_SWORD_MAX_CAST_DISTANCE = COMMON_BUILDER
+                .comment("最大施法距离（方块），设置为0则无限制")
+                .defineInRange("max_cast_distance", 10, 0, 100);
         COMMON_BUILDER.pop();
 
         COMMON_BUILDER.pop(); // effects

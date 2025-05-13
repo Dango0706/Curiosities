@@ -28,6 +28,16 @@
 
 #### 物品
 
+- **虚空吞噬之剑 (Void Devourer Sword)**
+  - 新增强力武器，拥有10点基础攻击伤害和1.6的攻击速度
+  - 特殊能力：每次击杀生物时，收集生物最大生命值的10%作为虚空能量（可在配置中调整）
+  - 积累100点虚空能量后，右键可释放黑洞效果，吸附15格内的所有生物并造成伤害
+  - 黑洞效果会使敌人悬浮、减速，并强制向玩家移动
+  - 虚空能量最大储存量为1000点（可在配置中调整）
+  - 高度可配置：能量获取百分比、黑洞范围、黑洞伤害值（设为0则使用玩家攻击力）等
+  - 所有配置均为通用配置，服务器与客户端共享
+  - 合成配方：黑曜石+末地水晶+黑曜石（上排），紫颂果+下界之星+紫颂果（中排），下届合金剑+灵魂沙+下届合金剑（下排）
+
 - **幸运剑 (Lucky Sword)**
     - 新增特殊武器，每次攻击造成随机伤害(-15~30点可配置)
     - 负数伤害会治疗目标而非造成伤害
@@ -122,6 +132,19 @@
   - Configuration options include toggle for enabling/disabling and percent increase per level
 
 #### Items
+
+- **Void Devourer Sword**
+  - New powerful weapon with 10 base attack damage and 1.6 attack speed
+  - Special ability: Collects 10% of a mob's maximum health as void energy upon killing it (configurable)
+  - After accumulating 100 void energy, right-click to release a black hole effect that pulls and damages enemies within
+    15 blocks
+  - The black hole effect causes enemies to levitate, slow down, and be forcibly pulled toward the player
+  - Maximum void energy storage of 1000 points (configurable)
+  - Highly customizable: energy gain percentage, black hole range, and black hole damage (set to 0 to use player's
+    attack damage)
+  - All configurations are common configs shared between server and client
+  - Crafting recipe: Obsidian + End Crystal + Obsidian (top row), Chorus Fruit + Nether Star + Chorus Fruit (middle
+    row), Netherite Sword + Soul Sand + Netherite Sword (bottom row)
 
 - **Lucky Sword**
     - New special weapon with random damage output (-15 to 30 points, configurable)

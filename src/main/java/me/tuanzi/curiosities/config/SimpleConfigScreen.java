@@ -264,6 +264,52 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.SCROLL_OF_SPACETIME_TRADEABLE
             );
 
+            // 虚空吞噬之剑配置
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.void_sword_enabled"),
+                    ModConfigManager.VOID_SWORD_ENABLED
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.void_sword_max_energy_label"),
+                    ModConfigManager.VOID_SWORD_MAX_ENERGY
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("config.curiosities.void_sword_energy_percent_label"),
+                    ModConfigManager.VOID_SWORD_ENERGY_PERCENT
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("config.curiosities.void_sword_black_hole_range_label"),
+                    ModConfigManager.VOID_SWORD_BLACK_HOLE_RANGE
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("config.curiosities.void_sword_black_hole_damage_label"),
+                    ModConfigManager.VOID_SWORD_BLACK_HOLE_DAMAGE
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.void_sword_black_hole_duration_label"),
+                    ModConfigManager.VOID_SWORD_BLACK_HOLE_DURATION
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.void_sword_black_hole_damage_interval_label"),
+                    ModConfigManager.VOID_SWORD_BLACK_HOLE_DAMAGE_INTERVAL
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.void_sword_cooldown_label"),
+                    ModConfigManager.VOID_SWORD_COOLDOWN
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.void_sword_max_cast_distance_label"),
+                    ModConfigManager.VOID_SWORD_MAX_CAST_DISTANCE
+            );
+
             categories.add(itemsCategory);
 
             // 状态效果配置

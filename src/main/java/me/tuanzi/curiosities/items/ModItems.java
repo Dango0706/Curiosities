@@ -7,6 +7,8 @@ import me.tuanzi.curiosities.items.rocket_boots.RocketBootsItem;
 import me.tuanzi.curiosities.items.screaming_pie.ScreamingPieItem;
 import me.tuanzi.curiosities.items.scroll_of_spacetime.ScrollOfSpacetimeItem;
 import me.tuanzi.curiosities.items.scythe.ScytheItem;
+import me.tuanzi.curiosities.items.void_sword.VoidSwordItem;
+import me.tuanzi.curiosities.items.void_sword.VoidSwordTier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tiers;
 import net.minecraftforge.registries.DeferredRegister;
@@ -63,6 +65,19 @@ public class ModItems {
     public static final RegistryObject<Item> SCREAMING_PIE = ITEMS.register(
             "screaming_pie",
             ScreamingPieItem::new
+    );
+    /**
+     * 虚空吞噬之剑
+     * 击杀生物收集虚空能量，释放黑洞吸引敌人
+     */
+    public static final RegistryObject<Item> VOID_SWORD = ITEMS.register(
+            "void_sword",
+            () -> new VoidSwordItem(
+                    VoidSwordTier.INSTANCE,
+                    3, // 攻击伤害加成
+                    -2.4F, // 攻击速度，1.6 = -2.4F
+                    new Item.Properties().fireResistant()
+            )
     );
     /**
      * 木质镰刀

@@ -61,6 +61,12 @@ public class ModConfigManager {
     // 熟练附魔配置
     public static ForgeConfigSpec.BooleanValue PROFICIENCY_ENABLED;
     public static ForgeConfigSpec.DoubleValue PROFICIENCY_ATTACK_SPEED_PERCENT;
+    // 时空卷轴配置
+    public static ForgeConfigSpec.BooleanValue SCROLL_OF_SPACETIME_ENABLED;
+    public static ForgeConfigSpec.IntValue SCROLL_OF_SPACETIME_MAX_DISTANCE;
+    public static ForgeConfigSpec.IntValue SCROLL_OF_SPACETIME_COOLDOWN;
+    public static ForgeConfigSpec.BooleanValue SCROLL_OF_SPACETIME_TRADEABLE;
+    public static ForgeConfigSpec.IntValue SCROLL_OF_SPACETIME_DURABILITY_COST;
     // 状态效果配置
     // 尖叫效果配置
     public static ForgeConfigSpec.BooleanValue SCREAMING_EFFECT_ENABLED;
@@ -282,6 +288,25 @@ public class ModConfigManager {
         PROFICIENCY_ATTACK_SPEED_PERCENT = COMMON_BUILDER
                 .comment("每级附魔增加的攻击速度百分比")
                 .defineInRange("attack_speed_percent", 15.0, 1.0, 50.0);
+        COMMON_BUILDER.pop();
+
+        // 时空卷轴配置
+        COMMON_BUILDER.comment("时空卷轴配置").push("scroll_of_spacetime");
+        SCROLL_OF_SPACETIME_ENABLED = COMMON_BUILDER
+                .comment("是否启用时空卷轴物品")
+                .define("enabled", true);
+        SCROLL_OF_SPACETIME_MAX_DISTANCE = COMMON_BUILDER
+                .comment("最大传送距离（方块）")
+                .defineInRange("max_distance", 1000, 10, 10000);
+        SCROLL_OF_SPACETIME_COOLDOWN = COMMON_BUILDER
+                .comment("冷却时间（秒）")
+                .defineInRange("cooldown", 60, 0, 3600);
+        SCROLL_OF_SPACETIME_TRADEABLE = COMMON_BUILDER
+                .comment("是否可以从村民处购买")
+                .define("tradeable", true);
+        SCROLL_OF_SPACETIME_DURABILITY_COST = COMMON_BUILDER
+                .comment("每次使用消耗的耐久度")
+                .defineInRange("durability_cost", 10, 1, 300);
         COMMON_BUILDER.pop();
 
         // 状态效果配置

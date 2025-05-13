@@ -7,8 +7,8 @@ import me.tuanzi.curiosities.enchantments.ModEnchantments;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -75,7 +75,7 @@ public class ChainMiningEnchantment extends Enchantment {
             return false;
         }
         // 只有工具类物品可以应用此附魔
-        return stack.getItem() instanceof TieredItem;
+        return stack.getItem() instanceof DiggerItem;
     }
 
     /**

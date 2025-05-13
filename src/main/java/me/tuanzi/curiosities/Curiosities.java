@@ -144,6 +144,9 @@ public class Curiosities {
                         // 添加蜜蜂手雷
                         output.accept(ModItems.BEE_GRENADE.get());
 
+                        //添加时空卷轴
+                        output.accept(ModItems.SCROLL_OF_SPACETIME.get());
+
                     })
                     .build()
     );

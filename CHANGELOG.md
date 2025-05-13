@@ -53,6 +53,23 @@
         - 控制是否破坏方块
     - 合成配方：蜂蜜块+火药+蜂蜜块（上排），蜂巢+铁锭+蜂巢（中排），空+线+空（下排）
 
+- **时空卷轴 (Scroll of Spacetime)**
+    - 由远古时空法师创造的魔法卷轴，表面流转着星云纹路
+    - 右键使用可在当前位置创建时空锚点，再次使用可瞬间传送回锚点位置
+    - Shift+右键可清除已设置的锚点
+    - 传送需要1.5秒的蓄力时间，中断使用会取消传送
+    - 传送时会消耗耐久度，默认每次消耗10点
+    - 传送有距离限制，默认最大1000格
+    - 传送后有冷却时间，默认60秒
+    - 耐久度上限为300点
+    - 增强功能：
+        - 传送不再清除锚点，可重复使用同一个锚点多次传送
+        - 当设置了锚点时，卷轴会显示附魔光泽，便于识别
+        - 传送过程中会生成多种炫酷的粒子效果，包括玩家周围和目标位置的粒子以及连接两点的粒子线
+    - 可通过配置文件调整最大传送距离、冷却时间、耐久消耗等
+    - 可设置是否能从高级牧师村民处购买获得
+    - 合成配方：末影珍珠+紫颂果+末影珍珠（上排），金锭+下界之星+金锭（中排），烈焰棒+钻石+烈焰棒（下排）
+
 #### 物品与方块
 
 - **假TNT (Fake TNT)**
@@ -132,6 +149,25 @@
         - Block damage control
     - Crafting recipe: Honey Blocks + Gunpowder + Honey Blocks (top row), Beehives + Iron Ingot + Beehives (middle row),
       Empty + String + Empty (bottom row)
+
+- **Scroll of Spacetime**
+    - Magical scroll created by ancient spacetime wizards, with cosmic nebula patterns on its surface
+    - Right-click to create a spacetime anchor at your current position, use again to teleport back
+    - Shift+Right-click to clear the set anchor
+    - Teleportation requires 1.5 second charging time, interrupting cancels the teleport
+    - Uses durability when teleporting, default cost of 10 durability points per use
+    - Has teleport distance limit, default maximum of 1000 blocks
+    - Teleportation has cooldown time, default 60 seconds
+    - Maximum durability of 300 points
+    - Enhanced features:
+        - Teleportation no longer clears the anchor, allowing repeated use of the same anchor
+        - Scrolls with anchors set display enchantment glint for easy identification
+        - Teleportation process generates various particle effects around the player, at the destination, and connecting
+          the two points
+    - Configurable maximum teleport distance, cooldown time, durability cost, etc.
+    - Can be set to be purchasable from master-level cleric villagers
+    - Crafting recipe: Ender Pearl + Chorus Fruit + Ender Pearl (top row), Gold Ingot + Nether Star + Gold Ingot (middle
+      row), Blaze Rod + Diamond + Blaze Rod (bottom row)
 
 #### Items and Blocks
 

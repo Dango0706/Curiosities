@@ -238,6 +238,32 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.BEE_GRENADE_DESTROY_BLOCKS
             );
 
+            // 时空卷轴配置
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.scroll_of_spacetime_enabled"),
+                    ModConfigManager.SCROLL_OF_SPACETIME_ENABLED
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.scroll_of_spacetime_max_distance_label"),
+                    ModConfigManager.SCROLL_OF_SPACETIME_MAX_DISTANCE
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.scroll_of_spacetime_cooldown_label"),
+                    ModConfigManager.SCROLL_OF_SPACETIME_COOLDOWN
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.scroll_of_spacetime_durability_cost_label"),
+                    ModConfigManager.SCROLL_OF_SPACETIME_DURABILITY_COST
+            );
+
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.scroll_of_spacetime_tradeable_label"),
+                    ModConfigManager.SCROLL_OF_SPACETIME_TRADEABLE
+            );
+
             categories.add(itemsCategory);
 
             // 状态效果配置

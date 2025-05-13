@@ -5,6 +5,7 @@ import me.tuanzi.curiosities.items.bee_grenade.BeeGrenadeItem;
 import me.tuanzi.curiosities.items.lucky_sword.LuckySwordItem;
 import me.tuanzi.curiosities.items.rocket_boots.RocketBootsItem;
 import me.tuanzi.curiosities.items.screaming_pie.ScreamingPieItem;
+import me.tuanzi.curiosities.items.scroll_of_spacetime.ScrollOfSpacetimeItem;
 import me.tuanzi.curiosities.items.scythe.ScytheItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tiers;
@@ -148,6 +149,14 @@ public class ModItems {
     public static final RegistryObject<Item> BEE_GRENADE = ITEMS.register(
             "bee_grenade",
             BeeGrenadeItem::new
+    );
+    /**
+     * 时空卷轴
+     * 右键使用可在当前位置创建时空锚点，再次使用可瞬间传送回锚点位置
+     */
+    public static final RegistryObject<Item> SCROLL_OF_SPACETIME = ITEMS.register(
+            "scroll_of_spacetime",
+            ScrollOfSpacetimeItem::new
     );
     private static final Logger LOGGER = LogManager.getLogger();
 } 

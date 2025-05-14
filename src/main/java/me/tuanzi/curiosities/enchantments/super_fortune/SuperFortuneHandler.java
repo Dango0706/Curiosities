@@ -124,16 +124,12 @@ public class SuperFortuneHandler {
      */
     private static float calculateMultiplier(int level) {
         // 超级时运效果是原有时运的1.5倍
-        switch (level) {
-            case 1:
-                return 1.5f; // 原版时运1的掉落是1.33倍，超级时运1是2倍
-            case 2:
-                return 2.25f; // 原版时运2的掉落是1.5倍，超级时运2是2.25倍
-            case 3:
-                return 3.0f; // 原版时运3的掉落是2倍，超级时运3是3倍
-            default:
-                return 1.0f;
-        }
+        return switch (level) {
+            case 1 -> 1.5f; // 原版时运1的掉落是1.33倍，超级时运1是2倍
+            case 2 -> 2.25f; // 原版时运2的掉落是1.5倍，超级时运2是2.25倍
+            case 3 -> 3.0f; // 原版时运3的掉落是2倍，超级时运3是3倍
+            default -> 1.0f;
+        };
     }
 
     /**

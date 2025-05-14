@@ -835,6 +835,18 @@ public class RocketBootsItem extends ArmorItem {
     }
 
     /**
+     * 返回盔甲纹理的资源路径
+     * 这是盔甲渲染的关键方法，确保穿戴时正确显示纹理
+     */
+    @Override
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+        // 返回自定义盔甲纹理的路径
+        // 盔甲纹理分为两层：layer1是主体部分，layer2是附加部分
+        // 因为火箭靴是靴子，所以使用layer1纹理
+        return Curiosities.MODID + ":textures/models/armor/rocket_boots_layer_1.png";
+    }
+
+    /**
      * 处理物品栏中的物品交互
      * 允许玩家拿着火药右键点击火箭靴来添加燃料
      */

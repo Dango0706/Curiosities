@@ -114,6 +114,11 @@ public class Curiosities {
                         // 添加火箭靴
                         output.accept(ModItems.ROCKET_BOOTS.get());
 
+                        //添加满燃料的火箭靴
+                        ItemStack fullFuelRocketBoots = new ItemStack(ModItems.ROCKET_BOOTS.get());
+                        CompoundTag rocketBootsTag = fullFuelRocketBoots.getOrCreateTag();
+                        rocketBootsTag.putInt("RocketFuel", ModConfigManager.ROCKET_BOOTS_MAX_FUEL.get()); // 设置满燃料
+                        output.accept(fullFuelRocketBoots);
 
                         // 添加镰刀物品
 
@@ -160,6 +165,7 @@ public class Curiosities {
 
                         //添加无限水桶
                         output.accept(ModItems.INFINITE_WATER_BUCKET.get());
+
 
                     })
                     .build()

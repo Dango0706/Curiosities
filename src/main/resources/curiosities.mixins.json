@@ -6,6 +6,8 @@
   "refmap": "curiosities.refmap.json",
   "mixins": [
     "BeeBehaviorMixin",
+    "EntityMixin",
+    "LivingEntityMixin",
     "VillagerTradeMixin"
   ],
   "client": [

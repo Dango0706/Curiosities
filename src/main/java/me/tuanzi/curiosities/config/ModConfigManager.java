@@ -88,6 +88,8 @@ public class ModConfigManager {
     public static ForgeConfigSpec.BooleanValue DIZZY_EFFECT_ENABLED;
     // 天旋地转效果配置
     public static ForgeConfigSpec.BooleanValue SPINNING_EFFECT_ENABLED;
+    // 瓦解之躯效果配置
+    public static ForgeConfigSpec.BooleanValue DISSOLVING_BODY_EFFECT_ENABLED;
     // 通用配置
     private static ForgeConfigSpec.Builder COMMON_BUILDER;
     private static ForgeConfigSpec COMMON_CONFIG;
@@ -346,6 +348,13 @@ public class ModConfigManager {
         COMMON_BUILDER.comment("天旋地转效果配置").push("spinning_effect");
         SPINNING_EFFECT_ENABLED = COMMON_BUILDER
                 .comment("是否启用天旋地转效果")
+                .define("enabled", true);
+        COMMON_BUILDER.pop();
+
+        // 瓦解之躯效果配置
+        COMMON_BUILDER.comment("瓦解之躯效果配置").push("dissolving_body_effect");
+        DISSOLVING_BODY_EFFECT_ENABLED = COMMON_BUILDER
+                .comment("是否启用瓦解之躯效果")
                 .define("enabled", true);
         COMMON_BUILDER.pop();
 

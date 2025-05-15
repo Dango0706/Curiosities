@@ -347,6 +347,12 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.SPINNING_EFFECT_ENABLED
             );
 
+            // 瓦解之躯效果配置
+            effectsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.dissolving_body_effect_enabled"),
+                    ModConfigManager.DISSOLVING_BODY_EFFECT_ENABLED
+            );
+
             categories.add(effectsCategory);
 
             // 附魔配置主分类

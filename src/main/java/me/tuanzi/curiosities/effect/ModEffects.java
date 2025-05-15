@@ -63,6 +63,15 @@ public class ModEffects {
     );
 
     /**
+     * 瓦解之躯效果
+     * 每等级减少2游戏刻（0.1秒）受击后伤害免疫时间
+     */
+    public static final RegistryObject<MobEffect> DISSOLVING_BODY = MOB_EFFECTS.register(
+            "dissolving_body",
+            DissolvingBodyEffect::new
+    );
+
+    /**
      * 注册所有状态效果
      *
      * @param eventBus Forge事件总线

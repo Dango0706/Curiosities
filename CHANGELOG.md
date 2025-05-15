@@ -15,6 +15,10 @@
     - 效果等级越高，旋转幅度越大
     - 使用余弦和正弦函数计算旋转角度，保持平滑旋转
     - 配置文件可启用或禁用该效果
+- **瓦解之躯效果 (Dissolving Body)**
+  - 每等级减少2游戏刻（0.1秒）受击后伤害免疫时间
+  - 使生物更容易受到连续伤害
+  - 配置文件可启用或禁用该效果
 - 待补充
 
 #### 附魔
@@ -126,6 +130,10 @@
     - Makes player camera randomly rotate while still allowing player control
     - Higher effect levels increase rotation amplitude
     - Uses cosine and sine functions for smooth rotation calculations
+  - Can be enabled or disabled in config file
+- **Dissolving Body**
+  - Each level reduces 2 game ticks (0.1 seconds) of damage immunity after being hit
+  - Makes creatures easier to take continuous damage
     - Can be enabled or disabled in config file
 - To be added
 

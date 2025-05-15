@@ -18,9 +18,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -33,6 +33,9 @@ import java.util.List;
  * 可以无限倒出水，右键收水时可以收集3x3范围的水源
  */
 public class InfiniteWaterBucketItem extends BucketItem {
+
+    // 收集范围常量，便于未来可能的配置
+    private static final int COLLECT_RANGE = 1; // 1表示3x3范围(中心点加减1)
 
     /**
      * 构造函数
@@ -53,74 +56,67 @@ public class InfiniteWaterBucketItem extends BucketItem {
         }
 
         ItemStack itemStack = player.getItemInHand(hand);
-        // 对于收集水源，我们只检测水源方块
-        BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
 
-        if (hitResult.getType() == HitResult.Type.MISS) {
-            // 如果没有命中水源，尝试放置水（检测任何流体，包括水流）
-            hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.ANY);
-            if (hitResult.getType() != HitResult.Type.BLOCK) {
-                return InteractionResultHolder.pass(itemStack);
+        // 先检查是否点击了水源方块
+        BlockHitResult hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
+        if (hitResult.getType() == HitResult.Type.BLOCK) {
+            BlockPos blockPos = hitResult.getBlockPos();
+
+            // 检查交互权限
+            if (!level.mayInteract(player, blockPos)) {
+                return InteractionResultHolder.fail(itemStack);
             }
 
+            BlockState blockState = level.getBlockState(blockPos);
+
+            // 如果点击的是水源方块，执行收集操作
+            if (blockState.getFluidState().is(FluidTags.WATER) && blockState.getFluidState().isSource()) {
+                // 收集3x3范围内的所有水源
+                int collected = collectWaterInArea(level, blockPos);
+                if (collected > 0) {
+                    // 只有成功收集水源时才播放音效
+                    level.playSound(player, player.getX(), player.getY(), player.getZ(),
+                            SoundEvents.BUCKET_FILL, SoundSource.PLAYERS, 1.0F, 1.0F);
+                    return InteractionResultHolder.success(itemStack);
+                }
+            }
+        }
+
+        // 如果没有点击水源方块或收集操作未成功，尝试放置水
+        hitResult = getPlayerPOVHitResult(level, player, ClipContext.Fluid.ANY);
+        if (hitResult.getType() == HitResult.Type.BLOCK) {
             BlockPos blockPos = hitResult.getBlockPos();
             Direction direction = hitResult.getDirection();
             BlockPos adjacentPos = blockPos.relative(direction);
 
+            // 检查交互权限
             if (!level.mayInteract(player, blockPos) || !player.mayUseItemAt(adjacentPos, direction, itemStack)) {
                 return InteractionResultHolder.fail(itemStack);
             }
-
+            
             // 尝试放置水源
-            if (tryPlaceWater(level, player, adjacentPos)) {
+            if (tryPlaceWater(level, adjacentPos)) {
                 level.playSound(player, adjacentPos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
                 return InteractionResultHolder.success(itemStack);
-            } else {
-                return InteractionResultHolder.fail(itemStack);
-            }
-        } else if (hitResult.getType() != HitResult.Type.BLOCK) {
-            return InteractionResultHolder.pass(itemStack);
-        }
-
-        BlockPos blockPos = hitResult.getBlockPos();
-        Direction direction = hitResult.getDirection();
-        BlockPos adjacentPos = blockPos.relative(direction);
-
-        if (!level.mayInteract(player, blockPos) || !player.mayUseItemAt(adjacentPos, direction, itemStack)) {
-            return InteractionResultHolder.fail(itemStack);
-        }
-
-        BlockState blockState = level.getBlockState(blockPos);
-
-        // 判断是否点击了水源方块
-        if (blockState.getBlock() instanceof BucketPickup && blockState.getFluidState().is(FluidTags.WATER)) {
-            // 收集3x3范围内的所有水源
-            collectWaterInArea(level, blockPos, player);
-            level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BUCKET_FILL, SoundSource.PLAYERS, 1.0F, 1.0F);
-            return InteractionResultHolder.success(itemStack);
-        } else {
-            // 尝试放置水源
-            if (tryPlaceWater(level, player, adjacentPos)) {
-                level.playSound(player, adjacentPos, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0F, 1.0F);
-                return InteractionResultHolder.success(itemStack);
-            } else {
-                return InteractionResultHolder.fail(itemStack);
             }
         }
+
+        return InteractionResultHolder.fail(itemStack);
     }
-
+    
     /**
      * 尝试在指定位置放置水
+     * 优化：移除player参数，简化逻辑判断
      */
-    private boolean tryPlaceWater(Level level, Player player, BlockPos pos) {
+    private boolean tryPlaceWater(Level level, BlockPos pos) {
+        if (level.isClientSide) {
+            return true; // 客户端直接返回成功，减少计算
+        }
+        
         BlockState blockState = level.getBlockState(pos);
-        // 修改判断逻辑，允许替换流动的水
-        boolean canPlace = blockState.canBeReplaced() || (blockState.getBlock() instanceof LiquidBlock && blockState.getFluidState().is(FluidTags.WATER));
-
-        if (canPlace) {
-            if (!level.isClientSide) {
-                level.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());
-            }
+        // 判断是否可以放置水
+        if (blockState.canBeReplaced() || (blockState.getBlock() instanceof LiquidBlock && blockState.getFluidState().is(FluidTags.WATER))) {
+            level.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());
             return true;
         }
         return false;
@@ -128,25 +124,38 @@ public class InfiniteWaterBucketItem extends BucketItem {
 
     /**
      * 收集指定位置周围3x3范围内的所有水源
+     * 优化：返回收集的水源数量，优化循环结构，避免重复获取方块状态
+     * @return 成功收集的水源数量
      */
-    private void collectWaterInArea(Level level, BlockPos center, Player player) {
-        if (!level.isClientSide()) {
-            // 遍历3x3x3的范围
-            for (int x = -1; x <= 1; x++) {
-                for (int y = -1; y <= 1; y++) {
-                    for (int z = -1; z <= 1; z++) {
-                        BlockPos pos = center.offset(x, y, z);
-                        BlockState state = level.getBlockState(pos);
+    private int collectWaterInArea(Level level, BlockPos center) {
+        if (level.isClientSide) {
+            return 0; // 客户端不执行实际操作
+        }
 
-                        // 检查是否为水源方块
-                        if (state.getBlock() == Blocks.WATER) {
-                            // 移除水源
-                            level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-                        }
+        int collectedCount = 0;
+        // 遍历3x3x3的范围
+        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
+
+        for (int x = -COLLECT_RANGE; x <= COLLECT_RANGE; x++) {
+            for (int y = -COLLECT_RANGE; y <= COLLECT_RANGE; y++) {
+                for (int z = -COLLECT_RANGE; z <= COLLECT_RANGE; z++) {
+                    mutablePos.set(center.getX() + x, center.getY() + y, center.getZ() + z);
+
+                    // 使用可变方块位置，减少对象创建
+                    BlockState state = level.getBlockState(mutablePos);
+                    FluidState fluidState = state.getFluidState();
+
+                    // 优化检查逻辑：直接检查流体状态是否为水源
+                    if (fluidState.is(FluidTags.WATER) && fluidState.isSource()) {
+                        // 移除水源
+                        level.setBlockAndUpdate(new BlockPos(mutablePos), Blocks.AIR.defaultBlockState());
+                        collectedCount++;
                     }
                 }
             }
         }
+
+        return collectedCount;
     }
 
     /**

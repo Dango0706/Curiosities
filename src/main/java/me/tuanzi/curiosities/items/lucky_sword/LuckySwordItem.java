@@ -63,20 +63,20 @@ public class LuckySwordItem extends SwordItem {
         // 将伤害与攻击冷却恢复比例相乘
         damage = damage * attackStrength;
 
-        LOGGER.info("幸运剑触发随机伤害: {}, 攻击强度: {}, 最终伤害: {}",
+        LOGGER.debug("幸运剑触发随机伤害: {}, 攻击强度: {}, 最终伤害: {}",
                 getRandomDamage(), attackStrength, damage);
 
         // 处理负数伤害(治疗)
         if (damage < 0 && target.isAlive()) {
             target.hurt(player.damageSources().playerAttack(player), 1);
             target.heal(-damage); // 转为正数进行治疗
-            LOGGER.info("幸运剑治疗目标: {}", -damage);
+            LOGGER.debug("幸运剑治疗目标: {}", -damage);
         }
         // 处理正数伤害(攻击)
         else if (damage > 0 && target.isAlive()) {
             // 直接应用伤害
             target.hurt(player.damageSources().playerAttack(player), damage);
-            LOGGER.info("幸运剑对目标造成伤害: {}", damage);
+            LOGGER.debug("幸运剑对目标造成伤害: {}", damage);
         }
 
         // 消耗耐久

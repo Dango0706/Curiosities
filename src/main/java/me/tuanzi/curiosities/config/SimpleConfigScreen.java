@@ -353,6 +353,16 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.DISSOLVING_BODY_EFFECT_ENABLED
             );
 
+            // 富有效果配置
+            effectsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.rich_effect_enabled"),
+                    ModConfigManager.RICH_EFFECT_ENABLED
+            );
+            effectsCategory.addIntOption(
+                    Component.translatable("config.curiosities.rich_effect_range_per_level"),
+                    ModConfigManager.RICH_EFFECT_RANGE_PER_LEVEL
+            );
+
             categories.add(effectsCategory);
 
             // 附魔配置主分类

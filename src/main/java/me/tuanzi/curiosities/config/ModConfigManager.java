@@ -90,6 +90,9 @@ public class ModConfigManager {
     public static ForgeConfigSpec.BooleanValue SPINNING_EFFECT_ENABLED;
     // 瓦解之躯效果配置
     public static ForgeConfigSpec.BooleanValue DISSOLVING_BODY_EFFECT_ENABLED;
+    // 富有效果配置
+    public static ForgeConfigSpec.BooleanValue RICH_EFFECT_ENABLED;
+    public static ForgeConfigSpec.IntValue RICH_EFFECT_RANGE_PER_LEVEL;
     // 通用配置
     private static ForgeConfigSpec.Builder COMMON_BUILDER;
     private static ForgeConfigSpec COMMON_CONFIG;
@@ -356,6 +359,16 @@ public class ModConfigManager {
         DISSOLVING_BODY_EFFECT_ENABLED = COMMON_BUILDER
                 .comment("是否启用瓦解之躯效果")
                 .define("enabled", true);
+        COMMON_BUILDER.pop();
+
+        // 富有效果配置
+        COMMON_BUILDER.comment("富有效果配置").push("rich_effect");
+        RICH_EFFECT_ENABLED = COMMON_BUILDER
+                .comment("是否启用富有效果")
+                .define("enabled", true);
+        RICH_EFFECT_RANGE_PER_LEVEL = COMMON_BUILDER
+                .comment("每级富有效果的影响范围（格）")
+                .defineInRange("range_per_level", 16, 4, 32);
         COMMON_BUILDER.pop();
 
         // 无限水桶配置

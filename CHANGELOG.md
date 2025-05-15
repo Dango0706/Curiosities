@@ -19,7 +19,11 @@
   - 每等级减少2游戏刻（0.1秒）受击后伤害免疫时间
   - 使生物更容易受到连续伤害
   - 配置文件可启用或禁用该效果
-- 待补充
+- **富有效果 (Rich)**
+  - 使附近的村民跟随玩家，并在头上显示爱心特效
+  - 影响范围根据效果等级提升，基础范围为16格，每级增加16格
+  - 村民会主动靠近并跟随拥有此效果的玩家
+  - 配置文件中可以调整每级效果的影响范围和启用/禁用该效果
 
 #### 附魔
 
@@ -31,6 +35,13 @@
   - 配置选项包括是否启用以及每级攻速提升百分比
 
 #### 物品
+
+- **富有药水 (Potion of Richness)**
+  - 新增药水系列，包括普通版本、长效版本和强效版本
+  - 提供富有效果，使村民跟随并显示爱心和绿宝石粒子
+  - 普通版本持续3分钟，长效版本持续8分钟，强效版本持续1分30秒但效果更强
+  - 支持喷溅型和滞留型变种，以及富有之箭
+  - 酿造配方：粗制的药水 + 绿宝石块 -> 富有药水，以及标准的时长和强度转换
 
 - **无限水桶 (Infinite Water Bucket)**
   - 新增特殊水桶，可以无限倒出水
@@ -134,8 +145,12 @@
 - **Dissolving Body**
   - Each level reduces 2 game ticks (0.1 seconds) of damage immunity after being hit
   - Makes creatures easier to take continuous damage
-    - Can be enabled or disabled in config file
-- To be added
+  - Can be enabled or disabled in config file
+- **Rich**
+  - Makes nearby villagers follow the player with heart particles above their heads
+  - Affected range increases with effect level, base range of 16 blocks, +16 blocks per level
+  - Villagers actively approach and follow players with this effect
+  - Range per level and toggle can be adjusted in config file
 
 #### Enchantments
 
@@ -147,6 +162,14 @@
   - Configuration options include toggle for enabling/disabling and percent increase per level
 
 #### Items
+
+- **Potion of Richness**
+  - New potion series including regular, long, and strong variants
+  - Provides Rich effect causing villagers to follow and display heart and emerald particles
+  - Regular version lasts 3 minutes, long version lasts 8 minutes, strong version lasts 1:30 but with stronger effect
+  - Supports splash and lingering variants, as well as tipped arrows
+  - Brewing recipe: Awkward Potion + Emerald Block -> Potion of Richness, plus standard duration and strength
+    conversions
 
 - **Infinite Water Bucket**
   - New special bucket that provides an unlimited water source

@@ -72,6 +72,15 @@ public class ModEffects {
     );
 
     /**
+     * 富有效果
+     * 使附近的村民跟随玩家，并让他们冒爱心和绿宝石粒子
+     */
+    public static final RegistryObject<MobEffect> RICH = MOB_EFFECTS.register(
+            "rich",
+            RichEffect::new
+    );
+
+    /**
      * 注册所有状态效果
      *
      * @param eventBus Forge事件总线

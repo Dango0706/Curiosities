@@ -11,16 +11,20 @@ import me.tuanzi.curiosities.enchantments.chain_mining.ChainMiningEventHandler;
 import me.tuanzi.curiosities.enchantments.chain_mining.ChainMiningState;
 import me.tuanzi.curiosities.entities.ModEntities;
 import me.tuanzi.curiosities.items.ModItems;
+import me.tuanzi.curiosities.potion.ModPotions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -166,7 +170,18 @@ public class Curiosities {
                         //添加无限水桶
                         output.accept(ModItems.INFINITE_WATER_BUCKET.get());
 
+                        // 添加富有药水
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.RICH.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.LONG_RICH.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.STRONG_RICH.get()));
 
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.RICH.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.LONG_RICH.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.STRONG_RICH.get()));
+
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.RICH.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.LONG_RICH.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.STRONG_RICH.get()));
                     })
                     .build()
     );
@@ -207,6 +222,9 @@ public class Curiosities {
 
         // 注册状态效果
         ModEffects.MOB_EFFECTS.register(modEventBus);
+
+        // 注册药水
+        ModPotions.POTIONS.register(modEventBus);
 
         // 注册事件监听器
         registerEventListeners();
@@ -268,8 +286,57 @@ public class Curiosities {
 
             // 注册狼牙土豆合成配方
             registerWolfFangPotatoRecipe();
+
+            // 注册药水酿造配方
+            registerBrewingRecipes();
         });
         LOGGER.info("通用设置完成");
+    }
+
+    /**
+     * 注册药水酿造配方
+     */
+    private void registerBrewingRecipes() {
+        // 富有药水酿造配方
+        // 普通版本：尴尬的药水 + 绿宝石块 -> 富有药水
+        ItemStack awkwardInput = PotionUtils.setPotion(new ItemStack(Items.POTION), net.minecraft.world.item.alchemy.Potions.AWKWARD);
+        ItemStack richOutput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.RICH.get());
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(awkwardInput), Ingredient.of(Items.EMERALD_BLOCK), richOutput);
+
+        // 长效版本：普通富有药水 + 红石 -> 长效富有药水
+        ItemStack richInput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.RICH.get());
+        ItemStack longRichOutput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.LONG_RICH.get());
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(richInput), Ingredient.of(Items.REDSTONE), longRichOutput);
+
+        // 强效版本：普通富有药水 + 荧石粉 -> 强效富有药水
+        ItemStack strongRichOutput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.STRONG_RICH.get());
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(richInput), Ingredient.of(Items.GLOWSTONE_DUST), strongRichOutput);
+
+        // 喷溅型药水配方
+        ItemStack richSplashOutput = PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.RICH.get());
+        ItemStack longRichSplashOutput = PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.LONG_RICH.get());
+        ItemStack strongRichSplashOutput = PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.STRONG_RICH.get());
+
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), net.minecraft.world.item.alchemy.Potions.AWKWARD)),
+                Ingredient.of(Items.EMERALD_BLOCK), richSplashOutput);
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.RICH.get())),
+                Ingredient.of(Items.REDSTONE), longRichSplashOutput);
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.RICH.get())),
+                Ingredient.of(Items.GLOWSTONE_DUST), strongRichSplashOutput);
+
+        // 滞留型药水配方
+        ItemStack richLingeringOutput = PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.RICH.get());
+        ItemStack longRichLingeringOutput = PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.LONG_RICH.get());
+        ItemStack strongRichLingeringOutput = PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.STRONG_RICH.get());
+
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), net.minecraft.world.item.alchemy.Potions.AWKWARD)),
+                Ingredient.of(Items.EMERALD_BLOCK), richLingeringOutput);
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.RICH.get())),
+                Ingredient.of(Items.REDSTONE), longRichLingeringOutput);
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.RICH.get())),
+                Ingredient.of(Items.GLOWSTONE_DUST), strongRichLingeringOutput);
+
+        LOGGER.info("已注册富有药水的酿造配方");
     }
 
     /**
@@ -290,7 +357,6 @@ public class Curiosities {
      * 注册自定义材料类型
      */
     private void registerIngredientTypes() {
-        // 注册附魔书材料类型
         CraftingHelper.register(
                 EnchantedBookIngredient.TYPE,
                 EnchantedBookIngredient.Serializer.INSTANCE

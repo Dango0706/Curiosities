@@ -105,7 +105,7 @@ public class RocketBootsItem extends ArmorItem {
                     serverPlayer.hurtMarked = false;
                 }
 
-                LOGGER.info("[火箭靴] 玩家 {} 火箭靴降落，取消摔落伤害", player.getName().getString());
+                LOGGER.debug("[火箭靴] 玩家 {} 火箭靴降落，取消摔落伤害", player.getName().getString());
             }
         }
     }
@@ -133,7 +133,7 @@ public class RocketBootsItem extends ArmorItem {
                         serverPlayer.hurtMarked = false;
                     }
 
-                    LOGGER.info("[火箭靴] 玩家 {} 在下落过程中受伤，阻止再次触发火箭跳跃", player.getName().getString());
+                    LOGGER.debug("[火箭靴] 玩家 {} 在下落过程中受伤，阻止再次触发火箭跳跃", player.getName().getString());
                 }
             }
         }
@@ -167,7 +167,7 @@ public class RocketBootsItem extends ArmorItem {
             // 取消Y轴速度，阻止普通跳跃
             Vec3 motion = player.getDeltaMovement();
             player.setDeltaMovement(motion.x, 0, motion.z);
-            LOGGER.info("拦截到玩家 {} 的跳跃事件，{}，已阻止普通跳跃",
+            LOGGER.debug("拦截到玩家 {} 的跳跃事件，{}，已阻止普通跳跃",
                     player.getName().getString(),
                     player.isCrouching() ? "玩家正在蹲下" : "正在蓄力");
 
@@ -176,7 +176,7 @@ public class RocketBootsItem extends ArmorItem {
                 jumpCaptured.put(playerId, System.currentTimeMillis());
                 playerJumpStates.put(playerId, true);
                 jumpStartTimes.put(playerId, System.currentTimeMillis());
-                LOGGER.info("玩家 {} 蹲下跳跃，记录跳跃开始时间", player.getName().getString());
+                LOGGER.debug("玩家 {} 蹲下跳跃，记录跳跃开始时间", player.getName().getString());
             }
         }
     }
@@ -347,7 +347,7 @@ public class RocketBootsItem extends ArmorItem {
         boolean isJumpKeyPressed = detectJumpIntent(player) && isCrouching;
 
         // 调试日志
-        LOGGER.info("玩家 {} 状态: 在地面={}, 蹲下={}, 跳跃键按下={}, 跳跃+蹲下={}, 蓄力中={}",
+        LOGGER.debug("玩家 {} 状态: 在地面={}, 蹲下={}, 跳跃键按下={}, 跳跃+蹲下={}, 蓄力中={}",
                 player.getName().getString(),
                 onGround,
                 isCrouching,
@@ -367,12 +367,12 @@ public class RocketBootsItem extends ArmorItem {
                 Vec3 motion = player.getDeltaMovement();
                 if (motion.y > 0) {
                     player.setDeltaMovement(motion.x, 0, motion.z);
-                    LOGGER.info("玩家 {} 初次跳跃被抑制，Y轴速度已归零", player.getName().getString());
+                    LOGGER.debug("玩家 {} 初次跳跃被抑制，Y轴速度已归零", player.getName().getString());
                 }
 
                 // 记录该跳跃已被捕获
                 jumpCaptured.put(playerId, currentTime);
-                LOGGER.info("玩家 {} 蹲下跳跃，已捕获并开始跟踪", player.getName().getString());
+                LOGGER.debug("玩家 {} 蹲下跳跃，已捕获并开始跟踪", player.getName().getString());
             }
             // 继续按住跳跃键
             else if (jumpStartTimes.containsKey(playerId)) {
@@ -380,14 +380,14 @@ public class RocketBootsItem extends ArmorItem {
 
                 // 打印按压时间
                 if (pressTime % 100 == 0) { // 降低日志量
-                    LOGGER.info("玩家 {} 蹲下持续按压跳跃键 {}ms, 阈值={}ms",
+                    LOGGER.debug("玩家 {} 蹲下持续按压跳跃键 {}ms, 阈值={}ms",
                             player.getName().getString(), pressTime, JUMP_THRESHOLD);
                 }
 
                 // 超过阈值且未开始蓄力，开始蓄力
                 if (pressTime > JUMP_THRESHOLD && !chargingPlayers.containsKey(playerId) && canJump(stack)) {
                     chargingPlayers.put(playerId, currentTime);
-                    LOGGER.info("玩家 {} 开始蓄力", player.getName().getString());
+                    LOGGER.debug("玩家 {} 开始蓄力", player.getName().getString());
                     player.displayClientMessage(Component.translatable("message.curiosities.rocket_boots.charging")
                             .withStyle(ChatFormatting.YELLOW), true);
                 }
@@ -399,7 +399,7 @@ public class RocketBootsItem extends ArmorItem {
 
                     // 记录蓄力进度
                     if (chargingTime % 200 == 0) {  // 每200ms记录一次，避免日志过多
-                        LOGGER.info("玩家 {} 蓄力中: 时间={}ms, 进度={}%",
+                        LOGGER.debug("玩家 {} 蓄力中: 时间={}ms, 进度={}%",
                                 player.getName().getString(), chargingTime, Math.round(chargeProgress * 100));
 
                     }
@@ -429,7 +429,7 @@ public class RocketBootsItem extends ArmorItem {
         else if (((!detectJumpIntent(player) || !isCrouching) && wasJumping)) {
             playerJumpStates.put(playerId, false);
             String reason = !detectJumpIntent(player) ? "松开跳跃键" : "停止蹲下";
-            LOGGER.info("玩家 {} 结束跳跃蓄力，原因: {}", player.getName().getString(), reason);
+            LOGGER.debug("玩家 {} 结束跳跃蓄力，原因: {}", player.getName().getString(), reason);
 
             // 如果有蓄力记录，触发火箭跳跃
             if (chargingPlayers.containsKey(playerId)) {
@@ -441,10 +441,10 @@ public class RocketBootsItem extends ArmorItem {
 
                 // 如果蓄力时间足够并且在地面上，触发火箭跳跃
                 if (chargingTime >= 200 && onGround && canJump(stack)) {
-                    LOGGER.info("玩家 {} 触发火箭跳跃, 蓄力时间={}ms", player.getName().getString(), chargingTime);
+                    LOGGER.debug("玩家 {} 触发火箭跳跃, 蓄力时间={}ms", player.getName().getString(), chargingTime);
                     triggerRocketJump((ServerPlayer) player, stack, chargingTime);
                 } else {
-                    LOGGER.info("玩家 {} 中断蓄力, 条件不满足: 蓄力时间={}ms, 在地面={}, 燃料足够={}",
+                    LOGGER.debug("玩家 {} 中断蓄力, 条件不满足: 蓄力时间={}ms, 在地面={}, 燃料足够={}",
                             player.getName().getString(), chargingTime, onGround, canJump(stack));
                 }
             }
@@ -483,7 +483,7 @@ public class RocketBootsItem extends ArmorItem {
         if (previouslyOnGround && !currentlyOnGround && motion.y > 0.1) {
             // 记录该跳跃已被捕获
             jumpCaptured.put(playerId, System.currentTimeMillis());
-            LOGGER.info("玩家 {} 刚离开地面，Y轴速度={}, 判定为跳跃", player.getName().getString(), motion.y);
+            LOGGER.debug("玩家 {} 刚离开地面，Y轴速度={}, 判定为跳跃", player.getName().getString(), motion.y);
             return true;
         }
 
@@ -524,7 +524,7 @@ public class RocketBootsItem extends ArmorItem {
         // 记录用于日志的估计跳跃高度
         float estimatedBlocks = (jumpStrength * jumpStrength) / 0.16f;
 
-        LOGGER.info("[火箭靴] 触发火箭跳跃，蓄力进度: {}%, 计算跳跃强度: {}, 估计高度: {}格",
+        LOGGER.debug("[火箭靴] 触发火箭跳跃，蓄力进度: {}%, 计算跳跃强度: {}, 估计高度: {}格",
                 Math.round(chargeProgress * 100), jumpStrength, estimatedBlocks);
 
         // 消耗燃料
@@ -588,12 +588,12 @@ public class RocketBootsItem extends ArmorItem {
 
                 // 每10tick记录一次状态
                 if (tick % 10 == 0 || tick == 2) {
-                    LOGGER.info("[火箭靴] 上升状态: tick={}, 位置Y={}, 上升={}, 当前速度=({},{},{})",
+                    LOGGER.debug("[火箭靴] 上升状态: tick={}, 位置Y={}, 上升={}, 当前速度=({},{},{})",
                             tick, currentY, currentY - startY,
                             currentMotion.x, currentMotion.y, currentMotion.z);
 
                     // 同时记录当前高度对应的方块数
-                    LOGGER.info("[火箭靴] 当前高度: {}格, Y轴速度: {}",
+                    LOGGER.debug("[火箭靴] 当前高度: {}格, Y轴速度: {}",
                             Math.round(currentY - startY), currentMotion.y);
                 }
 
@@ -614,7 +614,7 @@ public class RocketBootsItem extends ArmorItem {
                     // 再次同步到客户端
                     player.connection.resetPosition();
 
-                    LOGGER.info("[火箭靴] 应用额外推力: tick={}, 位置Y={}, 上升={}, 原速度Y={}, 新速度Y={}",
+                    LOGGER.debug("[火箭靴] 应用额外推力: tick={}, 位置Y={}, 上升={}, 原速度Y={}, 新速度Y={}",
                             tick, currentY, currentY - startY, currentMotion.y, boostStrength);
 
                     // 每5tick更新一次粒子效果
@@ -665,14 +665,14 @@ public class RocketBootsItem extends ArmorItem {
         jumpInfo.ticks++;
 
         if (jumpInfo.ticks % 20 == 0) { // 每秒记录一次
-            LOGGER.info("[火箭靴] 跳跃状态: 当前高度={}, 已上升={}格, 最大高度={}格, Y轴速度={}, tick={}",
+            LOGGER.debug("[火箭靴] 跳跃状态: 当前高度={}, 已上升={}格, 最大高度={}格, Y轴速度={}, tick={}",
                     player.getY(), Math.round(jumpHeight), Math.round(maxHeight), player.getDeltaMovement().y, jumpInfo.ticks);
         }
 
         // 如果玩家已经开始下落但不在下降状态，设置为下降状态
         if (player.getDeltaMovement().y < 0 && !jumpInfo.isDescending && jumpInfo.ticks > 20) {
             jumpInfo.isDescending = true;
-            LOGGER.info("[火箭靴] 玩家 {} 开始下降，当前高度 {}格, 上升高度 {}格",
+            LOGGER.debug("[火箭靴] 玩家 {} 开始下降，当前高度 {}格, 上升高度 {}格",
                     player.getName().getString(), Math.round(player.getY()), Math.round(jumpHeight));
         }
 
@@ -680,7 +680,7 @@ public class RocketBootsItem extends ArmorItem {
         if (jumpHeight >= maxHeight && !jumpInfo.isDescending) {
             // 如果到达最大高度，开始缓降
             jumpInfo.isDescending = true;
-            LOGGER.info("[火箭靴] 玩家 {} 达到最大高度 {}格, 开始缓降",
+            LOGGER.debug("[火箭靴] 玩家 {} 达到最大高度 {}格, 开始缓降",
                     player.getName().getString(), Math.round(jumpHeight));
         }
 
@@ -713,7 +713,7 @@ public class RocketBootsItem extends ArmorItem {
         // 如果玩家落地或跳跃时间过长，移除跳跃状态
         if (player.onGround() || (System.currentTimeMillis() - jumpInfo.startTime > 30000)) {
             String reason = player.onGround() ? "玩家落地" : "超时";
-            LOGGER.info("[火箭靴] 结束火箭跳跃 - 原因: {}, 总持续时间: {}ms, 最终高度: {}格, 上升高度: {}格",
+            LOGGER.debug("[火箭靴] 结束火箭跳跃 - 原因: {}, 总持续时间: {}ms, 最终高度: {}格, 上升高度: {}格",
                     reason, System.currentTimeMillis() - jumpInfo.startTime,
                     Math.round(player.getY()), Math.round(player.getY() - jumpInfo.startY));
 

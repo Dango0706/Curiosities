@@ -264,6 +264,12 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.SCROLL_OF_SPACETIME_TRADEABLE
             );
 
+            // 无限水桶配置
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.infinite_water_bucket_enabled"),
+                    ModConfigManager.INFINITE_WATER_BUCKET_ENABLED
+            );
+            
             // 虚空吞噬之剑配置
             itemsCategory.addBooleanOption(
                     Component.translatable("config.curiosities.void_sword_enabled"),

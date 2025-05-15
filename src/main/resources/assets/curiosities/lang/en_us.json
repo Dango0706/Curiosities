@@ -153,5 +153,9 @@
   "config.curiosities.void_sword_black_hole_duration_label": "Black Hole Duration (seconds): ",
   "config.curiosities.void_sword_black_hole_damage_interval_label": "Black Hole Damage Interval (seconds): ",
   "config.curiosities.void_sword_cooldown_label": "Black Hole Skill Cooldown (seconds): ",
-  "config.curiosities.void_sword_max_cast_distance_label": "Maximum Cast Distance (blocks, 0 for unlimited): "
+  "config.curiosities.void_sword_max_cast_distance_label": "Maximum Cast Distance (blocks, 0 for unlimited): ",
+  "config.curiosities.infinite_water_bucket_section": "Infinite Water Bucket Configuration",
+  "config.curiosities.infinite_water_bucket_enabled": "Enable Infinite Water Bucket: ",
+  "item.curiosities.infinite_water_bucket": "Infinite Water Bucket",
+  "item.curiosities.infinite_water_bucket.desc": "An infinite source of water, right-click on water to collect a 3x3 area."
 }

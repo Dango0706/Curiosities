@@ -173,5 +173,13 @@ public class ModItems {
             "scroll_of_spacetime",
             ScrollOfSpacetimeItem::new
     );
+    /**
+     * 无限水桶
+     * 可无限倒出水，右键收水时可以收集3x3范围的水源
+     */
+    public static final RegistryObject<Item> INFINITE_WATER_BUCKET = ITEMS.register(
+            "infinite_water_bucket",
+            InfiniteWaterBucketItem::new
+    );
     private static final Logger LOGGER = LogManager.getLogger();
 } 

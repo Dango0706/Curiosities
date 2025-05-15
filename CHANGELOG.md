@@ -28,6 +28,13 @@
 
 #### 物品
 
+- **无限水桶 (Infinite Water Bucket)**
+  - 新增特殊水桶，可以无限倒出水
+  - 右键点击水源时，会收集3x3范围内的所有水源
+  - 与原版水桶使用逻辑相同，但永远不会消耗
+  - 合成配方：海晶碎片+海绵围绕一个水桶
+  - 可在配置文件中启用或禁用该功能
+
 - **虚空吞噬之剑 (Void Devourer Sword)**
   - 新增强力武器，拥有10点基础攻击伤害和1.6的攻击速度
   - 特殊能力：每次击杀生物时，收集生物最大生命值的10%作为虚空能量（可在配置中调整）
@@ -132,6 +139,13 @@
   - Configuration options include toggle for enabling/disabling and percent increase per level
 
 #### Items
+
+- **Infinite Water Bucket**
+  - New special bucket that provides an unlimited water source
+  - Right-clicking on water collects all water sources in a 3x3 range
+  - Works with the same logic as the vanilla bucket, but never gets consumed
+  - Crafting recipe: Prismarine Shards + Sponges surrounding a Water Bucket
+  - Can be disabled in the config file
 
 - **Void Devourer Sword**
   - New powerful weapon with 10 base attack damage and 1.6 attack speed

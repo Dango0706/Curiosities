@@ -158,6 +158,9 @@ public class Curiosities {
                         //添加时空卷轴
                         output.accept(ModItems.SCROLL_OF_SPACETIME.get());
 
+                        //添加无限水桶
+                        output.accept(ModItems.INFINITE_WATER_BUCKET.get());
+
                     })
                     .build()
     );

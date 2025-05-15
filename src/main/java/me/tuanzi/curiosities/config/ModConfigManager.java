@@ -77,6 +77,9 @@ public class ModConfigManager {
     public static ForgeConfigSpec.IntValue VOID_SWORD_BLACK_HOLE_DAMAGE_INTERVAL;
     public static ForgeConfigSpec.IntValue VOID_SWORD_COOLDOWN;
     public static ForgeConfigSpec.IntValue VOID_SWORD_MAX_CAST_DISTANCE;
+    // 无限水桶配置
+    public static ForgeConfigSpec.BooleanValue INFINITE_WATER_BUCKET_ENABLED;
+    
     // 状态效果配置
     // 尖叫效果配置
     public static ForgeConfigSpec.BooleanValue SCREAMING_EFFECT_ENABLED;
@@ -346,6 +349,13 @@ public class ModConfigManager {
                 .define("enabled", true);
         COMMON_BUILDER.pop();
 
+        // 无限水桶配置
+        COMMON_BUILDER.comment("无限水桶配置").push("infinite_water_bucket");
+        INFINITE_WATER_BUCKET_ENABLED = COMMON_BUILDER
+                .comment("是否启用无限水桶")
+                .define("enabled", true);
+        COMMON_BUILDER.pop();
+        
         // 虚空吞噬之剑配置
         COMMON_BUILDER.comment("虚空吞噬之剑配置").push("void_sword");
         VOID_SWORD_ENABLED = COMMON_BUILDER

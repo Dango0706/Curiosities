@@ -199,5 +199,9 @@
   "config.curiosities.void_sword_black_hole_duration_label": "黑洞持续时间(秒): ",
   "config.curiosities.void_sword_black_hole_damage_interval_label": "黑洞伤害间隔(秒): ",
   "config.curiosities.void_sword_cooldown_label": "黑洞技能冷却时间(秒): ",
-  "config.curiosities.void_sword_max_cast_distance_label": "最大施法距离(格,0为无限制): "
+  "config.curiosities.void_sword_max_cast_distance_label": "最大施法距离(格,0为无限制): ",
+  "config.curiosities.infinite_water_bucket_section": "无限水桶配置",
+  "config.curiosities.infinite_water_bucket_enabled": "启用无限水桶: ",
+  "item.curiosities.infinite_water_bucket": "无限水桶",
+  "item.curiosities.infinite_water_bucket.desc": "无限的水源，右键点击水源可以收集3x3范围内的所有水。"
 }

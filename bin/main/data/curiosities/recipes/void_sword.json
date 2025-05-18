@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "OSO",
+    "PNP",
+    "AGA"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "S": {
+      "item": "minecraft:end_crystal"
+    },
+    "P": {
+      "item": "minecraft:chorus_fruit"
+    },
+    "N": {
+      "item": "minecraft:nether_star"
+    },
+    "A": {
+      "item": "minecraft:netherite_sword"
+    },
+    "G": {
+      "item": "minecraft:soul_sand"
+    }
+  },
+  "result": {
+    "item": "curiosities:void_sword",
+    "count": 1
+  }
+} 

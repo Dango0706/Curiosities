@@ -6,6 +6,8 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import org.slf4j.Logger;
 
+import java.util.Map;
+
 /**
  * 配置管理器
  * 统一管理所有模组配置
@@ -72,6 +74,7 @@ public class ModConfigManager {
     public static ForgeConfigSpec.IntValue VOID_SWORD_MAX_ENERGY;
     public static ForgeConfigSpec.DoubleValue VOID_SWORD_ENERGY_PERCENT;
     public static ForgeConfigSpec.DoubleValue VOID_SWORD_BLACK_HOLE_RANGE;
+
     public static ForgeConfigSpec.DoubleValue VOID_SWORD_BLACK_HOLE_DAMAGE;
     public static ForgeConfigSpec.IntValue VOID_SWORD_BLACK_HOLE_DURATION;
     public static ForgeConfigSpec.IntValue VOID_SWORD_BLACK_HOLE_DAMAGE_INTERVAL;
@@ -93,6 +96,13 @@ public class ModConfigManager {
     // 富有效果配置
     public static ForgeConfigSpec.BooleanValue RICH_EFFECT_ENABLED;
     public static ForgeConfigSpec.IntValue RICH_EFFECT_RANGE_PER_LEVEL;
+
+    // 原版修改配置
+    // 一些配置
+    public static ForgeConfigSpec.BooleanValue VANILLA_MODIFICATIONS_ENABLED;
+    public static ForgeConfigSpec.BooleanValue IMPROVED_VILLAGER_TRADES_ENABLED;
+    public static ForgeConfigSpec.BooleanValue ENHANCED_ANVIL_ENABLED;
+    public static ForgeConfigSpec.IntValue ENHANCED_ANVIL_MAX_REPAIR_COST;
     // 通用配置
     private static ForgeConfigSpec.Builder COMMON_BUILDER;
     private static ForgeConfigSpec COMMON_CONFIG;
@@ -409,6 +419,31 @@ public class ModConfigManager {
                 .defineInRange("max_cast_distance", 10, 0, 100);
         COMMON_BUILDER.pop();
 
+        // 原版修改配置
+        COMMON_BUILDER.comment("原版修改配置").push("vanilla_modifications");
+        VANILLA_MODIFICATIONS_ENABLED = COMMON_BUILDER
+                .comment("是否启用原版修改功能")
+                .define("enabled", true);
+
+        // 村民交易改进
+        COMMON_BUILDER.comment("村民交易改进").push("improved_villager_trades");
+        IMPROVED_VILLAGER_TRADES_ENABLED = COMMON_BUILDER
+                .comment("是否启用村民交易改进（增加稀有物品交易概率）")
+                .define("enabled", true);
+        COMMON_BUILDER.pop();
+
+        // 铁砧改进
+        COMMON_BUILDER.comment("铁砧改进").push("enhanced_anvil");
+        ENHANCED_ANVIL_ENABLED = COMMON_BUILDER
+                .comment("是否启用铁砧改进（提高铁砧使用次数上限）")
+                .define("enabled", true);
+        ENHANCED_ANVIL_MAX_REPAIR_COST = COMMON_BUILDER
+                .comment("铁砧最大修复成本（原版为40）")
+                .defineInRange("max_repair_cost", 100, 40, 1000);
+        COMMON_BUILDER.pop();
+
+        COMMON_BUILDER.pop(); // vanilla_modifications
+
         COMMON_BUILDER.pop(); // effects
 
         COMMON_BUILDER.pop(); // common
@@ -437,5 +472,181 @@ public class ModConfigManager {
 
         SERVER_BUILDER.pop();
         SERVER_CONFIG = SERVER_BUILDER.build();
+    }
+
+    /**
+     * 在客户端应用从服务器接收的配置
+     *
+     * @param booleanConfigs 布尔值配置映射
+     * @param intConfigs     整数配置映射
+     * @param doubleConfigs  浮点数配置映射
+     */
+    public static void applyServerConfig(Map<String, Boolean> booleanConfigs, Map<String, Integer> intConfigs, Map<String, Double> doubleConfigs) {
+        LOGGER.info("应用服务端配置到客户端...");
+
+        // 应用布尔值配置
+        if (booleanConfigs.containsKey("chain_mining_enabled")) {
+            CHAIN_MINING_ENABLED.set(booleanConfigs.get("chain_mining_enabled"));
+        }
+        if (booleanConfigs.containsKey("super_fortune_enabled")) {
+            SUPER_FORTUNE_ENABLED.set(booleanConfigs.get("super_fortune_enabled"));
+        }
+        if (booleanConfigs.containsKey("wolf_fang_potato_enabled")) {
+            WOLF_FANG_POTATO_ENABLED.set(booleanConfigs.get("wolf_fang_potato_enabled"));
+        }
+        if (booleanConfigs.containsKey("scythe_enabled")) {
+            SCYTHE_ENABLED.set(booleanConfigs.get("scythe_enabled"));
+            LOGGER.info("镰刀已{}启用", SCYTHE_ENABLED.get() ? "" : "禁");
+        }
+        if (booleanConfigs.containsKey("rocket_boots_enabled")) {
+            ROCKET_BOOTS_ENABLED.set(booleanConfigs.get("rocket_boots_enabled"));
+        }
+        if (booleanConfigs.containsKey("moral_balance_enabled")) {
+            MORAL_BALANCE_ENABLED.set(booleanConfigs.get("moral_balance_enabled"));
+        }
+        if (booleanConfigs.containsKey("fake_tnt_enabled")) {
+            FAKE_TNT_ENABLED.set(booleanConfigs.get("fake_tnt_enabled"));
+        }
+        if (booleanConfigs.containsKey("lucky_sword_enabled")) {
+            LUCKY_SWORD_ENABLED.set(booleanConfigs.get("lucky_sword_enabled"));
+        }
+        if (booleanConfigs.containsKey("screaming_pie_enabled")) {
+            SCREAMING_PIE_ENABLED.set(booleanConfigs.get("screaming_pie_enabled"));
+        }
+        if (booleanConfigs.containsKey("bat_wing_enabled")) {
+            BAT_WING_ENABLED.set(booleanConfigs.get("bat_wing_enabled"));
+        }
+        if (booleanConfigs.containsKey("bee_grenade_enabled")) {
+            BEE_GRENADE_ENABLED.set(booleanConfigs.get("bee_grenade_enabled"));
+        }
+        if (booleanConfigs.containsKey("bee_grenade_player_friendly")) {
+            BEE_GRENADE_PLAYER_FRIENDLY.set(booleanConfigs.get("bee_grenade_player_friendly"));
+        }
+        if (booleanConfigs.containsKey("bee_grenade_honey_slowness_area_enabled")) {
+            BEE_GRENADE_HONEY_SLOWNESS_AREA_ENABLED.set(booleanConfigs.get("bee_grenade_honey_slowness_area_enabled"));
+        }
+        if (booleanConfigs.containsKey("bee_grenade_destroy_blocks")) {
+            BEE_GRENADE_DESTROY_BLOCKS.set(booleanConfigs.get("bee_grenade_destroy_blocks"));
+        }
+        if (booleanConfigs.containsKey("proficiency_enabled")) {
+            PROFICIENCY_ENABLED.set(booleanConfigs.get("proficiency_enabled"));
+        }
+        if (booleanConfigs.containsKey("scroll_of_spacetime_enabled")) {
+            SCROLL_OF_SPACETIME_ENABLED.set(booleanConfigs.get("scroll_of_spacetime_enabled"));
+        }
+        if (booleanConfigs.containsKey("scroll_of_spacetime_tradeable")) {
+            SCROLL_OF_SPACETIME_TRADEABLE.set(booleanConfigs.get("scroll_of_spacetime_tradeable"));
+        }
+        if (booleanConfigs.containsKey("void_sword_enabled")) {
+            VOID_SWORD_ENABLED.set(booleanConfigs.get("void_sword_enabled"));
+        }
+        if (booleanConfigs.containsKey("infinite_water_bucket_enabled")) {
+            INFINITE_WATER_BUCKET_ENABLED.set(booleanConfigs.get("infinite_water_bucket_enabled"));
+        }
+
+        // 应用整数配置
+        if (intConfigs.containsKey("chain_mining_max_blocks")) {
+            CHAIN_MINING_MAX_BLOCKS.set(intConfigs.get("chain_mining_max_blocks"));
+        }
+        if (intConfigs.containsKey("chain_mining_blocks_per_level")) {
+            CHAIN_MINING_BLOCKS_PER_LEVEL.set(intConfigs.get("chain_mining_blocks_per_level"));
+        }
+        if (intConfigs.containsKey("chain_mining_harvest_range")) {
+            CHAIN_MINING_HARVEST_RANGE.set(intConfigs.get("chain_mining_harvest_range"));
+        }
+        if (intConfigs.containsKey("rocket_boots_fuel_consumption")) {
+            ROCKET_BOOTS_FUEL_CONSUMPTION.set(intConfigs.get("rocket_boots_fuel_consumption"));
+        }
+        if (intConfigs.containsKey("rocket_boots_max_fuel")) {
+            ROCKET_BOOTS_MAX_FUEL.set(intConfigs.get("rocket_boots_max_fuel"));
+        }
+        if (intConfigs.containsKey("screaming_pie_slow_falling_duration")) {
+            SCREAMING_PIE_SLOW_FALLING_DURATION.set(intConfigs.get("screaming_pie_slow_falling_duration"));
+        }
+        if (intConfigs.containsKey("screaming_pie_screaming_duration")) {
+            SCREAMING_PIE_SCREAMING_DURATION.set(intConfigs.get("screaming_pie_screaming_duration"));
+        }
+        if (intConfigs.containsKey("bee_grenade_bee_count")) {
+            BEE_GRENADE_BEE_COUNT.set(intConfigs.get("bee_grenade_bee_count"));
+        }
+        if (intConfigs.containsKey("bee_grenade_bee_lifetime")) {
+            BEE_GRENADE_BEE_LIFETIME.set(intConfigs.get("bee_grenade_bee_lifetime"));
+        }
+        if (intConfigs.containsKey("bee_grenade_honey_area_duration")) {
+            BEE_GRENADE_HONEY_AREA_DURATION.set(intConfigs.get("bee_grenade_honey_area_duration"));
+        }
+        if (intConfigs.containsKey("scroll_of_spacetime_max_distance")) {
+            SCROLL_OF_SPACETIME_MAX_DISTANCE.set(intConfigs.get("scroll_of_spacetime_max_distance"));
+        }
+        if (intConfigs.containsKey("scroll_of_spacetime_cooldown")) {
+            SCROLL_OF_SPACETIME_COOLDOWN.set(intConfigs.get("scroll_of_spacetime_cooldown"));
+        }
+        if (intConfigs.containsKey("scroll_of_spacetime_durability_cost")) {
+            SCROLL_OF_SPACETIME_DURABILITY_COST.set(intConfigs.get("scroll_of_spacetime_durability_cost"));
+        }
+        if (intConfigs.containsKey("void_sword_max_energy")) {
+            VOID_SWORD_MAX_ENERGY.set(intConfigs.get("void_sword_max_energy"));
+        }
+        if (intConfigs.containsKey("void_sword_black_hole_duration")) {
+            VOID_SWORD_BLACK_HOLE_DURATION.set(intConfigs.get("void_sword_black_hole_duration"));
+        }
+        if (intConfigs.containsKey("void_sword_black_hole_damage_interval")) {
+            VOID_SWORD_BLACK_HOLE_DAMAGE_INTERVAL.set(intConfigs.get("void_sword_black_hole_damage_interval"));
+        }
+        if (intConfigs.containsKey("void_sword_cooldown")) {
+            VOID_SWORD_COOLDOWN.set(intConfigs.get("void_sword_cooldown"));
+        }
+        if (intConfigs.containsKey("void_sword_max_cast_distance")) {
+            VOID_SWORD_MAX_CAST_DISTANCE.set(intConfigs.get("void_sword_max_cast_distance"));
+        }
+
+        // 应用浮点数配置
+        if (doubleConfigs.containsKey("scythe_attack_speed")) {
+            SCYTHE_ATTACK_SPEED.set(doubleConfigs.get("scythe_attack_speed"));
+        }
+        if (doubleConfigs.containsKey("scythe_damage_bonus")) {
+            SCYTHE_DAMAGE_BONUS.set(doubleConfigs.get("scythe_damage_bonus"));
+        }
+        if (doubleConfigs.containsKey("scythe_harvest_range")) {
+            SCYTHE_HARVEST_RANGE.set(doubleConfigs.get("scythe_harvest_range"));
+        }
+        if (doubleConfigs.containsKey("scythe_sweep_range_bonus")) {
+            SCYTHE_SWEEP_RANGE_BONUS.set(doubleConfigs.get("scythe_sweep_range_bonus"));
+        }
+        if (doubleConfigs.containsKey("scythe_harvest_dance_chance")) {
+            SCYTHE_HARVEST_DANCE_CHANCE.set(doubleConfigs.get("scythe_harvest_dance_chance"));
+        }
+        if (doubleConfigs.containsKey("scythe_harvest_dance_range")) {
+            SCYTHE_HARVEST_DANCE_RANGE.set(doubleConfigs.get("scythe_harvest_dance_range"));
+        }
+        if (doubleConfigs.containsKey("rocket_boots_boost_power")) {
+            ROCKET_BOOTS_BOOST_POWER.set(doubleConfigs.get("rocket_boots_boost_power"));
+        }
+        if (doubleConfigs.containsKey("rocket_boots_max_jump_height")) {
+            ROCKET_BOOTS_MAX_JUMP_HEIGHT.set(doubleConfigs.get("rocket_boots_max_jump_height"));
+        }
+        if (doubleConfigs.containsKey("lucky_sword_min_damage")) {
+            LUCKY_SWORD_MIN_DAMAGE.set(doubleConfigs.get("lucky_sword_min_damage"));
+        }
+        if (doubleConfigs.containsKey("lucky_sword_max_damage")) {
+            LUCKY_SWORD_MAX_DAMAGE.set(doubleConfigs.get("lucky_sword_max_damage"));
+        }
+        if (doubleConfigs.containsKey("bee_grenade_honey_area_radius")) {
+            BEE_GRENADE_HONEY_AREA_RADIUS.set(doubleConfigs.get("bee_grenade_honey_area_radius"));
+        }
+        if (doubleConfigs.containsKey("proficiency_attack_speed_percent")) {
+            PROFICIENCY_ATTACK_SPEED_PERCENT.set(doubleConfigs.get("proficiency_attack_speed_percent"));
+        }
+        if (doubleConfigs.containsKey("void_sword_energy_percent")) {
+            VOID_SWORD_ENERGY_PERCENT.set(doubleConfigs.get("void_sword_energy_percent"));
+        }
+        if (doubleConfigs.containsKey("void_sword_black_hole_range")) {
+            VOID_SWORD_BLACK_HOLE_RANGE.set(doubleConfigs.get("void_sword_black_hole_range"));
+        }
+        if (doubleConfigs.containsKey("void_sword_black_hole_damage")) {
+            VOID_SWORD_BLACK_HOLE_DAMAGE.set(doubleConfigs.get("void_sword_black_hole_damage"));
+        }
+
+        LOGGER.info("服务端配置已成功应用到客户端");
     }
 } 

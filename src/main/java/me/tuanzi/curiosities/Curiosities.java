@@ -31,6 +31,7 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -246,13 +247,16 @@ public class Curiosities {
                 // 标记配置已加载
                 ModConfigManager.setConfigLoaded(true);
 
-                // 配置加载完成后注册配置界面
-                BiFunction<Minecraft, Screen, Screen> screenFactory = SimpleConfigScreen::create;
-                ModLoadingContext.get().registerExtensionPoint(
-                        ConfigScreenHandler.ConfigScreenFactory.class,
-                        () -> new ConfigScreenHandler.ConfigScreenFactory(screenFactory)
-                );
-                LOGGER.info("配置界面已注册");
+                // 配置加载完成后，仅在物理客户端注册配置界面
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+                    // 客户端代码
+                    BiFunction<Minecraft, Screen, Screen> screenFactory = SimpleConfigScreen::create;
+                    ModLoadingContext.get().registerExtensionPoint(
+                            ConfigScreenHandler.ConfigScreenFactory.class,
+                            () -> new ConfigScreenHandler.ConfigScreenFactory(screenFactory)
+                    );
+                    LOGGER.info("配置界面已注册");
+                });
             } catch (IllegalStateException e) {
                 LOGGER.error("配置加载失败，无法注册配置界面", e);
             }
@@ -390,6 +394,29 @@ public class Curiosities {
     @SubscribeEvent
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         ChainMiningState.clearPlayerChainMiningState(event.getEntity().getUUID());
+    }
+
+    /**
+     * 玩家登录事件处理
+     * 向玩家发送服务器配置
+     */
+    @SubscribeEvent
+    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        // 确保在服务器端
+        if (event.getEntity().level().isClientSide()) {
+            return;
+        }
+
+        // 获取服务器玩家对象
+        net.minecraft.server.level.ServerPlayer serverPlayer = (net.minecraft.server.level.ServerPlayer) event.getEntity();
+        LOGGER.info("玩家 {} 登录，发送配置同步数据包", serverPlayer.getName().getString());
+
+        // 创建配置同步数据包并发送
+        me.tuanzi.curiosities.network.PacketSyncConfig configPacket = new me.tuanzi.curiosities.network.PacketSyncConfig();
+        me.tuanzi.curiosities.network.PacketHandler.INSTANCE.send(
+                net.minecraftforge.network.PacketDistributor.PLAYER.with(() -> serverPlayer),
+                configPacket
+        );
     }
 
     /**

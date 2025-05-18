@@ -30,7 +30,7 @@ public class PacketHandler {
      * 注册网络包和处理器
      */
     public static void register() {
-        LOGGER.info("[连锁挖掘] 注册网络包处理器");
+        LOGGER.info("[网络] 注册网络包处理器");
 
         // 注册连锁挖掘触发包（客户端 -> 服务端）
         // 当玩家使用连锁挖掘破坏方块时发送
@@ -46,7 +46,14 @@ public class PacketHandler {
                 PacketTriggerChainMining.ChainMiningActivation::new,
                 PacketTriggerChainMining.ChainMiningActivation::handle);
 
-        LOGGER.info("[连锁挖掘] 网络包注册完成");
+        // 注册配置同步包（服务端 -> 客户端）
+        // 当玩家加入服务器时由服务端发送到客户端
+        INSTANCE.registerMessage(id++, PacketSyncConfig.class,
+                PacketSyncConfig::toBytes,
+                PacketSyncConfig::new,
+                PacketSyncConfig::handle);
+
+        LOGGER.info("[网络] 网络包注册完成");
     }
 
     /**
@@ -56,6 +63,6 @@ public class PacketHandler {
      * @param params     额外参数
      */
     public static void logPacketSend(String packetName, Object... params) {
-        LOGGER.debug("[连锁挖掘] 发送网络包: {} {}", packetName, params);
+        LOGGER.debug("[网络] 发送网络包: {} {}", packetName, params);
     }
 }

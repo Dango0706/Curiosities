@@ -233,3 +233,19 @@ tasks.named('jar', Jar).configure {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
+
+// 定义自定义复制任务
+tasks.register('copyModJar', Copy) {
+    dependsOn jar // 依赖 jar 任务，确保先构建 JAR
+    from jar.archiveFile // 源文件：构建生成的 JAR
+    into file("F:\\Games\\Minecraft\\.minecraft\\versions\\模组测试环境\\mods") // 目标目录（可修改为任意路径）
+
+    // 可选：重命名 JAR（例如移除版本号）
+    rename { fileName ->
+        fileName.replace("-${project.version}", "")
+    }
+}
+
+tasks.named('jar') {
+    finalizedBy('copyModJar')
+}

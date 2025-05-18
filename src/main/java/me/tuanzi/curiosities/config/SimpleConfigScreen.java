@@ -316,7 +316,32 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.VOID_SWORD_MAX_CAST_DISTANCE
             );
 
-            categories.add(itemsCategory);
+            // 原版修改配置
+            ConfigCategory vanillaModificationsCategory = new ConfigCategory(
+                    Component.translatable("config.curiosities.vanilla_modifications_section"),
+                    new ResourceLocation("minecraft", "textures/block/crafting_table_top.png")
+            );
+
+            // 原版修改配置选项
+            vanillaModificationsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.vanilla_modifications_enabled"),
+                    ModConfigManager.VANILLA_MODIFICATIONS_ENABLED
+            );
+
+            vanillaModificationsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.improved_villager_trades_enabled"),
+                    ModConfigManager.IMPROVED_VILLAGER_TRADES_ENABLED
+            );
+
+            vanillaModificationsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.enhanced_anvil_enabled"),
+                    ModConfigManager.ENHANCED_ANVIL_ENABLED
+            );
+
+            vanillaModificationsCategory.addIntOption(
+                    Component.translatable("config.curiosities.enhanced_anvil_max_repair_cost"),
+                    ModConfigManager.ENHANCED_ANVIL_MAX_REPAIR_COST
+            );
 
             // 状态效果配置
             ConfigCategory effectsCategory = new ConfigCategory(
@@ -362,8 +387,6 @@ public class SimpleConfigScreen extends Screen {
                     Component.translatable("config.curiosities.rich_effect_range_per_level"),
                     ModConfigManager.RICH_EFFECT_RANGE_PER_LEVEL
             );
-
-            categories.add(effectsCategory);
 
             // 附魔配置主分类
             ConfigCategory enchantmentsCategory = new ConfigCategory(
@@ -415,8 +438,6 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.PROFICIENCY_ATTACK_SPEED_PERCENT
             );
 
-            categories.add(enchantmentsCategory);
-
             // 方块配置主分类
             ConfigCategory blocksCategory = new ConfigCategory(
                     Component.translatable("config.curiosities.blocks_section"),
@@ -429,12 +450,17 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.FAKE_TNT_ENABLED
             );
 
+            categories.add(itemsCategory);
+            categories.add(effectsCategory);
+            categories.add(enchantmentsCategory);
             categories.add(blocksCategory);
+            categories.add(vanillaModificationsCategory);
 
-            // 设置初始分类
+            // 默认选择第一个分类
             if (!categories.isEmpty()) {
                 currentCategory = categories.get(0);
             }
+
         } catch (IllegalStateException e) {
             LOGGER.error("配置初始化失败", e);
         }

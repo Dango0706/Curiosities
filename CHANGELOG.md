@@ -2,6 +2,18 @@
 
 ## 版本 2025.5 (2025年5月更新)
 
+### bug修复:
+
+- 修复config在服务器与客户端不同步的问题
+- 修复火箭靴纹理消失bug
+- 修复连锁挖矿可以被附魔到工具以外的问题
+- 修复镰刀范围不正确的问题
+- 修复镰刀在未收割作物时也能触发丰收之舞的问题
+- 修复镰刀在未达到Attack Speed时也能触发横扫的问题
+- 修复镰刀触发横扫时粒子效果过多的问题
+- 修复道德天平附魔无法在铁砧中应用到武器上的问题
+- 修复将连锁挖矿绑定到鼠标侧边键（如鼠标按键5）时响应不灵敏的bug
+
 ### 游戏内容更新
 
 #### 状态效果
@@ -128,6 +140,18 @@
 # Changelog
 
 ## Version 2025.5 (May 2025 Update)
+
+### Bug Fixes:
+
+- Fixed config synchronization issues between server and client
+- Fixed Rocket Boots texture disappearance bug
+- Fixed Chain Mining enchantment being applicable to non-tool items
+- Fixed incorrect Scythe harvesting range
+- Fixed Scythes triggering Harvest Dance even when no crops were harvested
+- Fixed Scythes triggering sweep attack before Attack Speed was fully charged
+- Fixed excessive particle effects during Scythe sweep attacks
+- Fixed Moral Balance enchantment not being applicable to weapons in anvils
+- Fixed Chain Mining binding to mouse side button (mouse button 5) not working properly
 
 ### Game Content Updates
 

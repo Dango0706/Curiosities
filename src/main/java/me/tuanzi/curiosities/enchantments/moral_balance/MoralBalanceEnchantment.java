@@ -115,6 +115,18 @@ public class MoralBalanceEnchantment extends Enchantment {
     }
 
     /**
+     * 检查是否可以在铁砧中应用此附魔
+     *
+     * @param stack 要应用附魔的物品
+     * @return 如果是武器则返回true
+     */
+    @Override
+    public boolean canEnchant(ItemStack stack) {
+        // 允许通过铁砧将此附魔应用到武器上
+        return this.category.canEnchant(stack.getItem());
+    }
+
+    /**
      * 检查与其他附魔的兼容性
      *
      * @param other 其他附魔

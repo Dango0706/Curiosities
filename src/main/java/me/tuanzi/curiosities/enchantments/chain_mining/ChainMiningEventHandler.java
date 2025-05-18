@@ -89,13 +89,31 @@ public class ChainMiningEventHandler {
     @Mod.EventBusSubscriber(modid = Curiosities.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
     public static class ClientEvents {
         /**
-         * 处理按键输入事件
+         * 处理键盘输入事件
          * 当连锁挖掘热键被按下或释放时，更新连锁挖掘状态
          *
          * @param event 按键输入事件
          */
         @SubscribeEvent
         public static void onKeyInput(InputEvent.Key event) {
+            handleInput();
+        }
+
+        /**
+         * 处理鼠标按钮事件
+         * 当连锁挖掘热键被按下或释放时，更新连锁挖掘状态
+         *
+         * @param event 鼠标按钮事件
+         */
+        @SubscribeEvent
+        public static void onMouseInput(InputEvent.MouseButton event) {
+            handleInput();
+        }
+
+        /**
+         * 统一处理输入事件，无论是键盘还是鼠标
+         */
+        private static void handleInput() {
             // 首先检查按键是否已注册
             if (chainMiningKey == null) {
                 return;

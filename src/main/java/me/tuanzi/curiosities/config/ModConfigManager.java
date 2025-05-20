@@ -82,6 +82,9 @@ public class ModConfigManager {
     public static ForgeConfigSpec.IntValue VOID_SWORD_MAX_CAST_DISTANCE;
     // 无限水桶配置
     public static ForgeConfigSpec.BooleanValue INFINITE_WATER_BUCKET_ENABLED;
+
+    // 创造模式村民交易自动填充配置
+    public static ForgeConfigSpec.BooleanValue CREATIVE_TRADE_AUTO_FILL_ENABLED;
     
     // 状态效果配置
     // 尖叫效果配置
@@ -235,6 +238,13 @@ public class ModConfigManager {
         ROCKET_BOOTS_MAX_FUEL = COMMON_BUILDER
                 .comment("最大燃料储存量")
                 .defineInRange("max_fuel", 200, 0, Integer.MAX_VALUE);
+        COMMON_BUILDER.pop();
+
+        // 创造模式村民交易自动填充配置
+        COMMON_BUILDER.comment("村民交易配置").push("villager_trade");
+        CREATIVE_TRADE_AUTO_FILL_ENABLED = COMMON_BUILDER
+                .comment("是否在创造模式下自动填充村民交易所需物品")
+                .define("creative_trade_auto_fill", true);
         COMMON_BUILDER.pop();
 
         // 道德天平配置
@@ -542,6 +552,9 @@ public class ModConfigManager {
         }
         if (booleanConfigs.containsKey("infinite_water_bucket_enabled")) {
             INFINITE_WATER_BUCKET_ENABLED.set(booleanConfigs.get("infinite_water_bucket_enabled"));
+        }
+        if (booleanConfigs.containsKey("creative_trade_auto_fill")) {
+            CREATIVE_TRADE_AUTO_FILL_ENABLED.set(booleanConfigs.get("creative_trade_auto_fill"));
         }
 
         // 应用整数配置

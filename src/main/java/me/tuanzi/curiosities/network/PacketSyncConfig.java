@@ -74,6 +74,7 @@ public class PacketSyncConfig {
         booleanConfigs.put("scroll_of_spacetime_tradeable", ModConfigManager.SCROLL_OF_SPACETIME_TRADEABLE.get());
         booleanConfigs.put("void_sword_enabled", ModConfigManager.VOID_SWORD_ENABLED.get());
         booleanConfigs.put("infinite_water_bucket_enabled", ModConfigManager.INFINITE_WATER_BUCKET_ENABLED.get());
+        booleanConfigs.put("creative_trade_auto_fill", ModConfigManager.CREATIVE_TRADE_AUTO_FILL_ENABLED.get());
 
         // 填充整数配置
         intConfigs.put("chain_mining_max_blocks", ModConfigManager.CHAIN_MINING_MAX_BLOCKS.get());

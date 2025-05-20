@@ -11,6 +11,7 @@
     "VillagerTradeMixin"
   ],
   "client": [
+    "TradeScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

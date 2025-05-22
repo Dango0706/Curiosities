@@ -230,5 +230,6 @@
   "item.minecraft.lingering_potion.effect.strong_rich": "滞留型富有药水",
   "item.minecraft.tipped_arrow.effect.rich": "富有之箭",
   "item.minecraft.tipped_arrow.effect.long_rich": "富有之箭",
-  "item.minecraft.tipped_arrow.effect.strong_rich": "富有之箭"
+  "item.minecraft.tipped_arrow.effect.strong_rich": "富有之箭",
+  "config.curiosities.creative_trade_auto_fill_enabled": "创造模式自动填充村民交易: "
 }

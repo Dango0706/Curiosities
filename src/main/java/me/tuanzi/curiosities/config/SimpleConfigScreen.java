@@ -343,6 +343,12 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.ENHANCED_ANVIL_MAX_REPAIR_COST
             );
 
+            // 添加创造模式村民交易自动填充选项
+            vanillaModificationsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.creative_trade_auto_fill_enabled"),
+                    ModConfigManager.CREATIVE_TRADE_AUTO_FILL_ENABLED
+            );
+
             // 状态效果配置
             ConfigCategory effectsCategory = new ConfigCategory(
                     Component.translatable("config.curiosities.effects_section"),

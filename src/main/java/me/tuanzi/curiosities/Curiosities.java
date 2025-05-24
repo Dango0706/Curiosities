@@ -171,6 +171,9 @@ public class Curiosities {
                         //添加无限水桶
                         output.accept(ModItems.INFINITE_WATER_BUCKET.get());
 
+                        //添加涡毒腺体
+                        output.accept(ModItems.TOXIC_GLAND.get());
+
                         // 添加富有药水
                         output.accept(PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.RICH.get()));
                         output.accept(PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.LONG_RICH.get()));
@@ -183,6 +186,30 @@ public class Curiosities {
                         output.accept(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.RICH.get()));
                         output.accept(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.LONG_RICH.get()));
                         output.accept(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.STRONG_RICH.get()));
+
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW), ModPotions.RICH.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW), ModPotions.LONG_RICH.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW), ModPotions.STRONG_RICH.get()));
+
+
+                        // 添加混乱药水
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.CONFUSION.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.LONG_CONFUSION.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.STRONG_CONFUSION.get()));
+
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.CONFUSION.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.LONG_CONFUSION.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.STRONG_CONFUSION.get()));
+
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.CONFUSION.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.LONG_CONFUSION.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.STRONG_CONFUSION.get()));
+
+                        // 添加混乱箭
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW), ModPotions.CONFUSION.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW), ModPotions.LONG_CONFUSION.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW), ModPotions.STRONG_CONFUSION.get()));
+
                     })
                     .build()
     );
@@ -282,7 +309,7 @@ public class Curiosities {
      */
     private void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            // 注册狼牙土豆合成配方条件
+            // 注册合成配方条件
             registerRecipeConditions();
 
             // 注册魔法书材料类型
@@ -341,6 +368,46 @@ public class Curiosities {
                 Ingredient.of(Items.GLOWSTONE_DUST), strongRichLingeringOutput);
 
         LOGGER.info("已注册富有药水的酿造配方");
+
+        // 混乱药水酿造配方
+        // 普通版本：尴尬的药水 + 涡毒腺体 -> 混乱药水
+        ItemStack confusionOutput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.CONFUSION.get());
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(awkwardInput), Ingredient.of(ModItems.TOXIC_GLAND.get()), confusionOutput);
+
+        // 长效版本：普通混乱药水 + 红石 -> 长效混乱药水
+        ItemStack confusionInput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.CONFUSION.get());
+        ItemStack longConfusionOutput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.LONG_CONFUSION.get());
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(confusionInput), Ingredient.of(Items.REDSTONE), longConfusionOutput);
+
+        // 强效版本：普通混乱药水 + 荧石粉 -> 强效混乱药水
+        ItemStack strongConfusionOutput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.STRONG_CONFUSION.get());
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(confusionInput), Ingredient.of(Items.GLOWSTONE_DUST), strongConfusionOutput);
+
+        // 噴溅型药水配方
+        ItemStack confusionSplashOutput = PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.CONFUSION.get());
+        ItemStack longConfusionSplashOutput = PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.LONG_CONFUSION.get());
+        ItemStack strongConfusionSplashOutput = PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.STRONG_CONFUSION.get());
+
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), net.minecraft.world.item.alchemy.Potions.AWKWARD)),
+                Ingredient.of(ModItems.TOXIC_GLAND.get()), confusionSplashOutput);
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.CONFUSION.get())),
+                Ingredient.of(Items.REDSTONE), longConfusionSplashOutput);
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.CONFUSION.get())),
+                Ingredient.of(Items.GLOWSTONE_DUST), strongConfusionSplashOutput);
+
+        // 滞留型药水配方
+        ItemStack confusionLingeringOutput = PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.CONFUSION.get());
+        ItemStack longConfusionLingeringOutput = PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.LONG_CONFUSION.get());
+        ItemStack strongConfusionLingeringOutput = PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.STRONG_CONFUSION.get());
+
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), net.minecraft.world.item.alchemy.Potions.AWKWARD)),
+                Ingredient.of(ModItems.TOXIC_GLAND.get()), confusionLingeringOutput);
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.CONFUSION.get())),
+                Ingredient.of(Items.REDSTONE), longConfusionLingeringOutput);
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.CONFUSION.get())),
+                Ingredient.of(Items.GLOWSTONE_DUST), strongConfusionLingeringOutput);
+
+        LOGGER.info("已注册混乱药水的酿造配方");
     }
 
     /**

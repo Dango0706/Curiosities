@@ -90,6 +90,11 @@ public class ModConfigManager {
     // 尖叫效果配置
     public static ForgeConfigSpec.BooleanValue SCREAMING_EFFECT_ENABLED;
     public static ForgeConfigSpec.IntValue SCREAMING_EFFECT_RANGE;
+    // 混乱效果配置
+    public static ForgeConfigSpec.BooleanValue CONFUSION_EFFECT_ENABLED;
+    public static ForgeConfigSpec.DoubleValue CONFUSION_CHANCE_PER_LEVEL;
+    public static ForgeConfigSpec.DoubleValue CONFUSION_DAMAGE_PERCENT_PER_LEVEL;
+    public static ForgeConfigSpec.DoubleValue CONFUSION_DAMAGE_PERCENT_MAX;
     // 颠颠倒倒效果配置
     public static ForgeConfigSpec.BooleanValue DIZZY_EFFECT_ENABLED;
     // 天旋地转效果配置
@@ -391,6 +396,22 @@ public class ModConfigManager {
                 .defineInRange("range_per_level", 16, 4, 32);
         COMMON_BUILDER.pop();
 
+        // 混乱效果配置
+        COMMON_BUILDER.comment("混乱效果配置").push("confusion_effect");
+        CONFUSION_EFFECT_ENABLED = COMMON_BUILDER
+                .comment("是否启用混乱效果")
+                .define("enabled", true);
+        CONFUSION_CHANCE_PER_LEVEL = COMMON_BUILDER
+                .comment("每级目标转移概率（0.15表示15%）")
+                .defineInRange("chance_per_level", 0.15, 0.01, 1.0);
+        CONFUSION_DAMAGE_PERCENT_PER_LEVEL = COMMON_BUILDER
+                .comment("每级造成原本伤害百分比（0.3表示30%）")
+                .defineInRange("damage_percent_per_level", 0.3, 0.01, 1.0);
+        CONFUSION_DAMAGE_PERCENT_MAX = COMMON_BUILDER
+                .comment("造成伤害百分比上限（设置为0则为无上限）")
+                .defineInRange("damage_percent_max", 1.0, 0.0, 10.0);
+        COMMON_BUILDER.pop();
+
         // 无限水桶配置
         COMMON_BUILDER.comment("无限水桶配置").push("infinite_water_bucket");
         INFINITE_WATER_BUCKET_ENABLED = COMMON_BUILDER
@@ -507,6 +528,12 @@ public class ModConfigManager {
         if (booleanConfigs.containsKey("scythe_enabled")) {
             SCYTHE_ENABLED.set(booleanConfigs.get("scythe_enabled"));
             LOGGER.info("镰刀已{}启用", SCYTHE_ENABLED.get() ? "" : "禁");
+        }
+        if (booleanConfigs.containsKey("rich_effect_enabled")) {
+            RICH_EFFECT_ENABLED.set(booleanConfigs.get("rich_effect_enabled"));
+        }
+        if (booleanConfigs.containsKey("confusion_effect_enabled")) {
+            CONFUSION_EFFECT_ENABLED.set(booleanConfigs.get("confusion_effect_enabled"));
         }
         if (booleanConfigs.containsKey("rocket_boots_enabled")) {
             ROCKET_BOOTS_ENABLED.set(booleanConfigs.get("rocket_boots_enabled"));
@@ -658,6 +685,15 @@ public class ModConfigManager {
         }
         if (doubleConfigs.containsKey("void_sword_black_hole_damage")) {
             VOID_SWORD_BLACK_HOLE_DAMAGE.set(doubleConfigs.get("void_sword_black_hole_damage"));
+        }
+        if (doubleConfigs.containsKey("confusion_chance_per_level")) {
+            CONFUSION_CHANCE_PER_LEVEL.set(doubleConfigs.get("confusion_chance_per_level"));
+        }
+        if (doubleConfigs.containsKey("confusion_damage_percent_per_level")) {
+            CONFUSION_DAMAGE_PERCENT_PER_LEVEL.set(doubleConfigs.get("confusion_damage_percent_per_level"));
+        }
+        if (doubleConfigs.containsKey("confusion_damage_percent_max")) {
+            CONFUSION_DAMAGE_PERCENT_MAX.set(doubleConfigs.get("confusion_damage_percent_max"));
         }
 
         LOGGER.info("服务端配置已成功应用到客户端");

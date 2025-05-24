@@ -81,6 +81,15 @@ public class ModEffects {
     );
 
     /**
+     * 混乱效果
+     * 攻击时有一定概率将目标转移为自己，并造成部分伤害
+     */
+    public static final RegistryObject<MobEffect> CONFUSION = MOB_EFFECTS.register(
+            "confusion",
+            ConfusionEffect::new
+    );
+
+    /**
      * 注册所有状态效果
      *
      * @param eventBus Forge事件总线

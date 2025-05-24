@@ -181,5 +181,13 @@ public class ModItems {
             "infinite_water_bucket",
             InfiniteWaterBucketItem::new
     );
+    /**
+     * 涡毒腺体
+     * 食用后补充4格饱食度与2的饱和度，并给予玩家多种负面效果
+     */
+    public static final RegistryObject<Item> TOXIC_GLAND = ITEMS.register(
+            "toxic_gland",
+            ToxicGlandItem::new
+    );
     private static final Logger LOGGER = LogManager.getLogger();
 } 

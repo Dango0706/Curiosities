@@ -36,6 +36,11 @@
   - 影响范围根据效果等级提升，基础范围为16格，每级增加16格
   - 村民会主动靠近并跟随拥有此效果的玩家
   - 配置文件中可以调整每级效果的影响范围和启用/禁用该效果
+- **混乱效果 (Confusion)**
+  - 攻击时有等级*15%（可配置），最高100%的概率将攻击目标转移为自己
+  - 转移时对自己造成原本伤害的30%*等级（可配置）
+  - 配置选项包括是否启用、每级目标转移概率、每级伤害百分比和伤害百分比上限
+  - 通过混乱药水获得，基础时长为1分30秒
 
 #### 附魔
 
@@ -61,6 +66,12 @@
   - 与原版水桶使用逻辑相同，但永远不会消耗
   - 合成配方：海晶碎片+海绵围绕一个水桶
   - 可在配置文件中启用或禁用该功能
+
+- **涡毒腺体 (Toxic Gland)**
+  - 新增危险食物，由发酵蜘蛛眼与河豚合成
+  - 食用后补充4格饱食度与2的饱和度
+  - 给予玩家多种负面效果：1分钟中毒IV，1分钟反胃，1分钟虚弱II，15秒失明
+  - 这种高浓度毒素在海洋生物体内形成，具有极强的毒性
 
 - **虚空吞噬之剑 (Void Devourer Sword)**
   - 新增强力武器，拥有10点基础攻击伤害和1.6的攻击速度
@@ -175,6 +186,12 @@
   - Affected range increases with effect level, base range of 16 blocks, +16 blocks per level
   - Villagers actively approach and follow players with this effect
   - Range per level and toggle can be adjusted in config file
+- **Confusion**
+  - When attacking, there's a level*15% chance (configurable) to transfer the attack target to yourself
+  - When transferred, you take 30%*level of the original damage (configurable)
+  - Configuration options include enable/disable, chance per level, damage percentage per level, and maximum damage
+    percentage
+  - Obtained through Confusion potions, base duration of 1 minute 30 seconds
 
 #### Enchantments
 
@@ -199,6 +216,13 @@
   - New special bucket that provides an unlimited water source
   - Right-clicking on water collects all water sources in a 3x3 range
   - Works with the same logic as the vanilla bucket, but never gets consumed
+
+- **Toxic Gland**
+  - New dangerous food item, crafted from fermented spider eye and pufferfish
+  - Restores 4 hunger points and 2 saturation when consumed
+  - Applies multiple negative effects: Poison IV for 1 minute, Nausea for 1 minute, Weakness II for 1 minute, and
+    Blindness for 15 seconds
+  - Special toxin concentrated in marine creatures with extremely potent effects
   - Crafting recipe: Prismarine Shards + Sponges surrounding a Water Bucket
   - Can be disabled in the config file
 

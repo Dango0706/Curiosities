@@ -394,6 +394,24 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.RICH_EFFECT_RANGE_PER_LEVEL
             );
 
+            // 混乱效果配置
+            effectsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.confusion_effect_enabled"),
+                    ModConfigManager.CONFUSION_EFFECT_ENABLED
+            );
+            effectsCategory.addDoubleOption(
+                    Component.translatable("config.curiosities.confusion_chance_per_level"),
+                    ModConfigManager.CONFUSION_CHANCE_PER_LEVEL
+            );
+            effectsCategory.addDoubleOption(
+                    Component.translatable("config.curiosities.confusion_damage_percent_per_level"),
+                    ModConfigManager.CONFUSION_DAMAGE_PERCENT_PER_LEVEL
+            );
+            effectsCategory.addDoubleOption(
+                    Component.translatable("config.curiosities.confusion_damage_percent_max"),
+                    ModConfigManager.CONFUSION_DAMAGE_PERCENT_MAX
+            );
+
             // 附魔配置主分类
             ConfigCategory enchantmentsCategory = new ConfigCategory(
                     Component.translatable("config.curiosities.enchantments_section"),

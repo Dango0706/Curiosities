@@ -165,6 +165,9 @@ public class Curiosities {
                         // 添加蜜蜂手雷
                         output.accept(ModItems.BEE_GRENADE.get());
 
+                        // 添加控制之杖
+                        output.accept(ModItems.CONTROL_STAFF.get());
+
                         //添加时空卷轴
                         output.accept(ModItems.SCROLL_OF_SPACETIME.get());
 
@@ -421,6 +424,7 @@ public class Curiosities {
         CraftingHelper.register(new me.tuanzi.curiosities.crafting.FakeTntEnabledCondition.Serializer());
         CraftingHelper.register(new me.tuanzi.curiosities.crafting.LuckySwordEnabledCondition.Serializer());
         CraftingHelper.register(new me.tuanzi.curiosities.crafting.ScreamingPieEnabledCondition.Serializer());
+        CraftingHelper.register(new me.tuanzi.curiosities.crafting.ControlStaffCraftableCondition.Serializer());
         LOGGER.info("注册配方条件完成");
     }
 

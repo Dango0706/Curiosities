@@ -83,6 +83,10 @@ public class ModConfigManager {
     // 无限水桶配置
     public static ForgeConfigSpec.BooleanValue INFINITE_WATER_BUCKET_ENABLED;
 
+    // 控制之杖配置
+    public static ForgeConfigSpec.BooleanValue CONTROL_STAFF_ENABLED;
+    public static ForgeConfigSpec.BooleanValue CONTROL_STAFF_CRAFTABLE;
+
     // 创造模式村民交易自动填充配置
     public static ForgeConfigSpec.BooleanValue CREATIVE_TRADE_AUTO_FILL_ENABLED;
     
@@ -243,6 +247,16 @@ public class ModConfigManager {
         ROCKET_BOOTS_MAX_FUEL = COMMON_BUILDER
                 .comment("最大燃料储存量")
                 .defineInRange("max_fuel", 200, 0, Integer.MAX_VALUE);
+        COMMON_BUILDER.pop();
+
+        // 控制之杖配置
+        COMMON_BUILDER.comment("控制之杖配置").push("control_staff");
+        CONTROL_STAFF_ENABLED = COMMON_BUILDER
+                .comment("是否启用控制之杖")
+                .define("enabled", true);
+        CONTROL_STAFF_CRAFTABLE = COMMON_BUILDER
+                .comment("是否可以合成控制之杖")
+                .define("craftable", true);
         COMMON_BUILDER.pop();
 
         // 创造模式村民交易自动填充配置

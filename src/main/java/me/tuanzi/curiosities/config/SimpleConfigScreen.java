@@ -238,6 +238,17 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.BEE_GRENADE_DESTROY_BLOCKS
             );
 
+            // 控制之杖配置
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.control_staff_enabled"),
+                    ModConfigManager.CONTROL_STAFF_ENABLED
+            );
+
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.control_staff_craftable"),
+                    ModConfigManager.CONTROL_STAFF_CRAFTABLE
+            );
+
             // 时空卷轴配置
             itemsCategory.addBooleanOption(
                     Component.translatable("config.curiosities.scroll_of_spacetime_enabled"),

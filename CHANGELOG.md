@@ -1,5 +1,20 @@
 # 变更日志 (ChangeLog)
 
+## 版本 2025.6 (2025年6月更新)
+
+### 游戏内容更新
+
+#### 物品
+
+- **控制之杖 (Staff of Control)**
+    - 新增强力工具，可以控制生物互相攻击
+    - 右键点击第一个生物，再右键点击第二个生物，让它们互相攻击
+    - Shift+右键清除第一个选择的生物
+    - 拥有300点耐久度，使用下界之星修复
+    - 不可以被除诅咒外的任何附魔所影响
+    - 合成配方：下界之星+下界合金锭（上排），下界合金块+下界之星（中排），木棍（下排左侧）
+    - 可通过配置文件启用/禁用及控制是否可合成
+
 ## 版本 2025.5 (2025年5月更新)
 
 ### bug修复:
@@ -149,6 +164,22 @@
 ---
 
 # Changelog
+
+## Version 2025.6 (June 2025 Update)
+
+### Game Content Updates
+
+#### Items
+
+- **Staff of Control**
+    - New powerful tool that can control entities to attack each other
+    - Right-click on one entity, then right-click another to make them fight each other
+    - Shift+Right-click to clear the first selected entity
+    - Has 300 durability points and can be repaired with Nether Stars
+    - Cannot receive any enchantments except curses
+    - Crafting recipe: Nether Star + Netherite Ingot (top row), Netherite Block + Nether Star (middle row), Stick (
+      bottom left)
+    - Can be enabled/disabled and craft control via config file
 
 ## Version 2025.5 (May 2025 Update)
 

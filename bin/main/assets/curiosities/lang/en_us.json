@@ -207,5 +207,20 @@
   "item.minecraft.lingering_potion.effect.strong_confusion": "Lingering Potion of Confusion",
   "item.minecraft.tipped_arrow.effect.confusion": "Arrow of Confusion",
   "item.minecraft.tipped_arrow.effect.long_confusion": "Arrow of Confusion",
-  "item.minecraft.tipped_arrow.effect.strong_confusion": "Arrow of Confusion"
+  "item.minecraft.tipped_arrow.effect.strong_confusion": "Arrow of Confusion",
+  "item.curiosities.control_staff": "Staff of Control",
+  "item.curiosities.control_staff.tooltip.1": "Right-click on a first entity to mark as target",
+  "item.curiosities.control_staff.tooltip.2": "Right-click on a second entity to make them fight each other",
+  "item.curiosities.control_staff.tooltip.3": "Shift+Right-click to clear selected target",
+  "item.curiosities.control_staff.tooltip.target_selected": "§aTarget Selected",
+  "message.curiosities.control_staff.target_selected": "Entity targeted",
+  "message.curiosities.control_staff.target_cleared": "Target selection cleared",
+  "message.curiosities.control_staff.entities_controlled": "Entities controlled, now fighting each other",
+  "message.curiosities.control_staff.target_reselected": "Previous target not found, new target selected",
+  "message.curiosities.control_staff.target_error": "Error occurred, target selection reset",
+  "message.curiosities.control_staff.target_not_found": "Previously selected target not found, new target selected",
+  "message.curiosities.control_staff.same_target": "Cannot select the same target twice",
+  "config.curiosities.control_staff_section": "Staff of Control Configuration",
+  "config.curiosities.control_staff_enabled": "Enable Staff of Control",
+  "config.curiosities.control_staff_craftable": "Enable Staff of Control Crafting"
 }

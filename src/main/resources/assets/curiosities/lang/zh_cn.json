@@ -253,5 +253,20 @@
   "item.minecraft.tipped_arrow.effect.confusion": "混乱之箭",
   "item.minecraft.tipped_arrow.effect.long_confusion": "混乱之箭",
   "item.minecraft.tipped_arrow.effect.strong_confusion": "混乱之箭",
-  "config.curiosities.creative_trade_auto_fill_enabled": "创造模式自动填充村民交易: "
+  "config.curiosities.creative_trade_auto_fill_enabled": "创造模式自动填充村民交易: ",
+  "item.curiosities.control_staff": "控制之杖",
+  "item.curiosities.control_staff.tooltip.1": "右键点击第一个生物，标记为目标",
+  "item.curiosities.control_staff.tooltip.2": "再右键点击第二个生物，让它们互相攻击",
+  "item.curiosities.control_staff.tooltip.3": "Shift+右键清除已选择的目标",
+  "item.curiosities.control_staff.tooltip.target_selected": "§a已选择目标",
+  "message.curiosities.control_staff.target_selected": "已选择目标生物",
+  "message.curiosities.control_staff.target_cleared": "已清除目标选择",
+  "message.curiosities.control_staff.entities_controlled": "生物已被控制，开始互相攻击",
+  "message.curiosities.control_staff.target_reselected": "无法找到之前的目标，已重新选择目标生物",
+  "message.curiosities.control_staff.target_error": "出现错误，已重置目标选择",
+  "message.curiosities.control_staff.target_not_found": "找不到之前选择的目标，已重新选择新目标",
+  "message.curiosities.control_staff.same_target": "不能选择相同的目标",
+  "config.curiosities.control_staff_section": "控制之杖配置",
+  "config.curiosities.control_staff_enabled": "启用控制之杖",
+  "config.curiosities.control_staff_craftable": "可合成控制之杖"
 }

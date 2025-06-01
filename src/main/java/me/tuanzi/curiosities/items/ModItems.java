@@ -2,6 +2,7 @@ package me.tuanzi.curiosities.items;
 
 import me.tuanzi.curiosities.Curiosities;
 import me.tuanzi.curiosities.items.bee_grenade.BeeGrenadeItem;
+import me.tuanzi.curiosities.items.control_staff.ControlStaffItem;
 import me.tuanzi.curiosities.items.lucky_sword.LuckySwordItem;
 import me.tuanzi.curiosities.items.rocket_boots.RocketBootsItem;
 import me.tuanzi.curiosities.items.screaming_pie.ScreamingPieItem;
@@ -78,6 +79,14 @@ public class ModItems {
                     -2.4F, // 攻击速度，1.6 = -2.4F
                     new Item.Properties().fireResistant()
             )
+    );
+    /**
+     * 控制之杖
+     * 右键点击生物让它们互相攻击
+     */
+    public static final RegistryObject<Item> CONTROL_STAFF = ITEMS.register(
+            "control_staff",
+            ControlStaffItem::new
     );
     /**
      * 木质镰刀

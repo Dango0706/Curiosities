@@ -2,11 +2,19 @@ package me.tuanzi.curiosities.potion;
 
 import me.tuanzi.curiosities.Curiosities;
 import me.tuanzi.curiosities.effect.ModEffects;
+import me.tuanzi.curiosities.items.ModItems;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.world.item.crafting.Ingredient;
 
 /**
  * 模组药水注册类
@@ -77,39 +85,112 @@ public class ModPotions {
             "strong_confusion",
             () -> new Potion(new MobEffectInstance(ModEffects.CONFUSION.get(), 900, 1))
     );
-//
-//    /**
-//     * 注册所有药水
-//     *
-//     * @param eventBus Forge事件总线
-//     */
-//    public static void register(IEventBus eventBus) {
-//        POTIONS.register(eventBus);
-//    }
-//
-//    /**
-//     * 获取药水配方
-//     * 此方法只返回配方数据，实际注册在Curiosities类的commonSetup中完成
-//     */
-//    public static void registerPotionRecipes() {
-//        // 富有药水配方
-//        // 普通版本：尴尬的药水 + 绿宝石块 -> 富有药水
-//        PotionBrewingRecipes.addMix(Potions.AWKWARD, Items.EMERALD_BLOCK, ModPotions.RICH.get());
-//
-//        // 长效版本：普通富有药水 + 红石 -> 长效富有药水
-//        PotionBrewingRecipes.addMix(ModPotions.RICH.get(), Items.REDSTONE, ModPotions.LONG_RICH.get());
-//
-//        // 强效版本：普通富有药水 + 荧石粉 -> 强效富有药水
-//        PotionBrewingRecipes.addMix(ModPotions.RICH.get(), Items.GLOWSTONE_DUST, ModPotions.STRONG_RICH.get());
-//
-//        // 混乱药水配方
-//        // 普通版本：尴尬的药水 + 涡毒腺体 -> 混乱药水
-//        PotionBrewingRecipes.addMix(Potions.AWKWARD, ModItems.TOXIC_GLAND.get(), ModPotions.CONFUSION.get());
-//
-//        // 长效版本：普通混乱药水 + 红石 -> 长效混乱药水
-//        PotionBrewingRecipes.addMix(ModPotions.CONFUSION.get(), Items.REDSTONE, ModPotions.LONG_CONFUSION.get());
-//
-//        // 强效版本：普通混乱药水 + 荧石粉 -> 强效混乱药水
-//        PotionBrewingRecipes.addMix(ModPotions.CONFUSION.get(), Items.GLOWSTONE_DUST, ModPotions.STRONG_CONFUSION.get());
-//    }
+
+    /**
+     * 不死药水 - 普通版本
+     * 效果：当受到致命伤害时，触发不死图腾的效果，并移除本效果
+     * 时长：3分钟 (3600 ticks)
+     */
+    public static final RegistryObject<Potion> UNDYING = POTIONS.register(
+            "undying",
+            () -> new Potion(new MobEffectInstance(ModEffects.UNDYING.get(), 3600))
+    );
+
+    /**
+     * 不死药水 - 长效版本
+     * 效果：当受到致命伤害时，触发不死图腾的效果，并移除本效果
+     * 时长：8分钟 (9600 ticks)
+     */
+    public static final RegistryObject<Potion> LONG_UNDYING = POTIONS.register(
+            "long_undying",
+            () -> new Potion(new MobEffectInstance(ModEffects.UNDYING.get(), 9600))
+    );
+
+    /**
+     * 注册所有药水
+     *
+     * @param eventBus Forge事件总线
+     */
+    public static void register(IEventBus eventBus) {
+        POTIONS.register(eventBus);
+    }
+
+    /**
+     * 获取药水配方
+     * 此方法只返回配方数据，实际注册在Curiosities类的commonSetup中完成
+     */
+    public static void registerPotionRecipes() {
+        // 创建各种药水的ItemStack
+        ItemStack awkwardInput = PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.AWKWARD);
+        
+        // 富有药水配方
+        // 普通版本：尴尬的药水 + 绿宝石块 -> 富有药水
+        ItemStack richOutput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.RICH.get());
+        BrewingRecipeRegistry.addRecipe(
+                Ingredient.of(awkwardInput),
+                Ingredient.of(Items.EMERALD_BLOCK),
+                richOutput
+        );
+
+        // 长效版本：普通富有药水 + 红石 -> 长效富有药水
+        ItemStack richInput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.RICH.get());
+        ItemStack longRichOutput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.LONG_RICH.get());
+        BrewingRecipeRegistry.addRecipe(
+                Ingredient.of(richInput),
+                Ingredient.of(Items.REDSTONE),
+                longRichOutput
+        );
+
+        // 强效版本：普通富有药水 + 荧石粉 -> 强效富有药水
+        ItemStack strongRichOutput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.STRONG_RICH.get());
+        BrewingRecipeRegistry.addRecipe(
+                Ingredient.of(richInput),
+                Ingredient.of(Items.GLOWSTONE_DUST),
+                strongRichOutput
+        );
+
+        // 混乱药水配方
+        // 普通版本：尴尬的药水 + 涡毒腺体 -> 混乱药水
+        ItemStack confusionOutput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.CONFUSION.get());
+        BrewingRecipeRegistry.addRecipe(
+                Ingredient.of(awkwardInput),
+                Ingredient.of(ModItems.TOXIC_GLAND.get()),
+                confusionOutput
+        );
+
+        // 长效版本：普通混乱药水 + 红石 -> 长效混乱药水
+        ItemStack confusionInput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.CONFUSION.get());
+        ItemStack longConfusionOutput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.LONG_CONFUSION.get());
+        BrewingRecipeRegistry.addRecipe(
+                Ingredient.of(confusionInput),
+                Ingredient.of(Items.REDSTONE),
+                longConfusionOutput
+        );
+
+        // 强效版本：普通混乱药水 + 荧石粉 -> 强效混乱药水
+        ItemStack strongConfusionOutput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.STRONG_CONFUSION.get());
+        BrewingRecipeRegistry.addRecipe(
+                Ingredient.of(confusionInput),
+                Ingredient.of(Items.GLOWSTONE_DUST),
+                strongConfusionOutput
+        );
+        
+        // 不死药水配方
+        // 普通版本：尴尬的药水 + 不死图腾 -> 不死药水
+        ItemStack undyingOutput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.UNDYING.get());
+        BrewingRecipeRegistry.addRecipe(
+                Ingredient.of(awkwardInput),
+                Ingredient.of(Items.TOTEM_OF_UNDYING),
+                undyingOutput
+        );
+        
+        // 长效版本：普通不死药水 + 红石 -> 长效不死药水
+        ItemStack undyingInput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.UNDYING.get());
+        ItemStack longUndyingOutput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.LONG_UNDYING.get());
+        BrewingRecipeRegistry.addRecipe(
+                Ingredient.of(undyingInput),
+                Ingredient.of(Items.REDSTONE),
+                longUndyingOutput
+        );
+    }
 } 

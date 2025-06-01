@@ -90,6 +90,15 @@ public class ModEffects {
     );
 
     /**
+     * 不死效果
+     * 当受到致命伤害时，触发不死图腾的效果，并移除本效果
+     */
+    public static final RegistryObject<MobEffect> UNDYING = MOB_EFFECTS.register(
+            "undying",
+            UndyingEffect::new
+    );
+
+    /**
      * 注册所有状态效果
      *
      * @param eventBus Forge事件总线

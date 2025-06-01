@@ -15,6 +15,24 @@
     - 合成配方：下界之星+下界合金锭（上排），下界合金块+下界之星（中排），木棍（下排左侧）
     - 可通过配置文件启用/禁用及控制是否可合成
 
+#### 附魔
+
+- **钢契 (Steel Covenant)**
+  - 新增防护类附魔，可以应用于胸甲
+  - 限制玩家受到的最大伤害值，公式为：20-(等级-1)*2.5
+  - 最高支持5级附魔，一级限制伤害上限为20点，五级限制伤害上限为10点
+  - 默认无法从村民处交易获得
+  - 可通过配置文件启用/禁用及控制是否可交易
+  - 每当限制伤害时，对盔甲造成3点耐久度损耗
+
+#### 状态效果
+
+- **不死 (Undying)**
+  - 新增状态效果，当受到致命伤害时，触发不死图腾的效果，并移除本效果
+  - 提供对应的药水和药箭，基础版持续3分钟，长效版持续8分钟
+  - 可通过配置文件启用/禁用
+  - 酿造配方：粗制的药水 + 不死图腾 -> 不死药水
+
 ## 版本 2025.5 (2025年5月更新)
 
 ### bug修复:
@@ -181,57 +199,24 @@
       bottom left)
     - Can be enabled/disabled and craft control via config file
 
-## Version 2025.5 (May 2025 Update)
+#### Enchantments
 
-### Bug Fixes:
-
-- Fixed config synchronization issues between server and client
-- Fixed Rocket Boots texture disappearance bug
-- Fixed Chain Mining enchantment being applicable to non-tool items
-- Fixed incorrect Scythe harvesting range
-- Fixed Scythes triggering Harvest Dance even when no crops were harvested
-- Fixed Scythes triggering sweep attack before Attack Speed was fully charged
-- Fixed excessive particle effects during Scythe sweep attacks
-- Fixed Moral Balance enchantment not being applicable to weapons in anvils
-- Fixed Chain Mining binding to mouse side button (mouse button 5) not working properly
-
-### Game Content Updates
+- **Steel Covenant**
+  - New protective enchantment applicable to helmets and chestplates
+  - Limits the maximum damage a player can receive using the formula: 20-(level-1)*2.5
+  - Supports up to level 5, with level 1 capping damage at 20 and level 5 capping at 10
+  - By default cannot be obtained from villager trades
+  - Can be enabled/disabled and trade ability controlled via config file
+  - Now only applicable to chestplates (no longer works on helmets)
+  - Causes 3 points of durability damage to armor whenever damage is limited
 
 #### Status Effects
 
-- **Dizzy**
-    - Makes player controls reversed, inverting WASD key effects
-    - All effect levels simultaneously invert both forward/backward and left/right directions
-    - Can be enabled or disabled in config file
-- **Spinning**
-    - Makes player camera randomly rotate while still allowing player control
-    - Higher effect levels increase rotation amplitude
-    - Uses cosine and sine functions for smooth rotation calculations
-  - Can be enabled or disabled in config file
-- **Dissolving Body**
-  - Each level reduces 2 game ticks (0.1 seconds) of damage immunity after being hit
-  - Makes creatures easier to take continuous damage
-  - Can be enabled or disabled in config file
-- **Rich**
-  - Makes nearby villagers follow the player with heart particles above their heads
-  - Affected range increases with effect level, base range of 16 blocks, +16 blocks per level
-  - Villagers actively approach and follow players with this effect
-  - Range per level and toggle can be adjusted in config file
-- **Confusion**
-  - When attacking, there's a level*15% chance (configurable) to transfer the attack target to yourself
-  - When transferred, you take 30%*level of the original damage (configurable)
-  - Configuration options include enable/disable, chance per level, damage percentage per level, and maximum damage
-    percentage
-  - Obtained through Confusion potions, base duration of 1 minute 30 seconds
-
-#### Enchantments
-
-- **Proficiency**
-  - Increases weapon attack speed by 15% per level (adjustable in config)
-  - Supports up to level 4
-  - Appears as a super rare enchantment, with level 30 enchanting table limited to level 3
-  - Available through villager trading
-  - Configuration options include toggle for enabling/disabling and percent increase per level
+- **Undying**
+  - New status effect that triggers the Totem of Undying effect and removes itself when taking fatal damage
+  - Provides corresponding potions and tipped arrows, with base duration of 3 minutes and long version of 8 minutes
+  - Can be enabled/disabled via config file
+  - Brewing recipe: Awkward Potion + Totem of Undying -> Potion of Undying
 
 #### Items
 

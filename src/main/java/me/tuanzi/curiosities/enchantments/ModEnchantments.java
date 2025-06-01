@@ -4,6 +4,7 @@ import me.tuanzi.curiosities.Curiosities;
 import me.tuanzi.curiosities.enchantments.chain_mining.ChainMiningEnchantment;
 import me.tuanzi.curiosities.enchantments.moral_balance.MoralBalanceEnchantment;
 import me.tuanzi.curiosities.enchantments.proficiency.ProficiencyEnchantment;
+import me.tuanzi.curiosities.enchantments.steel_covenant.SteelCovenantEnchantment;
 import me.tuanzi.curiosities.enchantments.super_fortune.SuperFortuneEnchantment;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.registries.DeferredRegister;
@@ -43,4 +44,10 @@ public class ModEnchantments {
      * 用于武器，每级增加一定百分比的攻击速度
      */
     public static final RegistryObject<Enchantment> PROFICIENCY = ENCHANTMENTS.register("proficiency", ProficiencyEnchantment::new);
+    
+    /**
+     * 钢契附魔
+     * 用于胸甲和头盔，限制玩家受到的最大伤害
+     */
+    public static final RegistryObject<Enchantment> STEEL_COVENANT = ENCHANTMENTS.register("steel_covenant", SteelCovenantEnchantment::new);
 }

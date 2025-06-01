@@ -111,6 +111,16 @@ public class Curiosities {
                             output.accept(proficiencyBook);
                         }
 
+                        // 添加钢契附魔书
+                        // 添加所有等级的钢契附魔书（1-5级）
+                        for (int level = 1; level <= 5; level++) {
+                            ItemStack steelCovenantBook = new ItemStack(Items.ENCHANTED_BOOK);
+                            EnchantedBookItem.addEnchantment(
+                                    steelCovenantBook,
+                                    new EnchantmentInstance(ModEnchantments.STEEL_COVENANT.get(), level)
+                            );
+                            output.accept(steelCovenantBook);
+                        }
 
                         // 添加狼牙土豆
                         output.accept(ModItems.WOLF_FANG_POTATO.get());
@@ -212,6 +222,19 @@ public class Curiosities {
                         output.accept(PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW), ModPotions.CONFUSION.get()));
                         output.accept(PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW), ModPotions.LONG_CONFUSION.get()));
                         output.accept(PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW), ModPotions.STRONG_CONFUSION.get()));
+
+                        // 添加不死药水
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.UNDYING.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.LONG_UNDYING.get()));
+
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.UNDYING.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.LONG_UNDYING.get()));
+
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.UNDYING.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.LONG_UNDYING.get()));
+
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW), ModPotions.UNDYING.get()));
+                        output.accept(PotionUtils.setPotion(new ItemStack(Items.TIPPED_ARROW), ModPotions.LONG_UNDYING.get()));
 
                     })
                     .build()
@@ -411,6 +434,36 @@ public class Curiosities {
                 Ingredient.of(Items.GLOWSTONE_DUST), strongConfusionLingeringOutput);
 
         LOGGER.info("已注册混乱药水的酿造配方");
+
+        // 不死药水酿造配方
+        // 普通版本：尴尬的药水 + 不死图腾 -> 不死药水
+        ItemStack undyingOutput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.UNDYING.get());
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(awkwardInput), Ingredient.of(Items.TOTEM_OF_UNDYING), undyingOutput);
+
+        // 长效版本：普通不死药水 + 红石 -> 长效不死药水
+        ItemStack undyingInput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.UNDYING.get());
+        ItemStack longUndyingOutput = PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.LONG_UNDYING.get());
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(undyingInput), Ingredient.of(Items.REDSTONE), longUndyingOutput);
+
+        // 喷溅型药水配方
+        ItemStack undyingSplashOutput = PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.UNDYING.get());
+        ItemStack longUndyingSplashOutput = PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.LONG_UNDYING.get());
+
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), net.minecraft.world.item.alchemy.Potions.AWKWARD)),
+                Ingredient.of(Items.TOTEM_OF_UNDYING), undyingSplashOutput);
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), ModPotions.UNDYING.get())),
+                Ingredient.of(Items.REDSTONE), longUndyingSplashOutput);
+
+        // 滞留型药水配方
+        ItemStack undyingLingeringOutput = PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.UNDYING.get());
+        ItemStack longUndyingLingeringOutput = PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.LONG_UNDYING.get());
+
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), net.minecraft.world.item.alchemy.Potions.AWKWARD)),
+                Ingredient.of(Items.TOTEM_OF_UNDYING), undyingLingeringOutput);
+        BrewingRecipeRegistry.addRecipe(Ingredient.of(PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), ModPotions.UNDYING.get())),
+                Ingredient.of(Items.REDSTONE), longUndyingLingeringOutput);
+
+        LOGGER.info("已注册不死药水的酿造配方");
     }
 
     /**

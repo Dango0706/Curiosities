@@ -423,6 +423,12 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.CONFUSION_DAMAGE_PERCENT_MAX
             );
 
+            // 不死效果配置
+            effectsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.undying_effect_enabled"),
+                    ModConfigManager.UNDYING_EFFECT_ENABLED
+            );
+
             // 附魔配置主分类
             ConfigCategory enchantmentsCategory = new ConfigCategory(
                     Component.translatable("config.curiosities.enchantments_section"),
@@ -460,6 +466,17 @@ public class SimpleConfigScreen extends Screen {
             enchantmentsCategory.addBooleanOption(
                     Component.translatable("config.curiosities.moral_balance_enabled"),
                     ModConfigManager.MORAL_BALANCE_ENABLED
+            );
+
+            // 钢契附魔配置
+            enchantmentsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.steel_covenant_enabled"),
+                    ModConfigManager.STEEL_COVENANT_ENABLED
+            );
+            
+            enchantmentsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.steel_covenant_tradeable"),
+                    ModConfigManager.STEEL_COVENANT_TRADEABLE
             );
 
             // 熟练附魔配置

@@ -62,6 +62,12 @@ public class ChainMiningEnchantment extends Enchantment {
         return 4;
     }
 
+
+    @Override
+    public int getMinCost(int p_44679_) {
+        return super.getMinCost(p_44679_);
+    }
+
     /**
      * 判断是否可以在附魔台上应用此附魔
      *

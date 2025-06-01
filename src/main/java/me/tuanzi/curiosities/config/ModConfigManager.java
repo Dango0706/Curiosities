@@ -45,6 +45,9 @@ public class ModConfigManager {
     public static ForgeConfigSpec.BooleanValue LUCKY_SWORD_ENABLED;
     public static ForgeConfigSpec.DoubleValue LUCKY_SWORD_MIN_DAMAGE;
     public static ForgeConfigSpec.DoubleValue LUCKY_SWORD_MAX_DAMAGE;
+    // 钢契附魔配置
+    public static ForgeConfigSpec.BooleanValue STEEL_COVENANT_ENABLED;
+    public static ForgeConfigSpec.BooleanValue STEEL_COVENANT_TRADEABLE;
     // 尖叫派配置
     public static ForgeConfigSpec.BooleanValue SCREAMING_PIE_ENABLED;
     public static ForgeConfigSpec.IntValue SCREAMING_PIE_SLOW_FALLING_DURATION;
@@ -108,6 +111,8 @@ public class ModConfigManager {
     // 富有效果配置
     public static ForgeConfigSpec.BooleanValue RICH_EFFECT_ENABLED;
     public static ForgeConfigSpec.IntValue RICH_EFFECT_RANGE_PER_LEVEL;
+    // 不死效果配置
+    public static ForgeConfigSpec.BooleanValue UNDYING_EFFECT_ENABLED;
 
     // 原版修改配置
     // 一些配置
@@ -273,6 +278,16 @@ public class ModConfigManager {
                 .define("enabled", true);
         COMMON_BUILDER.pop();
 
+        // 钢契附魔配置
+        COMMON_BUILDER.comment("钢契附魔配置").push("steel_covenant");
+        STEEL_COVENANT_ENABLED = COMMON_BUILDER
+                .comment("是否启用钢契附魔")
+                .define("enabled", true);
+        STEEL_COVENANT_TRADEABLE = COMMON_BUILDER
+                .comment("是否可以被村民交易")
+                .define("tradeable", false);
+        COMMON_BUILDER.pop();
+
         // 假TNT配置
         COMMON_BUILDER.comment("假TNT配置").push("fake_tnt");
         FAKE_TNT_ENABLED = COMMON_BUILDER
@@ -426,6 +441,13 @@ public class ModConfigManager {
                 .defineInRange("damage_percent_max", 1.0, 0.0, 10.0);
         COMMON_BUILDER.pop();
 
+        // 不死效果配置
+        COMMON_BUILDER.comment("不死效果配置").push("undying_effect");
+        UNDYING_EFFECT_ENABLED = COMMON_BUILDER
+                .comment("是否启用不死效果")
+                .define("enabled", true);
+        COMMON_BUILDER.pop();
+
         // 无限水桶配置
         COMMON_BUILDER.comment("无限水桶配置").push("infinite_water_bucket");
         INFINITE_WATER_BUCKET_ENABLED = COMMON_BUILDER
@@ -555,6 +577,12 @@ public class ModConfigManager {
         if (booleanConfigs.containsKey("moral_balance_enabled")) {
             MORAL_BALANCE_ENABLED.set(booleanConfigs.get("moral_balance_enabled"));
         }
+        if (booleanConfigs.containsKey("steel_covenant_enabled")) {
+            STEEL_COVENANT_ENABLED.set(booleanConfigs.get("steel_covenant_enabled"));
+        }
+        if (booleanConfigs.containsKey("steel_covenant_tradeable")) {
+            STEEL_COVENANT_TRADEABLE.set(booleanConfigs.get("steel_covenant_tradeable"));
+        }
         if (booleanConfigs.containsKey("fake_tnt_enabled")) {
             FAKE_TNT_ENABLED.set(booleanConfigs.get("fake_tnt_enabled"));
         }
@@ -596,6 +624,9 @@ public class ModConfigManager {
         }
         if (booleanConfigs.containsKey("creative_trade_auto_fill")) {
             CREATIVE_TRADE_AUTO_FILL_ENABLED.set(booleanConfigs.get("creative_trade_auto_fill"));
+        }
+        if (booleanConfigs.containsKey("undying_effect_enabled")) {
+            UNDYING_EFFECT_ENABLED.set(booleanConfigs.get("undying_effect_enabled"));
         }
 
         // 应用整数配置

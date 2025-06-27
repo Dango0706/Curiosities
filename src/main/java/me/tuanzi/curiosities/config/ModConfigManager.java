@@ -120,6 +120,7 @@ public class ModConfigManager {
     public static ForgeConfigSpec.BooleanValue IMPROVED_VILLAGER_TRADES_ENABLED;
     public static ForgeConfigSpec.BooleanValue ENHANCED_ANVIL_ENABLED;
     public static ForgeConfigSpec.IntValue ENHANCED_ANVIL_MAX_REPAIR_COST;
+    public static ForgeConfigSpec.BooleanValue GLASS_BOTTLE_TO_WATER_BOTTLE_ENABLED;
     // 通用配置
     private static ForgeConfigSpec.Builder COMMON_BUILDER;
     private static ForgeConfigSpec COMMON_CONFIG;
@@ -509,6 +510,13 @@ public class ModConfigManager {
                 .defineInRange("max_repair_cost", 100, 40, 1000);
         COMMON_BUILDER.pop();
 
+        // 玻璃瓶转水瓶
+        COMMON_BUILDER.comment("玻璃瓶转水瓶").push("glass_bottle_to_water_bottle");
+        GLASS_BOTTLE_TO_WATER_BOTTLE_ENABLED = COMMON_BUILDER
+                .comment("是否启用玻璃瓶投掷到水中自动转换为水瓶")
+                .define("enabled", true);
+        COMMON_BUILDER.pop();
+
         COMMON_BUILDER.pop(); // vanilla_modifications
 
         COMMON_BUILDER.pop(); // effects
@@ -627,6 +635,9 @@ public class ModConfigManager {
         }
         if (booleanConfigs.containsKey("undying_effect_enabled")) {
             UNDYING_EFFECT_ENABLED.set(booleanConfigs.get("undying_effect_enabled"));
+        }
+        if (booleanConfigs.containsKey("glass_bottle_to_water_bottle_enabled")) {
+            GLASS_BOTTLE_TO_WATER_BOTTLE_ENABLED.set(booleanConfigs.get("glass_bottle_to_water_bottle_enabled"));
         }
 
         // 应用整数配置

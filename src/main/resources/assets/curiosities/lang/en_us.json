@@ -158,6 +158,7 @@
   "config.curiosities.improved_villager_trades_enabled": "Enable Improved Villager Trades: ",
   "config.curiosities.enhanced_anvil_enabled": "Enable Enhanced Anvil: ",
   "config.curiosities.enhanced_anvil_max_repair_cost": "Maximum Anvil Repair Cost: ",
+  "config.curiosities.glass_bottle_to_water_bottle_enabled": "Glass Bottle to Water Bottle: ",
   "config.curiosities.creative_trade_auto_fill_enabled": "Creative Mode Trade Auto-fill: ",
   "item.curiosities.void_sword": "Void Devourer Sword",
   "item.curiosities.void_sword.desc.1": "Stores part of killed mob's max health as void energy",

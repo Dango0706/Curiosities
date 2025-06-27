@@ -354,6 +354,11 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.ENHANCED_ANVIL_MAX_REPAIR_COST
             );
 
+            vanillaModificationsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.glass_bottle_to_water_bottle_enabled"),
+                    ModConfigManager.GLASS_BOTTLE_TO_WATER_BOTTLE_ENABLED
+            );
+
             // 添加创造模式村民交易自动填充选项
             vanillaModificationsCategory.addBooleanOption(
                     Component.translatable("config.curiosities.creative_trade_auto_fill_enabled"),

@@ -327,6 +327,32 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.VOID_SWORD_MAX_CAST_DISTANCE
             );
 
+            // 概率圣剑配置
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.probability_holy_sword_enabled"),
+                    ModConfigManager.PROBABILITY_HOLY_SWORD_ENABLED
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("config.curiosities.probability_holy_sword_chest_spawn_chance_label"),
+                    ModConfigManager.PROBABILITY_HOLY_SWORD_CHEST_SPAWN_CHANCE
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.probability_holy_sword_base_damage_label"),
+                    ModConfigManager.PROBABILITY_HOLY_SWORD_BASE_DAMAGE
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("config.curiosities.probability_holy_sword_effect_chance_label"),
+                    ModConfigManager.PROBABILITY_HOLY_SWORD_EFFECT_CHANCE
+            );
+
+            itemsCategory.addDoubleOption(
+                    Component.translatable("config.curiosities.probability_holy_sword_lucky_strike_max_health_label"),
+                    ModConfigManager.PROBABILITY_HOLY_SWORD_LUCKY_STRIKE_MAX_HEALTH
+            );
+
             // 原版修改配置
             ConfigCategory vanillaModificationsCategory = new ConfigCategory(
                     Component.translatable("config.curiosities.vanilla_modifications_section"),

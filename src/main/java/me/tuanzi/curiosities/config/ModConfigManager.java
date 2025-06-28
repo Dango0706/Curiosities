@@ -83,6 +83,13 @@ public class ModConfigManager {
     public static ForgeConfigSpec.IntValue VOID_SWORD_BLACK_HOLE_DAMAGE_INTERVAL;
     public static ForgeConfigSpec.IntValue VOID_SWORD_COOLDOWN;
     public static ForgeConfigSpec.IntValue VOID_SWORD_MAX_CAST_DISTANCE;
+
+    // 概率圣剑配置
+    public static ForgeConfigSpec.BooleanValue PROBABILITY_HOLY_SWORD_ENABLED;
+    public static ForgeConfigSpec.DoubleValue PROBABILITY_HOLY_SWORD_CHEST_SPAWN_CHANCE;
+    public static ForgeConfigSpec.IntValue PROBABILITY_HOLY_SWORD_BASE_DAMAGE;
+    public static ForgeConfigSpec.DoubleValue PROBABILITY_HOLY_SWORD_EFFECT_CHANCE;
+    public static ForgeConfigSpec.DoubleValue PROBABILITY_HOLY_SWORD_LUCKY_STRIKE_MAX_HEALTH;
     // 无限水桶配置
     public static ForgeConfigSpec.BooleanValue INFINITE_WATER_BUCKET_ENABLED;
 
@@ -485,6 +492,25 @@ public class ModConfigManager {
         VOID_SWORD_MAX_CAST_DISTANCE = COMMON_BUILDER
                 .comment("最大施法距离（方块），设置为0则无限制")
                 .defineInRange("max_cast_distance", 10, 0, 100);
+        COMMON_BUILDER.pop();
+
+        // 概率圣剑配置
+        COMMON_BUILDER.comment("概率圣剑配置").push("probability_holy_sword");
+        PROBABILITY_HOLY_SWORD_ENABLED = COMMON_BUILDER
+                .comment("是否启用概率圣剑")
+                .define("enabled", true);
+        PROBABILITY_HOLY_SWORD_CHEST_SPAWN_CHANCE = COMMON_BUILDER
+                .comment("沙漠神殿宝箱生成概率（0.0-1.0）")
+                .defineInRange("chest_spawn_chance", 0.15, 0.0, 1.0);
+        PROBABILITY_HOLY_SWORD_BASE_DAMAGE = COMMON_BUILDER
+                .comment("基础攻击伤害")
+                .defineInRange("base_damage", 6, 1, 20);
+        PROBABILITY_HOLY_SWORD_EFFECT_CHANCE = COMMON_BUILDER
+                .comment("特殊效果触发概率（0.0-1.0）")
+                .defineInRange("effect_chance", 0.2, 0.0, 1.0);
+        PROBABILITY_HOLY_SWORD_LUCKY_STRIKE_MAX_HEALTH = COMMON_BUILDER
+                .comment("幸运斩生效的目标最大血量上限")
+                .defineInRange("lucky_strike_max_health", 25.0, 1.0, 100.0);
         COMMON_BUILDER.pop();
 
         // 原版修改配置

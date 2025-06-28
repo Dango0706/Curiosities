@@ -287,5 +287,19 @@
   "item.curiosities.scythe.tooltip.harvest_dance_range": "丰收之舞范围: %d",
   "item.curiosities.scythe.tooltip.harvest_range": "收获范围: %d",
   "item.curiosities.scythe.tooltip.sweep_range_bonus": "横扫范围加成: %s",
-  "item.curiosities.wolf_fang_potato.tooltip": "吃了它，你就能指挥狼群！但熊猫会讨厌你...效果持续2分钟"
+  "item.curiosities.wolf_fang_potato.tooltip": "吃了它，你就能指挥狼群！但熊猫会讨厌你...效果持续2分钟",
+  "config.curiosities.probability_holy_sword_enabled": "启用概率圣剑: ",
+  "config.curiosities.probability_holy_sword_section": "概率圣剑配置",
+  "config.curiosities.probability_holy_sword_chest_spawn_chance_label": "沙漠神殿宝箱生成概率: ",
+  "config.curiosities.probability_holy_sword_base_damage_label": "基础攻击伤害: ",
+  "config.curiosities.probability_holy_sword_effect_chance_label": "特殊效果触发概率: ",
+  "config.curiosities.probability_holy_sword_lucky_strike_max_health_label": "幸运斩血量上限阈值: ",
+  "item.curiosities.probability_holy_sword": "概率圣剑",
+  "item.curiosities.probability_holy_sword.desc": "一把拥有不可预测力量的神秘之剑。20%概率触发随机特殊效果。",
+  "item.curiosities.probability_holy_sword.effect_chance": "特殊效果概率: %d%%",
+  "item.curiosities.probability_holy_sword.repair": "只能用铁锭修复",
+  "item.curiosities.probability_holy_sword.tooltip.disabled": "该物品功能已禁用",
+  "item.curiosities.probability_holy_sword.lucky_strike": "幸运斩！暴击命中！",
+  "item.curiosities.probability_holy_sword.cursed_thrust": "厄运突刺！高伤害但有代价！",
+  "item.curiosities.probability_holy_sword.spatial_chaos": "时空错乱！敌人被传送了！"
 }

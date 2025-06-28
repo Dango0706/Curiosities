@@ -11,6 +11,7 @@ import me.tuanzi.curiosities.enchantments.chain_mining.ChainMiningEventHandler;
 import me.tuanzi.curiosities.enchantments.chain_mining.ChainMiningState;
 import me.tuanzi.curiosities.entities.ModEntities;
 import me.tuanzi.curiosities.items.ModItems;
+import me.tuanzi.curiosities.loot.ModLootModifiers;
 import me.tuanzi.curiosities.potion.ModPotions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -187,6 +188,9 @@ public class Curiosities {
                         //添加涡毒腺体
                         output.accept(ModItems.TOXIC_GLAND.get());
 
+                        //添加概率圣剑
+                        output.accept(ModItems.PROBABILITY_HOLY_SWORD.get());
+
                         // 添加富有药水
                         output.accept(PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.RICH.get()));
                         output.accept(PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.LONG_RICH.get()));
@@ -279,6 +283,9 @@ public class Curiosities {
 
         // 注册药水
         ModPotions.POTIONS.register(modEventBus);
+
+        // 注册战利品修改器
+        ModLootModifiers.LOOT_MODIFIERS.register(modEventBus);
 
         // 注册事件监听器
         registerEventListeners();
@@ -478,6 +485,7 @@ public class Curiosities {
         CraftingHelper.register(new me.tuanzi.curiosities.crafting.LuckySwordEnabledCondition.Serializer());
         CraftingHelper.register(new me.tuanzi.curiosities.crafting.ScreamingPieEnabledCondition.Serializer());
         CraftingHelper.register(new me.tuanzi.curiosities.crafting.ControlStaffCraftableCondition.Serializer());
+        CraftingHelper.register(new me.tuanzi.curiosities.crafting.ProbabilityHolySwordEnabledCondition.Serializer());
         LOGGER.info("注册配方条件完成");
     }
 

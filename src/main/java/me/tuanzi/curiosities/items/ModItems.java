@@ -4,6 +4,7 @@ import me.tuanzi.curiosities.Curiosities;
 import me.tuanzi.curiosities.items.bee_grenade.BeeGrenadeItem;
 import me.tuanzi.curiosities.items.control_staff.ControlStaffItem;
 import me.tuanzi.curiosities.items.lucky_sword.LuckySwordItem;
+import me.tuanzi.curiosities.items.probability_holy_sword.ProbabilityHolySwordItem;
 import me.tuanzi.curiosities.items.rocket_boots.RocketBootsItem;
 import me.tuanzi.curiosities.items.screaming_pie.ScreamingPieItem;
 import me.tuanzi.curiosities.items.scroll_of_spacetime.ScrollOfSpacetimeItem;
@@ -198,5 +199,14 @@ public class ModItems {
             "toxic_gland",
             ToxicGlandItem::new
     );
+    /**
+     * 概率圣剑
+     * 基础攻击伤害6点，耐久度300点，20%概率触发随机特殊效果
+     * 只能用铁锭修复，不能附魔（除了诅咒）
+     */
+    public static final RegistryObject<Item> PROBABILITY_HOLY_SWORD = ITEMS.register(
+            "probability_holy_sword",
+            ProbabilityHolySwordItem::new
+    );
     private static final Logger LOGGER = LogManager.getLogger();
-} 
+}

@@ -240,5 +240,19 @@
   "config.curiosities.undying_effect_enabled": "Enable Undying Effect",
   "config.curiosities.undying_effect_section": "Undying Effect Configuration",
   "effect.curiosities.undying": "Undying",
-  "effect.curiosities.undying.desc": "When receiving fatal damage, triggers the Totem of Undying effect and removes this effect"
+  "effect.curiosities.undying.desc": "When receiving fatal damage, triggers the Totem of Undying effect and removes this effect",
+  "config.curiosities.probability_holy_sword_enabled": "Enable Probability Holy Sword: ",
+  "config.curiosities.probability_holy_sword_section": "Probability Holy Sword Configuration",
+  "config.curiosities.probability_holy_sword_chest_spawn_chance_label": "Desert Temple Chest Spawn Chance: ",
+  "config.curiosities.probability_holy_sword_base_damage_label": "Base Attack Damage: ",
+  "config.curiosities.probability_holy_sword_effect_chance_label": "Special Effect Trigger Chance: ",
+  "config.curiosities.probability_holy_sword_lucky_strike_max_health_label": "Lucky Strike Max Health Threshold: ",
+  "item.curiosities.probability_holy_sword": "Probability Holy Sword",
+  "item.curiosities.probability_holy_sword.desc": "A mysterious sword with unpredictable power. 20% chance to trigger random effects.",
+  "item.curiosities.probability_holy_sword.effect_chance": "Special Effect Chance: %d%%",
+  "item.curiosities.probability_holy_sword.repair": "Repairable with Iron Ingots only",
+  "item.curiosities.probability_holy_sword.tooltip.disabled": "This item's functionality is disabled",
+  "item.curiosities.probability_holy_sword.lucky_strike": "Lucky Strike! Critical hit!",
+  "item.curiosities.probability_holy_sword.cursed_thrust": "Cursed Thrust! High damage at a cost!",
+  "item.curiosities.probability_holy_sword.spatial_chaos": "Spatial Chaos! Enemy teleported!"
 }

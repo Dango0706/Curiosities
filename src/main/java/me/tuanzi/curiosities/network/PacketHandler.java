@@ -53,6 +53,20 @@ public class PacketHandler {
                 PacketSyncConfig::new,
                 PacketSyncConfig::handle);
 
+        // 注册打开生物选择GUI包（服务端 -> 客户端）
+        // 当玩家使用生物指南针时发送
+        INSTANCE.registerMessage(id++, PacketOpenEntitySelectionGui.class,
+                PacketOpenEntitySelectionGui::encode,
+                PacketOpenEntitySelectionGui::decode,
+                PacketOpenEntitySelectionGui::handle);
+
+        // 注册生物发光效果包（服务端 -> 客户端）
+        // 当生物指南针找到生物时发送
+        INSTANCE.registerMessage(id++, PacketEntityGlow.class,
+                PacketEntityGlow::encode,
+                PacketEntityGlow::decode,
+                PacketEntityGlow::handle);
+
         LOGGER.info("[网络] 网络包注册完成");
     }
 

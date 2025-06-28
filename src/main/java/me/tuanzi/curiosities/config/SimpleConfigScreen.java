@@ -353,6 +353,22 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.PROBABILITY_HOLY_SWORD_LUCKY_STRIKE_MAX_HEALTH
             );
 
+            // 生物指南针配置
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.entity_compass_enabled"),
+                    ModConfigManager.ENTITY_COMPASS_ENABLED
+            );
+
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.entity_compass_craftable"),
+                    ModConfigManager.ENTITY_COMPASS_CRAFTABLE
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.entity_compass_glow_range_label"),
+                    ModConfigManager.ENTITY_COMPASS_GLOW_RANGE
+            );
+
             // 原版修改配置
             ConfigCategory vanillaModificationsCategory = new ConfigCategory(
                     Component.translatable("config.curiosities.vanilla_modifications_section"),

@@ -1,0 +1,54 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SHD",
+    "LMF",
+    "PWZ"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:skeleton_skull"
+    },
+    "H": {
+      "item": "minecraft:creeper_head"
+    },
+    "D": {
+      "item": "minecraft:dragon_head"
+    },
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "M": {
+      "item": "minecraft:compass"
+    },
+    "F": {
+      "item": "minecraft:feather"
+    },
+    "P": {
+      "item": "minecraft:piglin_head"
+    },
+    "W": {
+      "item": "minecraft:wither_skeleton_skull"
+    },
+    "Z": {
+      "item": "minecraft:zombie_head"
+    }
+  },
+  "result": {
+    "item": "curiosities:entity_compass"
+  },
+  "conditions": [
+    {
+      "type": "forge:and",
+      "values": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "curiosities"
+        },
+        {
+          "type": "curiosities:entity_compass_enabled"
+        }
+      ]
+    }
+  ]
+}

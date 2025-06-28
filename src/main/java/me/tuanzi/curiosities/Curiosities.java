@@ -191,6 +191,9 @@ public class Curiosities {
                         //添加概率圣剑
                         output.accept(ModItems.PROBABILITY_HOLY_SWORD.get());
 
+                        //添加生物指南针
+                        output.accept(ModItems.ENTITY_COMPASS.get());
+
                         // 添加富有药水
                         output.accept(PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.RICH.get()));
                         output.accept(PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.LONG_RICH.get()));
@@ -486,6 +489,7 @@ public class Curiosities {
         CraftingHelper.register(new me.tuanzi.curiosities.crafting.ScreamingPieEnabledCondition.Serializer());
         CraftingHelper.register(new me.tuanzi.curiosities.crafting.ControlStaffCraftableCondition.Serializer());
         CraftingHelper.register(new me.tuanzi.curiosities.crafting.ProbabilityHolySwordEnabledCondition.Serializer());
+        CraftingHelper.register(new me.tuanzi.curiosities.crafting.EntityCompassEnabledCondition.Serializer());
         LOGGER.info("注册配方条件完成");
     }
 

@@ -90,6 +90,12 @@ public class ModConfigManager {
     public static ForgeConfigSpec.IntValue PROBABILITY_HOLY_SWORD_BASE_DAMAGE;
     public static ForgeConfigSpec.DoubleValue PROBABILITY_HOLY_SWORD_EFFECT_CHANCE;
     public static ForgeConfigSpec.DoubleValue PROBABILITY_HOLY_SWORD_LUCKY_STRIKE_MAX_HEALTH;
+
+    // 生物指南针配置
+    public static ForgeConfigSpec.BooleanValue ENTITY_COMPASS_ENABLED;
+    public static ForgeConfigSpec.BooleanValue ENTITY_COMPASS_CRAFTABLE;
+    public static ForgeConfigSpec.IntValue ENTITY_COMPASS_GLOW_RANGE;
+
     // 无限水桶配置
     public static ForgeConfigSpec.BooleanValue INFINITE_WATER_BUCKET_ENABLED;
 
@@ -513,6 +519,19 @@ public class ModConfigManager {
                 .defineInRange("lucky_strike_max_health", 25.0, 1.0, 100.0);
         COMMON_BUILDER.pop();
 
+        // 生物指南针配置
+        COMMON_BUILDER.comment("生物指南针配置").push("entity_compass");
+        ENTITY_COMPASS_ENABLED = COMMON_BUILDER
+                .comment("是否启用生物指南针")
+                .define("enabled", true);
+        ENTITY_COMPASS_CRAFTABLE = COMMON_BUILDER
+                .comment("是否允许合成生物指南针")
+                .define("craftable", true);
+        ENTITY_COMPASS_GLOW_RANGE = COMMON_BUILDER
+                .comment("生物发光效果的搜索范围（格）")
+                .defineInRange("glow_range", 50, 10, 100);
+        COMMON_BUILDER.pop();
+
         // 原版修改配置
         COMMON_BUILDER.comment("原版修改配置").push("vanilla_modifications");
         VANILLA_MODIFICATIONS_ENABLED = COMMON_BUILDER
@@ -665,6 +684,12 @@ public class ModConfigManager {
         if (booleanConfigs.containsKey("glass_bottle_to_water_bottle_enabled")) {
             GLASS_BOTTLE_TO_WATER_BOTTLE_ENABLED.set(booleanConfigs.get("glass_bottle_to_water_bottle_enabled"));
         }
+        if (booleanConfigs.containsKey("entity_compass_enabled")) {
+            ENTITY_COMPASS_ENABLED.set(booleanConfigs.get("entity_compass_enabled"));
+        }
+        if (booleanConfigs.containsKey("entity_compass_craftable")) {
+            ENTITY_COMPASS_CRAFTABLE.set(booleanConfigs.get("entity_compass_craftable"));
+        }
 
         // 应用整数配置
         if (intConfigs.containsKey("chain_mining_max_blocks")) {
@@ -720,6 +745,9 @@ public class ModConfigManager {
         }
         if (intConfigs.containsKey("void_sword_max_cast_distance")) {
             VOID_SWORD_MAX_CAST_DISTANCE.set(intConfigs.get("void_sword_max_cast_distance"));
+        }
+        if (intConfigs.containsKey("entity_compass_glow_range")) {
+            ENTITY_COMPASS_GLOW_RANGE.set(intConfigs.get("entity_compass_glow_range"));
         }
 
         // 应用浮点数配置

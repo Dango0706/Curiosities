@@ -3,6 +3,7 @@ package me.tuanzi.curiosities.items;
 import me.tuanzi.curiosities.Curiosities;
 import me.tuanzi.curiosities.items.bee_grenade.BeeGrenadeItem;
 import me.tuanzi.curiosities.items.control_staff.ControlStaffItem;
+import me.tuanzi.curiosities.items.entity_compass.EntityCompassItem;
 import me.tuanzi.curiosities.items.lucky_sword.LuckySwordItem;
 import me.tuanzi.curiosities.items.probability_holy_sword.ProbabilityHolySwordItem;
 import me.tuanzi.curiosities.items.rocket_boots.RocketBootsItem;
@@ -208,5 +209,16 @@ public class ModItems {
             "probability_holy_sword",
             ProbabilityHolySwordItem::new
     );
+
+    /**
+     * 生物指南针
+     * 右键使用寻找生物，Shift+右键选择生物类型
+     * 可在岩浆中漂浮，具有物品冷却机制
+     */
+    public static final RegistryObject<Item> ENTITY_COMPASS = ITEMS.register(
+            "entity_compass",
+            EntityCompassItem::new
+    );
+
     private static final Logger LOGGER = LogManager.getLogger();
 }

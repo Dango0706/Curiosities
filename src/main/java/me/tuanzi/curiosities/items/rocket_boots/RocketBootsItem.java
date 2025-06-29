@@ -3,6 +3,7 @@ package me.tuanzi.curiosities.items.rocket_boots;
 import com.mojang.logging.LogUtils;
 import me.tuanzi.curiosities.Curiosities;
 import me.tuanzi.curiosities.config.ModConfigManager;
+import me.tuanzi.curiosities.util.DebugLogger;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -105,7 +106,7 @@ public class RocketBootsItem extends ArmorItem {
                     serverPlayer.hurtMarked = false;
                 }
 
-                LOGGER.debug("[火箭靴] 玩家 {} 火箭靴降落，取消摔落伤害", player.getName().getString());
+                DebugLogger.debugDetail("[火箭靴] 玩家 {} 火箭靴降落，取消摔落伤害", player.getName().getString());
             }
         }
     }
@@ -133,7 +134,7 @@ public class RocketBootsItem extends ArmorItem {
                         serverPlayer.hurtMarked = false;
                     }
 
-                    LOGGER.debug("[火箭靴] 玩家 {} 在下落过程中受伤，阻止再次触发火箭跳跃", player.getName().getString());
+                    DebugLogger.debugDetail("[火箭靴] 玩家 {} 在下落过程中受伤，阻止再次触发火箭跳跃", player.getName().getString());
                 }
             }
         }
@@ -167,7 +168,7 @@ public class RocketBootsItem extends ArmorItem {
             // 取消Y轴速度，阻止普通跳跃
             Vec3 motion = player.getDeltaMovement();
             player.setDeltaMovement(motion.x, 0, motion.z);
-            LOGGER.debug("拦截到玩家 {} 的跳跃事件，{}，已阻止普通跳跃",
+            DebugLogger.debugDetail("拦截到玩家 {} 的跳跃事件，{}，已阻止普通跳跃",
                     player.getName().getString(),
                     player.isCrouching() ? "玩家正在蹲下" : "正在蓄力");
 
@@ -289,7 +290,7 @@ public class RocketBootsItem extends ArmorItem {
                 if (chargingTime >= 200) {
                     // 在服务器端触发火箭跳跃
                     if (player instanceof ServerPlayer serverPlayer) {
-                        LOGGER.debug("[火箭靴] 触发服务器端火箭跳跃");
+                        DebugLogger.debugDetail("[火箭靴] 触发服务器端火箭跳跃");
                         // 直接触发火箭跳跃函数
                         if (serverPlayer.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof RocketBootsItem rocketBoots) {
                             rocketBoots.triggerRocketJump(serverPlayer, serverPlayer.getItemBySlot(EquipmentSlot.FEET), chargingTime);

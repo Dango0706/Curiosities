@@ -2,6 +2,7 @@ package me.tuanzi.curiosities.mixin;
 
 import com.mojang.logging.LogUtils;
 import me.tuanzi.curiosities.config.ModConfigManager;
+import me.tuanzi.curiosities.util.DebugLogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
@@ -64,10 +65,10 @@ public abstract class TradeScreenMixin extends AbstractContainerScreen<MerchantM
             ItemStack firstItem = selectedOffer.getCostA().copy();  // 玩家需要提供的第一个物品
             ItemStack secondItem = selectedOffer.getCostB().copy();  // 玩家需要提供的第二个物品(可能为空)
 
-            LOGGER.debug("[自动填充交易] 第一物品: {}, 数量: {}",
+            DebugLogger.debugDetail("[自动填充交易] 第一物品: {}, 数量: {}",
                     firstItem.getDisplayName().getString(), firstItem.getCount());
             if (!secondItem.isEmpty()) {
-                LOGGER.debug("[自动填充交易] 第二物品: {}, 数量: {}",
+                DebugLogger.debugDetail("[自动填充交易] 第二物品: {}, 数量: {}",
                         secondItem.getDisplayName().getString(), secondItem.getCount());
             }
 
@@ -322,18 +323,18 @@ public abstract class TradeScreenMixin extends AbstractContainerScreen<MerchantM
             at = @At("HEAD")
     )
     private void onMouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-        LOGGER.debug("[自动填充交易] Mixin被触发，检测点击事件 x={}, y={}, button={}", mouseX, mouseY, button);
+        DebugLogger.debugDetail("[自动填充交易] Mixin被触发，检测点击事件 x={}, y={}, button={}", mouseX, mouseY, button);
 
         // 检查配置是否启用了这个功能
         if (!ModConfigManager.CREATIVE_TRADE_AUTO_FILL_ENABLED.get()) {
-            LOGGER.debug("[自动填充交易] 功能已在配置中禁用");
+            DebugLogger.debugDetail("[自动填充交易] 功能已在配置中禁用");
             return;
         }
 
         // 获取玩家实例
         Player player = Minecraft.getInstance().player;
         if (player == null || !player.isCreative()) {
-            LOGGER.debug("[自动填充交易] 玩家不存在或不是创造模式");
+            DebugLogger.debugDetail("[自动填充交易] 玩家不存在或不是创造模式");
             return;
         }
 

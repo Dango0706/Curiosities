@@ -145,6 +145,13 @@ public class Curiosities {
                         output.accept(ModItems.DIAMOND_SCYTHE.get());
                         output.accept(ModItems.NETHERITE_SCYTHE.get());
 
+                        // 添加玫瑰金工具
+                        output.accept(ModItems.ROSE_GOLD_PICKAXE.get());
+                        output.accept(ModItems.ROSE_GOLD_AXE.get());
+                        output.accept(ModItems.ROSE_GOLD_SHOVEL.get());
+                        output.accept(ModItems.ROSE_GOLD_HOE.get());
+                        output.accept(ModItems.ROSE_GOLD_SWORD.get());
+
 
                         // 添加假TNT方块
 
@@ -193,6 +200,9 @@ public class Curiosities {
 
                         //添加生物指南针
                         output.accept(ModItems.ENTITY_COMPASS.get());
+
+                        //添加因果怀表
+                        output.accept(ModItems.CAUSAL_POCKET_WATCH.get());
 
                         // 添加富有药水
                         output.accept(PotionUtils.setPotion(new ItemStack(Items.POTION), ModPotions.RICH.get()));
@@ -338,6 +348,9 @@ public class Curiosities {
 
         // 注册道德天平事件处理器
         MinecraftForge.EVENT_BUS.register(me.tuanzi.curiosities.enchantments.moral_balance.MoralBalanceEventHandler.class);
+
+        // 注册因果怀表事件处理器
+        MinecraftForge.EVENT_BUS.register(me.tuanzi.curiosities.events.CausalPocketWatchEventHandler.class);
     }
 
     /**
@@ -490,6 +503,8 @@ public class Curiosities {
         CraftingHelper.register(new me.tuanzi.curiosities.crafting.ControlStaffCraftableCondition.Serializer());
         CraftingHelper.register(new me.tuanzi.curiosities.crafting.ProbabilityHolySwordEnabledCondition.Serializer());
         CraftingHelper.register(new me.tuanzi.curiosities.crafting.EntityCompassEnabledCondition.Serializer());
+        CraftingHelper.register(new me.tuanzi.curiosities.crafting.RoseGoldToolsEnabledCondition.Serializer());
+        CraftingHelper.register(new me.tuanzi.curiosities.crafting.CausalPocketWatchEnabledCondition.Serializer());
         LOGGER.info("注册配方条件完成");
     }
 

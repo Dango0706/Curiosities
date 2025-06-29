@@ -2,6 +2,7 @@ package me.tuanzi.curiosities.enchantments.chain_mining;
 
 import com.mojang.logging.LogUtils;
 import me.tuanzi.curiosities.ChainMiningLogic;
+import me.tuanzi.curiosities.util.DebugLogger;
 import me.tuanzi.curiosities.Curiosities;
 import me.tuanzi.curiosities.config.ModConfigManager;
 import me.tuanzi.curiosities.network.PacketHandler;
@@ -58,7 +59,7 @@ public class ChainMiningEventHandler {
 
         // 如果正在使用连锁挖掘模式，并且是玩家破坏的方块
         if (isPlayerChainMiningActive(player)) {
-            LOGGER.info("[连锁挖掘] 玩家 {} 破坏了方块 {}，触发连锁挖掘",
+            DebugLogger.debugInfo("[连锁挖掘] 玩家 {} 破坏了方块 {}，触发连锁挖掘",
                     player.getName().getString(), event.getPos());
 
             // 直接在服务端调用连锁挖掘逻辑，这是在方块已经被破坏后执行的
@@ -165,7 +166,7 @@ public class ChainMiningEventHandler {
         private static void activateChainMining() {
             chainMiningActive = true;
             keyWasPressed = true;
-            LOGGER.info("[连锁挖掘] 按键被按下，已激活连锁挖掘模式");
+            DebugLogger.debugInfo("[连锁挖掘] 按键被按下，已激活连锁挖掘模式");
 
             // 向服务端发送激活状态
             sendChainMiningState(true);
@@ -177,7 +178,7 @@ public class ChainMiningEventHandler {
         private static void deactivateChainMining() {
             chainMiningActive = false;
             keyWasPressed = false;
-            LOGGER.info("[连锁挖掘] 按键被释放，已停用连锁挖掘模式");
+            DebugLogger.debugInfo("[连锁挖掘] 按键被释放，已停用连锁挖掘模式");
 
             // 向服务端发送停用状态
             sendChainMiningState(false);
@@ -193,7 +194,7 @@ public class ChainMiningEventHandler {
 
             // 向服务端发送停用状态
             sendChainMiningState(false);
-            LOGGER.info("[连锁挖掘] 由于配置禁用，强制停用连锁挖掘模式");
+            DebugLogger.debugInfo("[连锁挖掘] 由于配置禁用，强制停用连锁挖掘模式");
         }
 
         /**
@@ -227,7 +228,7 @@ public class ChainMiningEventHandler {
             // 创建按键映射并注册
             chainMiningKey = new KeyMapping("key.curiosities.chain_mining", keyCode, "key.categories.gameplay");
             event.register(chainMiningKey);
-            LOGGER.debug("[连锁挖掘] 按键注册完成，使用默认键：反引号(`)");
+            DebugLogger.debugDetail("[连锁挖掘] 按键注册完成，使用默认键：反引号(`)");
         }
     }
 }

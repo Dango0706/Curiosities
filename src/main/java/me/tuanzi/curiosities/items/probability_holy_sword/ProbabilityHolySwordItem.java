@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
@@ -180,8 +181,16 @@ public class ProbabilityHolySwordItem extends SwordItem {
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        // 只允许诅咒类附魔
+        // 只允许诅咒类附魔（如消失诅咒、绑定诅咒等）
         return enchantment.isCurse();
+    }
+
+    /**
+     * 检查物品是否可以接受特定附魔
+     */
+    @Override
+    public boolean isEnchantable(@NotNull ItemStack stack) {
+        return true; // 可以附魔，但在其他方法中限制了只能接受诅咒附魔
     }
 
     @Override
@@ -196,7 +205,7 @@ public class ProbabilityHolySwordItem extends SwordItem {
 
         if (slot == EquipmentSlot.MAINHAND) {
             // 设置攻击伤害
-            int baseDamage = ModConfigManager.PROBABILITY_HOLY_SWORD_BASE_DAMAGE.get();
+            int baseDamage = ModConfigManager.PROBABILITY_HOLY_SWORD_BASE_DAMAGE.get() - 1;
             multimap.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID,
                     "Weapon modifier", baseDamage, AttributeModifier.Operation.ADDITION));
 
@@ -208,10 +217,4 @@ public class ProbabilityHolySwordItem extends SwordItem {
         return multimap;
     }
 
-    @Override
-    public Component getName(ItemStack stack) {
-        // 设置物品名称为金色
-        return Component.translatable(this.getDescriptionId(stack))
-                .withStyle(ChatFormatting.GOLD);
-    }
 }

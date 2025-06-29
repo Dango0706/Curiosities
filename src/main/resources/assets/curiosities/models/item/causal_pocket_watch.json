@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "curiosities:item/causal_pocket_watch"
+  }
+}

@@ -2,9 +2,22 @@
 
 ## 版本 2025.6 (2025年6月更新)
 
+### 优化
+
+- 优化了debuglog输出模式,新增加开发模式
+- 只有当开发模式为True时才会输出debuglog.
+
 ### 游戏内容更新
 
 #### 物品
+
+- **玫瑰金工具套装 (Rose Gold Tools)**
+  - 新增5种玫瑰金工具：镐子、斧子、铲子、锄头、剑
+  - 使用锻造台合成：对应的金质工具 + 铜锭 = 玫瑰金工具
+  - 工具属性：耐久度256、铁工具挖掘等级、黄金工具挖掘速度、黄金工具附魔能力
+  - 可使用金锭修复
+  - 配置选项：
+    - `roseGoldToolsEnabled` - 是否启用玫瑰金工具（禁用时无法合成）
 
 - **生物指南针 (Entity Compass)**
   - 新增特殊工具，用于寻找和标记生物
@@ -29,6 +42,29 @@
     - 在沙漠神殿隐藏宝箱中以可配置概率生成（无合成配方）
     - 可通过配置文件启用/禁用及调整各项参数
 
+- **控制之杖 (Staff of Control)**
+  - 新增强力工具，可以控制生物互相攻击
+  - 右键点击第一个生物，再右键点击第二个生物，让它们互相攻击
+  - Shift+右键清除第一个选择的生物
+  - 拥有300点耐久度，使用下界之星修复
+  - 不可以被除诅咒外的任何附魔所影响
+  - 合成配方：下界之星+下界合金锭（上排），下界合金块+下界之星（中排），木棍（下排左侧）
+  - 可通过配置文件启用/禁用及控制是否可合成
+
+- **因果怀表 (Causal Pocket Watch)**
+  - 新增神秘时间物品，可以储存和回溯玩家状态
+  - 右键使用：储存玩家当前完整状态（位置、血量、饱食度、氧气、经验值、经验等级、物品栏等所有信息）
+  - 再次右键：回溯到储存的状态，消耗一点耐久度，并触发300秒冷却时间
+  - 储存的信息仅保存15秒，超时后自动清除
+  - 有储存信息时物品显示附魔光泽效果
+  - 耐久度25点，可在岩浆中漂浮，使用下界之星修复，不可被附魔
+  - 合成配方：铁粒+铁块（上排），钟（中排），下界之星×3（下排）
+  - 配置选项：
+    - `enableCausalPocketWatch` - 是否启用此物品（禁用时在tooltip中显示提示）
+    - `allowCausalPocketWatchCrafting` - 是否可以合成此物品
+    - `causalPocketWatchCooldownTime` - 冷却时间（默认300秒）
+    - `causalPocketWatchStorageTime` - 信息存储时间（默认15秒）
+
 #### 原版修改
 
 - **玻璃瓶转水瓶 (Glass Bottle to Water Bottle)**
@@ -36,17 +72,6 @@
   - 支持所有类型的水源（静止水、流动水）
   - 可通过配置文件启用/禁用（默认启用）
   - 在服务器和客户端之间正确同步
-
-#### 物品
-
-- **控制之杖 (Staff of Control)**
-    - 新增强力工具，可以控制生物互相攻击
-    - 右键点击第一个生物，再右键点击第二个生物，让它们互相攻击
-    - Shift+右键清除第一个选择的生物
-    - 拥有300点耐久度，使用下界之星修复
-    - 不可以被除诅咒外的任何附魔所影响
-    - 合成配方：下界之星+下界合金锭（上排），下界合金块+下界之星（中排），木棍（下排左侧）
-    - 可通过配置文件启用/禁用及控制是否可合成
 
 #### 附魔
 
@@ -222,6 +247,14 @@
 
 #### Items
 
+- **Rose Gold Tools**
+  - Added 5 new rose gold tools: pickaxe, axe, shovel, hoe, and sword
+  - Crafted using smithing table: corresponding golden tool + copper ingot = rose gold tool
+  - Tool properties: 256 durability, iron tool mining level, gold tool mining speed, gold tool enchantability
+  - Can be repaired with gold ingots
+  - Configuration options:
+    - `roseGoldToolsEnabled` - Whether to enable rose gold tools (disables crafting when disabled)
+
 - **Staff of Control**
     - New powerful tool that can control entities to attack each other
     - Right-click on one entity, then right-click another to make them fight each other
@@ -231,6 +264,21 @@
     - Crafting recipe: Nether Star + Netherite Ingot (top row), Netherite Block + Nether Star (middle row), Stick (
       bottom left)
     - Can be enabled/disabled and craft control via config file
+
+- **Causal Pocket Watch**
+  - New mysterious time item that can store and revert player states
+  - Right-click to use: Store player's current complete state (position, health, hunger, air, experience, experience
+    level, inventory, etc.)
+  - Right-click again: Revert to stored state, consume one durability point, and trigger 300-second cooldown
+  - Stored information is only preserved for 15 seconds, automatically cleared after timeout
+  - Item displays enchantment glint effect when it has stored information
+  - 25 durability points, can float in lava, repaired with Nether Stars, cannot be enchanted
+  - Crafting recipe: Iron Nugget + Iron Block (top row), Clock (middle row), Nether Star×3 (bottom row)
+  - Configuration options:
+    - `enableCausalPocketWatch` - Whether to enable this item (shows tooltip when disabled)
+    - `allowCausalPocketWatchCrafting` - Whether this item can be crafted
+    - `causalPocketWatchCooldownTime` - Cooldown time (default 300 seconds)
+    - `causalPocketWatchStorageTime` - Information storage time (default 15 seconds)
 
 #### Enchantments
 

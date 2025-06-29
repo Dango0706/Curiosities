@@ -3,6 +3,7 @@ package me.tuanzi.curiosities.enchantments.moral_balance;
 import com.mojang.logging.LogUtils;
 import me.tuanzi.curiosities.Curiosities;
 import me.tuanzi.curiosities.config.ModConfigManager;
+import me.tuanzi.curiosities.util.DebugLogger;
 import me.tuanzi.curiosities.effect.ModEffects;
 import me.tuanzi.curiosities.enchantments.ModEnchantments;
 import net.minecraft.ChatFormatting;
@@ -91,7 +92,7 @@ public class MoralBalanceEventHandler {
                     true
             );
 
-            LOGGER.debug("道德天平对和平生物造成双倍伤害: {} -> {}", originalDamage, newDamage);
+            DebugLogger.debugDetail("道德天平对和平生物造成双倍伤害: {} -> {}", originalDamage, newDamage);
         } else if (isHostileEntity(target)) {
             // 对敌对生物造成伤害时，攻击力减半
             newDamage = originalDamage * 0.5f;
@@ -103,7 +104,7 @@ public class MoralBalanceEventHandler {
                     true
             );
 
-            LOGGER.debug("道德天平对敌对生物造成减半伤害: {} -> {}", originalDamage, newDamage);
+            DebugLogger.debugDetail("道德天平对敌对生物造成减半伤害: {} -> {}", originalDamage, newDamage);
         }
 
         // 更新伤害值
@@ -183,7 +184,7 @@ public class MoralBalanceEventHandler {
             target.level().addFreshEntity(newItem);
         }
 
-        LOGGER.debug("道德天平增加了{}个额外掉落物", newDrops.size());
+        DebugLogger.debugDetail("道德天平增加了{}个额外掉落物", newDrops.size());
     }
 
     /**

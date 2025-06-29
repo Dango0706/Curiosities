@@ -4,6 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.logging.LogUtils;
 import me.tuanzi.curiosities.config.ModConfigManager;
+import me.tuanzi.curiosities.util.DebugLogger;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -68,7 +69,7 @@ public class ScytheItem extends SwordItem {
         this.attackSpeed = attackSpeed;
 
         // 记录初始化信息
-        LOGGER.info("初始化镰刀: 材质={}, 基础攻击力={}, 基础攻速={}",
+        DebugLogger.debugInfo("初始化镰刀: 材质={}, 基础攻击力={}, 基础攻速={}",
                 tier,
                 attackDamage,
                 attackSpeed);
@@ -134,12 +135,12 @@ public class ScytheItem extends SwordItem {
             double randomValue = RANDOM.nextDouble();
             boolean triggerDance = randomValue < harvestDanceChance;
 
-            LOGGER.info("尝试触发丰收之舞: 概率={}, 随机值={}, 结果={}",
+            DebugLogger.debugInfo("尝试触发丰收之舞: 概率={}, 随机值={}, 结果={}",
                     harvestDanceChance, randomValue, triggerDance ? "成功" : "失败");
 
             // 触发丰收之舞
             if (triggerDance) {
-                LOGGER.info("丰收之舞触发成功!");
+                DebugLogger.debugInfo("丰收之舞触发成功!");
                 triggerHarvestDance(serverLevel, player, pos);
             }
 
@@ -249,7 +250,7 @@ public class ScytheItem extends SwordItem {
         // 修改范围计算逻辑，使用半范围
         int halfRange = (danceRange - 1) / 2;
 
-        LOGGER.info("执行丰收之舞: 玩家={}, 中心坐标={}, 范围={}x{}",
+        DebugLogger.debugInfo("执行丰收之舞: 玩家={}, 中心坐标={}, 范围={}x{}",
                 player.getName().getString(), center, danceRange, danceRange);
 
         // 播放特殊音效 - 音量更大，音调略高
@@ -314,7 +315,7 @@ public class ScytheItem extends SwordItem {
                             int growthStages = 2 + RANDOM.nextInt(3); // 2到4个阶段
                             int newAge = Math.min(currentAge + growthStages, maxAge);
 
-                            LOGGER.info("农作物: 位置={}, 类型={}, 当前生长阶段={}, 促进阶段={}, 新阶段={}, 最大阶段={}",
+                            DebugLogger.debugDetail("农作物: 位置={}, 类型={}, 当前生长阶段={}, 促进阶段={}, 新阶段={}, 最大阶段={}",
                                     growPos, block.getDescriptionId(), currentAge, growthStages, newAge, maxAge);
 
                             if (newAge > currentAge) {
@@ -348,7 +349,7 @@ public class ScytheItem extends SwordItem {
             }
         }
 
-        LOGGER.info("丰收之舞完成: 共促进了{}个作物生长", growthCounter);
+        DebugLogger.debugInfo("丰收之舞完成: 共促进了{}个作物生长", growthCounter);
 
         // 在完成时播放最终音效
         if (growthCounter > 0) {
@@ -524,7 +525,7 @@ public class ScytheItem extends SwordItem {
             // Minecraft基础攻击速度是-4.0，配置中的攻击速度是正值，表示比基础速度快多少
             float totalSpeed = -4.0f + attackSpeed;
 
-            LOGGER.debug("计算镰刀属性: 材质={}, 基础伤害=3, 材质加成={}, 配置加成={}, 总伤害={}, 配置攻速={}, 最终攻速={}",
+            DebugLogger.debugLog("计算镰刀属性: 材质={}, 基础伤害=3, 材质加成={}, 配置加成={}, 总伤害={}, 配置攻速={}, 最终攻速={}",
                     tier, tier.getAttackDamageBonus(), damageBonus, totalDamage, attackSpeed, totalSpeed);
 
             attributes.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID,

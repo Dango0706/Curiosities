@@ -1,6 +1,7 @@
 package me.tuanzi.curiosities.network;
 
 import me.tuanzi.curiosities.client.EntityGlowHandler;
+import me.tuanzi.curiosities.util.DebugLogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -41,28 +42,28 @@ public class PacketEntityGlow {
     public static void handle(PacketEntityGlow packet, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> {
-            System.out.println("[PacketEntityGlow] 收到网络包，生物ID数量: " + packet.entityIds.size());
+            DebugLogger.debugLog("[PacketEntityGlow] 收到网络包，生物ID数量: {}", packet.entityIds.size());
             // 只在客户端执行
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-                System.out.println("[PacketEntityGlow] 在客户端处理网络包");
+                DebugLogger.debugLog("[PacketEntityGlow] 在客户端处理网络包");
                 Minecraft minecraft = Minecraft.getInstance();
                 if (minecraft.level != null) {
-                    System.out.println("[PacketEntityGlow] 客户端世界存在，开始处理生物发光");
+                    DebugLogger.debugLog("[PacketEntityGlow] 客户端世界存在，开始处理生物发光");
                     // 为指定的生物添加发光效果
                     int processedCount = 0;
                     for (int entityId : packet.entityIds) {
                         Entity entity = minecraft.level.getEntity(entityId);
                         if (entity != null) {
-                            System.out.println("[PacketEntityGlow] 找到生物: " + entity.getType().getDescriptionId() + " ID: " + entityId);
+                            DebugLogger.debugLog("[PacketEntityGlow] 找到生物: {} ID: {}", entity.getType().getDescriptionId(), entityId);
                             EntityGlowHandler.addGlowingEntity(entity);
                             processedCount++;
                         } else {
-                            System.out.println("[PacketEntityGlow] 未找到生物 ID: " + entityId);
+                            DebugLogger.debugLog("[PacketEntityGlow] 未找到生物 ID: {}", entityId);
                         }
                     }
-                    System.out.println("[PacketEntityGlow] 处理完成，成功添加发光效果的生物数量: " + processedCount);
+                    DebugLogger.debugLog("[PacketEntityGlow] 处理完成，成功添加发光效果的生物数量: {}", processedCount);
                 } else {
-                    System.out.println("[PacketEntityGlow] 客户端世界不存在");
+                    DebugLogger.debugLog("[PacketEntityGlow] 客户端世界不存在");
                 }
             });
         });

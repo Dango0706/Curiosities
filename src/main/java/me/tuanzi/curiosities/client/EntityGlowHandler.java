@@ -2,6 +2,7 @@ package me.tuanzi.curiosities.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import me.tuanzi.curiosities.util.DebugLogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.OutlineBufferSource;
@@ -46,31 +47,31 @@ public class EntityGlowHandler {
      * 使用自定义渲染系统而不是药水效果
      */
     public static void addGlowingEntity(Entity entity) {
-        System.out.println("[EntityGlowHandler] addGlowingEntity 被调用");
+        DebugLogger.debugLog("[EntityGlowHandler] addGlowingEntity 被调用");
         if (entity != null) {
-            System.out.println("[EntityGlowHandler] 生物不为空: " + entity.getType().getDescriptionId());
+            DebugLogger.debugLog("[EntityGlowHandler] 生物不为空: {}", entity.getType().getDescriptionId());
             Minecraft minecraft = Minecraft.getInstance();
             if (minecraft.player != null) {
                 UUID entityUUID = entity.getUUID();
                 UUID playerUUID = minecraft.player.getUUID();
 
-                System.out.println("[EntityGlowHandler] 玩家存在: " + minecraft.player.getName().getString());
+                DebugLogger.debugLog("[EntityGlowHandler] 玩家存在: {}", minecraft.player.getName().getString());
 
                 // 保存原始发光状态
                 if (!originalGlowStates.containsKey(entityUUID)) {
                     originalGlowStates.put(entityUUID, entity.isCurrentlyGlowing());
-                    System.out.println("[EntityGlowHandler] 保存原始发光状态: " + entity.isCurrentlyGlowing());
+                    DebugLogger.debugLog("[EntityGlowHandler] 保存原始发光状态: {}", entity.isCurrentlyGlowing());
                 }
 
                 glowingEntities.put(entityUUID, playerUUID);
                 glowStartTimes.put(entityUUID, System.currentTimeMillis());
 
-                System.out.println("[EntityGlowHandler] 添加到自定义发光列表，发光实体列表大小: " + glowingEntities.size());
+                DebugLogger.debugLog("[EntityGlowHandler] 添加到自定义发光列表，发光实体列表大小: {}", glowingEntities.size());
             } else {
-                System.out.println("[EntityGlowHandler] 玩家为空");
+                DebugLogger.debugLog("[EntityGlowHandler] 玩家为空");
             }
         } else {
-            System.out.println("[EntityGlowHandler] 生物为空");
+            DebugLogger.debugLog("[EntityGlowHandler] 生物为空");
         }
     }
 
@@ -81,8 +82,7 @@ public class EntityGlowHandler {
         if (entity != null) {
             UUID entityUUID = entity.getUUID();
 
-            System.out.println("[EntityGlowHandler] 从自定义发光列表中移除生物");
-
+            DebugLogger.debugLog("[EntityGlowHandler] 从自定义发光列表中移除生物");
 
             glowingEntities.remove(entityUUID);
             glowStartTimes.remove(entityUUID);
@@ -97,7 +97,7 @@ public class EntityGlowHandler {
         glowingEntities.clear();
         glowStartTimes.clear();
         originalGlowStates.clear();
-        System.out.println("[EntityGlowHandler] 清除所有自定义发光效果");
+        DebugLogger.debugLog("[EntityGlowHandler] 清除所有自定义发光效果");
     }
 
     /**
@@ -190,7 +190,7 @@ public class EntityGlowHandler {
 
 
         } catch (Exception e) {
-            System.err.println("[EntityGlowHandler] 渲染发光效果时出错: " + e.getMessage());
+            DebugLogger.debugError("[EntityGlowHandler] 渲染发光效果时出错: {}", e.getMessage());
         }
     }
 
@@ -222,7 +222,7 @@ public class EntityGlowHandler {
                 // 清理相关数据
                 glowingEntities.remove(entityUUID);
                 originalGlowStates.remove(entityUUID);
-                System.out.println("[EntityGlowHandler] 清理过期的发光效果: " + entityUUID);
+                DebugLogger.debugLog("[EntityGlowHandler] 清理过期的发光效果: {}", entityUUID);
                 return true;
             }
             return false;

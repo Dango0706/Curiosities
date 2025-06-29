@@ -31,6 +31,8 @@ public class ModConfigManager {
     public static ForgeConfigSpec.DoubleValue SCYTHE_SWEEP_RANGE_BONUS;
     public static ForgeConfigSpec.DoubleValue SCYTHE_HARVEST_DANCE_CHANCE;
     public static ForgeConfigSpec.DoubleValue SCYTHE_HARVEST_DANCE_RANGE;
+    // 玫瑰金工具配置
+    public static ForgeConfigSpec.BooleanValue ROSE_GOLD_TOOLS_ENABLED;
     // 火箭靴配置
     public static ForgeConfigSpec.BooleanValue ROCKET_BOOTS_ENABLED;
     public static ForgeConfigSpec.DoubleValue ROCKET_BOOTS_BOOST_POWER;
@@ -95,6 +97,11 @@ public class ModConfigManager {
     public static ForgeConfigSpec.BooleanValue ENTITY_COMPASS_ENABLED;
     public static ForgeConfigSpec.BooleanValue ENTITY_COMPASS_CRAFTABLE;
     public static ForgeConfigSpec.IntValue ENTITY_COMPASS_GLOW_RANGE;
+    // 因果怀表配置
+    public static ForgeConfigSpec.BooleanValue CAUSAL_POCKET_WATCH_ENABLED;
+    public static ForgeConfigSpec.BooleanValue CAUSAL_POCKET_WATCH_CRAFTABLE;
+    public static ForgeConfigSpec.IntValue CAUSAL_POCKET_WATCH_COOLDOWN_TIME;
+    public static ForgeConfigSpec.IntValue CAUSAL_POCKET_WATCH_STORAGE_TIME;
 
     // 无限水桶配置
     public static ForgeConfigSpec.BooleanValue INFINITE_WATER_BUCKET_ENABLED;
@@ -134,6 +141,9 @@ public class ModConfigManager {
     public static ForgeConfigSpec.BooleanValue ENHANCED_ANVIL_ENABLED;
     public static ForgeConfigSpec.IntValue ENHANCED_ANVIL_MAX_REPAIR_COST;
     public static ForgeConfigSpec.BooleanValue GLASS_BOTTLE_TO_WATER_BOTTLE_ENABLED;
+
+    // 其他配置
+    public static ForgeConfigSpec.BooleanValue DEVELOPMENT_MODE_ENABLED;
     // 通用配置
     private static ForgeConfigSpec.Builder COMMON_BUILDER;
     private static ForgeConfigSpec COMMON_CONFIG;
@@ -247,6 +257,13 @@ public class ModConfigManager {
         SCYTHE_HARVEST_DANCE_RANGE = COMMON_BUILDER
                 .comment("丰收之舞范围（NxN区域，如5表示5x5范围）")
                 .defineInRange("harvest_dance_range", 5.0, 1.0, 20.0);
+        COMMON_BUILDER.pop();
+
+        // 玫瑰金工具配置
+        COMMON_BUILDER.comment("玫瑰金工具配置").push("rose_gold_tools");
+        ROSE_GOLD_TOOLS_ENABLED = COMMON_BUILDER
+                .comment("是否启用玫瑰金工具")
+                .define("enabled", true);
         COMMON_BUILDER.pop();
 
         // 火箭靴配置
@@ -532,6 +549,22 @@ public class ModConfigManager {
                 .defineInRange("glow_range", 50, 10, 100);
         COMMON_BUILDER.pop();
 
+        // 因果怀表配置
+        COMMON_BUILDER.comment("因果怀表配置").push("causal_pocket_watch");
+        CAUSAL_POCKET_WATCH_ENABLED = COMMON_BUILDER
+                .comment("是否启用因果怀表")
+                .define("enabled", true);
+        CAUSAL_POCKET_WATCH_CRAFTABLE = COMMON_BUILDER
+                .comment("是否允许合成因果怀表")
+                .define("craftable", true);
+        CAUSAL_POCKET_WATCH_COOLDOWN_TIME = COMMON_BUILDER
+                .comment("因果怀表冷却时间（秒）")
+                .defineInRange("cooldown_time", 300, 0, Integer.MAX_VALUE);
+        CAUSAL_POCKET_WATCH_STORAGE_TIME = COMMON_BUILDER
+                .comment("因果怀表信息存储时间（秒）")
+                .defineInRange("storage_time", 15, 1, 300);
+        COMMON_BUILDER.pop();
+
         // 原版修改配置
         COMMON_BUILDER.comment("原版修改配置").push("vanilla_modifications");
         VANILLA_MODIFICATIONS_ENABLED = COMMON_BUILDER
@@ -563,6 +596,13 @@ public class ModConfigManager {
         COMMON_BUILDER.pop();
 
         COMMON_BUILDER.pop(); // vanilla_modifications
+
+        // 其他配置
+        COMMON_BUILDER.comment("其他配置").push("other");
+        DEVELOPMENT_MODE_ENABLED = COMMON_BUILDER
+                .comment("是否启用开发模式调试输出")
+                .define("development_mode_enabled", false);
+        COMMON_BUILDER.pop(); // other
 
         COMMON_BUILDER.pop(); // effects
 
@@ -617,6 +657,9 @@ public class ModConfigManager {
         if (booleanConfigs.containsKey("scythe_enabled")) {
             SCYTHE_ENABLED.set(booleanConfigs.get("scythe_enabled"));
             LOGGER.info("镰刀已{}启用", SCYTHE_ENABLED.get() ? "" : "禁");
+        }
+        if (booleanConfigs.containsKey("rose_gold_tools_enabled")) {
+            ROSE_GOLD_TOOLS_ENABLED.set(booleanConfigs.get("rose_gold_tools_enabled"));
         }
         if (booleanConfigs.containsKey("rich_effect_enabled")) {
             RICH_EFFECT_ENABLED.set(booleanConfigs.get("rich_effect_enabled"));
@@ -689,6 +732,9 @@ public class ModConfigManager {
         }
         if (booleanConfigs.containsKey("entity_compass_craftable")) {
             ENTITY_COMPASS_CRAFTABLE.set(booleanConfigs.get("entity_compass_craftable"));
+        }
+        if (booleanConfigs.containsKey("development_mode_enabled")) {
+            DEVELOPMENT_MODE_ENABLED.set(booleanConfigs.get("development_mode_enabled"));
         }
 
         // 应用整数配置

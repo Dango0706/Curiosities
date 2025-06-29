@@ -1,6 +1,7 @@
 package me.tuanzi.curiosities.items.control_staff;
 
 import me.tuanzi.curiosities.config.ModConfigManager;
+import me.tuanzi.curiosities.util.DebugLogger;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -68,7 +69,7 @@ public class ControlStaffItem extends Item {
 
         // 服务端调试日志
         boolean hasTarget = hasTargetEntity(currentStack);
-        LOGGER.info("当前物品状态：NBT: {}, 是否有目标: {}", currentStack.getTag(), hasTarget);
+        DebugLogger.debugInfo("当前物品状态：NBT: {}, 是否有目标: {}", currentStack.getTag(), hasTarget);
 
         // 如果玩家按住Shift键，清除第一个选中的实体
         if (player.isShiftKeyDown()) {
@@ -76,7 +77,7 @@ public class ControlStaffItem extends Item {
             clearTargetEntity(currentStack);
             player.displayClientMessage(Component.translatable("message.curiosities.control_staff.target_cleared"), true);
             if (hadTarget) {
-                LOGGER.info("玩家 {} 清除了目标选择", player.getName().getString());
+                DebugLogger.debugInfo("玩家 {} 清除了目标选择", player.getName().getString());
             }
             return InteractionResult.SUCCESS;
         }
@@ -90,14 +91,14 @@ public class ControlStaffItem extends Item {
             UUID savedId = getTargetEntityUUID(currentStack);
 
             player.displayClientMessage(Component.translatable("message.curiosities.control_staff.target_selected"), true);
-            LOGGER.info("玩家 {} 选择了第一个目标实体: {}, UUID: {}, 成功保存: {}",
+            DebugLogger.debugInfo("玩家 {} 选择了第一个目标实体: {}, UUID: {}, 成功保存: {}",
                     player.getName().getString(),
                     target.getName().getString(),
                     target.getUUID(),
                     (savedId != null && savedId.equals(target.getUUID())));
 
             // 显示物品NBT数据
-            LOGGER.info("物品NBT数据: {}", currentStack.getTag());
+            DebugLogger.debugInfo("物品NBT数据: {}", currentStack.getTag());
         } else {
             // 获取第一个目标实体的UUID
             UUID targetId = getTargetEntityUUID(currentStack);
@@ -111,7 +112,7 @@ public class ControlStaffItem extends Item {
             }
 
             // 记录一些调试信息
-            LOGGER.info("正在查找目标实体UUID: {}, 当前实体: {}, 当前NBT: {}",
+            DebugLogger.debugInfo("正在查找目标实体UUID: {}, 当前实体: {}, 当前NBT: {}",
                     targetId, target.getName().getString(), currentStack.getTag());
 
             // 先检查第二个目标不是自身
@@ -138,18 +139,18 @@ public class ControlStaffItem extends Item {
                     }
 
                     player.displayClientMessage(Component.translatable("message.curiosities.control_staff.entities_controlled"), true);
-                    LOGGER.info("成功让实体 {} 和 {} 互相攻击", livingEntity.getName().getString(), target.getName().getString());
+                    DebugLogger.debugInfo("成功让实体 {} 和 {} 互相攻击", livingEntity.getName().getString(), target.getName().getString());
 
                     // 如果成功让实体互相攻击，清除第一个选中的实体
                     clearTargetEntity(currentStack);
-                    LOGGER.info("清除目标选择, 当前NBT: {}", currentStack.getTag());
+                    DebugLogger.debugInfo("清除目标选择, 当前NBT: {}", currentStack.getTag());
                     break;
                 }
             }
 
             // 如果没有找到第一个实体
             if (!foundTarget) {
-                LOGGER.warn("未能找到UUID为 {} 的目标实体，重置选择", targetId);
+                DebugLogger.debugWarn("未能找到UUID为 {} 的目标实体，重置选择", targetId);
                 player.displayClientMessage(Component.translatable("message.curiosities.control_staff.target_not_found"), true);
 
                 // 清除并重新选择
@@ -158,7 +159,7 @@ public class ControlStaffItem extends Item {
 
                 // 再次检查保存是否成功
                 UUID savedId = getTargetEntityUUID(currentStack);
-                LOGGER.info("已重新选择目标: {}, UUID: {}, 保存成功: {}, NBT: {}",
+                DebugLogger.debugInfo("已重新选择目标: {}, UUID: {}, 保存成功: {}, NBT: {}",
                         target.getName().getString(),
                         target.getUUID(),
                         (savedId != null && savedId.equals(target.getUUID())),
@@ -186,7 +187,7 @@ public class ControlStaffItem extends Item {
             mob.setLastHurtByMob(target);
 
             // 记录调试信息
-            LOGGER.info("将Mob {} 的攻击目标设置为 {}", mob.getName().getString(), target.getName().getString());
+            DebugLogger.debugInfo("将Mob {} 的攻击目标设置为 {}", mob.getName().getString(), target.getName().getString());
         }
     }
 
@@ -265,7 +266,7 @@ public class ControlStaffItem extends Item {
         // 添加额外日志验证
         if (!entity.level().isClientSide) {
             CompoundTag checkTag = stack.getTag();
-            LOGGER.info("设置目标后立即验证NBT: {}, 是否包含目标: {}",
+            DebugLogger.debugInfo("设置目标后立即验证NBT: {}, 是否包含目标: {}",
                     checkTag,
                     checkTag != null && checkTag.contains(TARGET_UUID_TAG, 11));
         }
@@ -283,7 +284,7 @@ public class ControlStaffItem extends Item {
         // 添加详细日志，避免使用getEntityRepresentation()
         if (tag != null) {
             if (output) {
-                LOGGER.debug("检查目标: NBT={}, 包含目标标签={}", tag, hasTarget);
+                DebugLogger.debugDetail("检查目标: NBT={}, 包含目标标签={}", tag, hasTarget);
 
             }
         }
@@ -313,7 +314,7 @@ public class ControlStaffItem extends Item {
 
             // 添加验证日志，避免使用getEntityRepresentation
             CompoundTag checkTag = stack.getTag();
-            LOGGER.info("清除目标后验证NBT: {}", checkTag);
+            DebugLogger.debugInfo("清除目标后验证NBT: {}", checkTag);
         }
     }
 }

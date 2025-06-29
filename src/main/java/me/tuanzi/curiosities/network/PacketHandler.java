@@ -2,6 +2,7 @@ package me.tuanzi.curiosities.network;
 
 import com.mojang.logging.LogUtils;
 import me.tuanzi.curiosities.Curiosities;
+import me.tuanzi.curiosities.util.DebugLogger;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -77,6 +78,6 @@ public class PacketHandler {
      * @param params     额外参数
      */
     public static void logPacketSend(String packetName, Object... params) {
-        LOGGER.debug("[网络] 发送网络包: {} {}", packetName, params);
+        DebugLogger.debugDetail("[网络] 发送网络包: {} {}", packetName, params);
     }
 }

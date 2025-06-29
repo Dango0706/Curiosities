@@ -3,6 +3,7 @@ package me.tuanzi.curiosities.enchantments.chain_mining;
 import com.mojang.logging.LogUtils;
 import me.tuanzi.curiosities.config.ModConfigManager;
 import me.tuanzi.curiosities.enchantments.ModEnchantments;
+import me.tuanzi.curiosities.util.DebugLogger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,52 +41,52 @@ public class ChainMiningLogic {
     public static void triggerChainMining(Player player, BlockPos origin, Level level) {
         // 检查配置是否启用连锁挖掘
         if (!ModConfigManager.CHAIN_MINING_ENABLED.get()) {
-            LOGGER.info("[连锁挖掘] 连锁挖掘功能已在配置中禁用");
+            DebugLogger.debugInfo("[连锁挖掘] 连锁挖掘功能已在配置中禁用");
             return;
         }
 
         // 参数验证
         if (level == null || player == null) {
-            LOGGER.debug("[连锁挖掘] 无效调用: level={}, player={}", level != null ? "有效" : "无效", player != null ? "有效" : "无效");
+            DebugLogger.debugDetail("[连锁挖掘] 无效调用: level={}, player={}", level != null ? "有效" : "无效", player != null ? "有效" : "无效");
             return;
         }
 
         // 确保在服务端执行
         if (level.isClientSide) {
-            LOGGER.debug("[连锁挖掘] 在客户端调用，忽略");
+            DebugLogger.debugDetail("[连锁挖掘] 在客户端调用，忽略");
             return;
         }
 
         // 验证工具
         ItemStack tool = player.getMainHandItem();
-        LOGGER.info("[连锁挖掘] 玩家 {} 尝试使用工具 {} 进行连锁挖掘", player.getName().getString(), tool.getDisplayName().getString());
+        DebugLogger.debugInfo("[连锁挖掘] 玩家 {} 尝试使用工具 {} 进行连锁挖掘", player.getName().getString(), tool.getDisplayName().getString());
 
         if (tool.isEmpty()) {
-            LOGGER.info("[连锁挖掘] 工具为空，取消连锁挖掘");
+            DebugLogger.debugInfo("[连锁挖掘] 工具为空，取消连锁挖掘");
             return;
         }
 
         // 检查工具是否有连锁挖掘附魔，且该附魔是否可用
         if (!ChainMiningEnchantment.isChainMiningUsable(tool)) {
-            LOGGER.info("[连锁挖掘] 工具没有有效的连锁挖掘附魔，取消连锁挖掘");
+            DebugLogger.debugInfo("[连锁挖掘] 工具没有有效的连锁挖掘附魔，取消连锁挖掘");
             return;
         }
 
         // 获取连锁挖掘附魔等级
         int enchantLevel = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.CHAIN_MINING.get(), tool);
-        LOGGER.info("[连锁挖掘] 工具连锁挖掘附魔等级: {}", enchantLevel);
+        DebugLogger.debugInfo("[连锁挖掘] 工具连锁挖掘附魔等级: {}", enchantLevel);
 
         // 获取起始方块信息
         BlockState originState = level.getBlockState(origin);
         Block originBlock = originState.getBlock();
-        LOGGER.info("[连锁挖掘] 目标方块: {}, 位置: {}", originBlock.getName().getString(), origin);
+        DebugLogger.debugInfo("[连锁挖掘] 目标方块: {}, 位置: {}", originBlock.getName().getString(), origin);
 
         // 计算挖掘参数
         int maxBlocksPerLevel = ModConfigManager.CHAIN_MINING_BLOCKS_PER_LEVEL.get();
         int configMaxBlocks = ModConfigManager.CHAIN_MINING_MAX_BLOCKS.get();
         int maxBlocks = Math.min(maxBlocksPerLevel * enchantLevel, configMaxBlocks);
 
-        LOGGER.info("[连锁挖掘] 每级连锁方块数: {}, 附魔等级: {}, 最大连锁数: {}", maxBlocksPerLevel, enchantLevel, maxBlocks);
+        DebugLogger.debugInfo("[连锁挖掘] 每级连锁方块数: {}, 附魔等级: {}, 最大连锁数: {}", maxBlocksPerLevel, enchantLevel, maxBlocks);
 
         // 转换为服务端对象
         ServerLevel serverLevel = (ServerLevel) level;
@@ -130,7 +131,7 @@ public class ChainMiningLogic {
             }
 
             // 记录日志
-            LOGGER.debug("[连锁挖掘] 破坏位置 {} 的方块，已破坏 {}/{} 个方块", pos, broken + 1, maxBlocks);
+            DebugLogger.debugDetail("[连锁挖掘] 破坏位置 {} 的方块，已破坏 {}/{} 个方块", pos, broken + 1, maxBlocks);
 
             // 破坏方块并应用工具附魔效果
             breakBlockWithEnchantments(level, player, pos, tool);
@@ -143,7 +144,7 @@ public class ChainMiningLogic {
 
             // 检查工具是否损坏
             if (tool.isEmpty() || tool.getDamageValue() >= tool.getMaxDamage()) {
-                LOGGER.info("[连锁挖掘] 工具已损坏或耐久不足，停止连锁挖掘");
+                DebugLogger.debugInfo("[连锁挖掘] 工具已损坏或耐久不足，停止连锁挖掘");
                 break;
             }
 
@@ -151,7 +152,7 @@ public class ChainMiningLogic {
             addAdjacentBlocks(level, pos, targetBlock, queue, visited, maxBlocks);
         }
 
-        LOGGER.info("[连锁挖掘] 连锁挖掘完成，共破坏 {} 个方块", broken);
+        DebugLogger.debugInfo("[连锁挖掘] 连锁挖掘完成，共破坏 {} 个方块", broken);
     }
 
     /**
@@ -178,7 +179,7 @@ public class ChainMiningLogic {
                 BlockState adjState = level.getBlockState(adjacent);
                 if (adjState.getBlock() == targetBlock) {
                     queue.add(adjacent);
-                    LOGGER.debug("[连锁挖掘] 添加相邻方块到队列: {}", adjacent);
+                    DebugLogger.debugDetail("[连锁挖掘] 添加相邻方块到队列: {}", adjacent);
                 }
             }
         }

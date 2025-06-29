@@ -7,13 +7,13 @@ import me.tuanzi.curiosities.items.entity_compass.EntityCompassItem;
 import me.tuanzi.curiosities.items.lucky_sword.LuckySwordItem;
 import me.tuanzi.curiosities.items.probability_holy_sword.ProbabilityHolySwordItem;
 import me.tuanzi.curiosities.items.rocket_boots.RocketBootsItem;
+import me.tuanzi.curiosities.items.rose_gold_tools.RoseGoldTier;
 import me.tuanzi.curiosities.items.screaming_pie.ScreamingPieItem;
 import me.tuanzi.curiosities.items.scroll_of_spacetime.ScrollOfSpacetimeItem;
 import me.tuanzi.curiosities.items.scythe.ScytheItem;
 import me.tuanzi.curiosities.items.void_sword.VoidSwordItem;
 import me.tuanzi.curiosities.items.void_sword.VoidSwordTier;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.*;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -218,6 +218,85 @@ public class ModItems {
     public static final RegistryObject<Item> ENTITY_COMPASS = ITEMS.register(
             "entity_compass",
             EntityCompassItem::new
+    );
+
+    /**
+     * 玫瑰金镐子
+     * 使用锻造台由金镐和铜锭合成
+     */
+    public static final RegistryObject<Item> ROSE_GOLD_PICKAXE = ITEMS.register(
+            "rose_gold_pickaxe",
+            () -> new PickaxeItem(
+                    RoseGoldTier.INSTANCE,
+                    3,
+                    -2.8f,
+                    new Item.Properties()
+            )
+    );
+
+    /**
+     * 玫瑰金斧子
+     * 使用锻造台由金斧和铜锭合成
+     */
+    public static final RegistryObject<Item> ROSE_GOLD_AXE = ITEMS.register(
+            "rose_gold_axe",
+            () -> new AxeItem(
+                    RoseGoldTier.INSTANCE,
+                    8.0f,
+                    -3.1f,
+                    new Item.Properties()
+            )
+    );
+
+    /**
+     * 玫瑰金锄头
+     * 使用锻造台由金锄和铜锭合成
+     */
+    public static final RegistryObject<Item> ROSE_GOLD_HOE = ITEMS.register(
+            "rose_gold_hoe",
+            () -> new HoeItem(
+                    RoseGoldTier.INSTANCE,
+                    0,
+                    -1.0f,
+                    new Item.Properties()
+            )
+    );
+
+    /**
+     * 玫瑰金铲子
+     * 使用锻造台由金铲和铜锭合成
+     */
+    public static final RegistryObject<Item> ROSE_GOLD_SHOVEL = ITEMS.register(
+            "rose_gold_shovel",
+            () -> new ShovelItem(
+                    RoseGoldTier.INSTANCE,
+                    3.5f,
+                    -3.0f,
+                    new Item.Properties()
+            )
+    );
+
+    /**
+     * 玫瑰金剑
+     * 使用锻造台由金剑和铜锭合成
+     */
+    public static final RegistryObject<Item> ROSE_GOLD_SWORD = ITEMS.register(
+            "rose_gold_sword",
+            () -> new SwordItem(
+                    RoseGoldTier.INSTANCE,
+                    5,
+                    -2.4f,
+                    new Item.Properties()
+            )
+    );
+
+    /**
+     * 因果怀表
+     * 可以储存玩家当前状态并在15秒内回溯到储存的状态
+     */
+    public static final RegistryObject<Item> CAUSAL_POCKET_WATCH = ITEMS.register(
+            "causal_pocket_watch",
+            CausalPocketWatchItem::new
     );
 
     private static final Logger LOGGER = LogManager.getLogger();

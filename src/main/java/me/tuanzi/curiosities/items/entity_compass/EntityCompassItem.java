@@ -4,6 +4,7 @@ import me.tuanzi.curiosities.config.ModConfigManager;
 import me.tuanzi.curiosities.network.PacketEntityGlow;
 import me.tuanzi.curiosities.network.PacketHandler;
 import me.tuanzi.curiosities.network.PacketOpenEntitySelectionGui;
+import me.tuanzi.curiosities.util.DebugLogger;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -150,15 +151,15 @@ public class EntityCompassItem extends Item {
             List<Integer> entityIds = new ArrayList<>();
             for (Entity entity : foundEntities) {
                 entityIds.add(entity.getId());
-                System.out.println("[EntityCompass] 添加生物到发光列表: " + entity.getType().getDescriptionId() + " ID: " + entity.getId());
+                DebugLogger.debugLog("[EntityCompass] 添加生物到发光列表: {} ID: {}", entity.getType().getDescriptionId(), entity.getId());
             }
 
             // 发送网络包到客户端添加发光效果
             if (player instanceof ServerPlayer serverPlayer) {
-                System.out.println("[EntityCompass] 发送发光效果网络包到玩家: " + serverPlayer.getName().getString() + ", 生物数量: " + entityIds.size());
+                DebugLogger.debugLog("[EntityCompass] 发送发光效果网络包到玩家: {}, 生物数量: {}", serverPlayer.getName().getString(), entityIds.size());
                 PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer),
                         new PacketEntityGlow(entityIds));
-                System.out.println("[EntityCompass] 网络包已发送");
+                DebugLogger.debugLog("[EntityCompass] 网络包已发送");
             }
 
             player.displayClientMessage(

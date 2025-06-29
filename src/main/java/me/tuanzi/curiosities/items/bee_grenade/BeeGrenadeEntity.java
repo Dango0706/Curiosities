@@ -2,6 +2,7 @@ package me.tuanzi.curiosities.items.bee_grenade;
 
 import com.mojang.logging.LogUtils;
 import me.tuanzi.curiosities.config.ModConfigManager;
+import me.tuanzi.curiosities.util.DebugLogger;
 import me.tuanzi.curiosities.entities.ModEntities;
 import me.tuanzi.curiosities.items.ModItems;
 import net.minecraft.core.particles.ParticleTypes;
@@ -122,7 +123,7 @@ public class BeeGrenadeEntity extends ThrowableItemProjectile {
                 }
 
                 if (closestTarget != null) {
-                    LOGGER.debug("蜜蜂选择了新目标: {}", closestTarget.getName().getString());
+                    DebugLogger.debugDetail("蜜蜂选择了新目标: {}", closestTarget.getName().getString());
                     return closestTarget;
                 }
             }
@@ -260,12 +261,12 @@ public class BeeGrenadeEntity extends ThrowableItemProjectile {
 
             // 对所有其他生物添加减速效果
             entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 2));
-            LOGGER.debug("直接对实体 {} 应用减速效果", entity.getName().getString());
+            DebugLogger.debugDetail("直接对实体 {} 应用减速效果", entity.getName().getString());
         }
 
         // 添加到世界
         this.level().addFreshEntity(cloud);
-        LOGGER.debug("在坐标 ({}, {}, {}) 创建了蜂蜜减速区域，半径: {}，持续时间: {}秒",
+        DebugLogger.debugDetail("在坐标 ({}, {}, {}) 创建了蜂蜜减速区域，半径: {}，持续时间: {}秒",
                 this.getX(), this.getY(), this.getZ(), radius, durationInSeconds);
     }
 
@@ -330,7 +331,7 @@ public class BeeGrenadeEntity extends ThrowableItemProjectile {
             findAndSetBeeTargets(bee, playerFriendly);
         }
 
-        LOGGER.debug("在坐标 ({}, {}, {}) 生成了 {} 只愤怒的蜜蜂", this.getX(), this.getY(), this.getZ(), beeCount);
+        DebugLogger.debugDetail("在坐标 ({}, {}, {}) 生成了 {} 只愤怒的蜜蜂", this.getX(), this.getY(), this.getZ(), beeCount);
 
         // 每5分钟清理一次未使用的目标列表
         if (Math.random() < 0.01) {
@@ -360,7 +361,7 @@ public class BeeGrenadeEntity extends ThrowableItemProjectile {
                                 entity.isAlive() // 确保实体存活
         );
 
-        LOGGER.debug("收集到 {} 个潜在目标", potentialTargets.size());
+        DebugLogger.debugDetail("收集到 {} 个潜在目标", potentialTargets.size());
 
         // 存储潜在目标
         BEE_TARGETS.put(explosionId, new ArrayList<>(potentialTargets));
@@ -422,13 +423,13 @@ public class BeeGrenadeEntity extends ThrowableItemProjectile {
             if (closestTarget != null) {
                 bee.setTarget(closestTarget);
                 bee.setRemainingPersistentAngerTime(Integer.MAX_VALUE); // 保持持续愤怒
-                LOGGER.debug("蜜蜂选择了 {} 作为攻击目标", closestTarget.getName().getString());
+                DebugLogger.debugDetail("蜜蜂选择了 {} 作为攻击目标", closestTarget.getName().getString());
                 return;
             }
         }
 
         // 如果没有找到目标，蜜蜂将在区域内徘徊，等待目标出现
-        LOGGER.debug("蜜蜂没有找到攻击目标，将在区域内徘徊");
+        DebugLogger.debugDetail("蜜蜂没有找到攻击目标，将在区域内徘徊");
     }
 
     /**
@@ -463,7 +464,7 @@ public class BeeGrenadeEntity extends ThrowableItemProjectile {
 
                 // 应用更强的减速效果
                 livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 300, 3));
-                LOGGER.debug("对碰撞实体 {} 应用强力减速效果", livingEntity.getName().getString());
+                DebugLogger.debugDetail("对碰撞实体 {} 应用强力减速效果", livingEntity.getName().getString());
 
                 // 应用额外的眩晕效果
                 livingEntity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 0));

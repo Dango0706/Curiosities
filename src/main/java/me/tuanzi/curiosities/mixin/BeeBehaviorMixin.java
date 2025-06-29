@@ -2,6 +2,7 @@ package me.tuanzi.curiosities.mixin;
 
 import com.mojang.logging.LogUtils;
 import me.tuanzi.curiosities.config.ModConfigManager;
+import me.tuanzi.curiosities.util.DebugLogger;
 import me.tuanzi.curiosities.items.bee_grenade.BeeGrenadeEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -32,7 +33,7 @@ public abstract class BeeBehaviorMixin {
         // 检查蜜蜂是否有标签表示它是由蜜蜂手雷生成的
         if (bee.getTags().stream().anyMatch(tag -> tag.startsWith("PlayerFriendly:"))) {
             // 不设置hasStung为true，也不停止愤怒状态，允许蜜蜂继续攻击
-            LOGGER.debug("[Mixin]阻止蜜蜂手雷生成的蜜蜂设置已蜇过状态，允许其继续攻击");
+            DebugLogger.debugDetail("[Mixin]阻止蜜蜂手雷生成的蜜蜂设置已蜇过状态，允许其继续攻击");
 
             // 保持蜜蜂的愤怒状态
             bee.setRemainingPersistentAngerTime(600); // 重置为30秒

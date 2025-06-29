@@ -133,6 +133,12 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.SCYTHE_HARVEST_DANCE_RANGE
             );
 
+            // 玫瑰金工具配置
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.rose_gold_tools_enabled"),
+                    ModConfigManager.ROSE_GOLD_TOOLS_ENABLED
+            );
+
             // 火箭靴配置
             itemsCategory.addBooleanOption(
                     Component.translatable("config.curiosities.rocket_boots_enabled"),
@@ -369,6 +375,27 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.ENTITY_COMPASS_GLOW_RANGE
             );
 
+            // 因果怀表配置
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.causal_pocket_watch_enabled"),
+                    ModConfigManager.CAUSAL_POCKET_WATCH_ENABLED
+            );
+
+            itemsCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.causal_pocket_watch_craftable"),
+                    ModConfigManager.CAUSAL_POCKET_WATCH_CRAFTABLE
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.causal_pocket_watch_cooldown_time_label"),
+                    ModConfigManager.CAUSAL_POCKET_WATCH_COOLDOWN_TIME
+            );
+
+            itemsCategory.addIntOption(
+                    Component.translatable("config.curiosities.causal_pocket_watch_storage_time_label"),
+                    ModConfigManager.CAUSAL_POCKET_WATCH_STORAGE_TIME
+            );
+
             // 原版修改配置
             ConfigCategory vanillaModificationsCategory = new ConfigCategory(
                     Component.translatable("config.curiosities.vanilla_modifications_section"),
@@ -549,11 +576,24 @@ public class SimpleConfigScreen extends Screen {
                     ModConfigManager.FAKE_TNT_ENABLED
             );
 
+            // 其他配置分类
+            ConfigCategory otherCategory = new ConfigCategory(
+                    Component.translatable("config.curiosities.other_section"),
+                    new ResourceLocation("minecraft", "textures/item/writable_book.png")
+            );
+
+            // 开发模式配置
+            otherCategory.addBooleanOption(
+                    Component.translatable("config.curiosities.development_mode_enabled"),
+                    ModConfigManager.DEVELOPMENT_MODE_ENABLED
+            );
+
             categories.add(itemsCategory);
             categories.add(effectsCategory);
             categories.add(enchantmentsCategory);
             categories.add(blocksCategory);
             categories.add(vanillaModificationsCategory);
+            categories.add(otherCategory);
 
             // 默认选择第一个分类
             if (!categories.isEmpty()) {

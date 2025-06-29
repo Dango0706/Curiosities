@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smithing_transform",
   "template": {
-    "item": "minecraft:netherite_upgrade_smithing_template"
+    "item": "minecraft:copper_ingot"
   },
   "base": {
     "item": "minecraft:golden_hoe"
